@@ -20,7 +20,7 @@ Route::controller(ReleasesController::class)->middleware("user")->group(function
 
 Route::get("/", function() {
     if (session()->get('id_user')) {
-        return to_route('show.release');
+        return to_route('index.release');
     }
      return to_route('index.user');
 });
