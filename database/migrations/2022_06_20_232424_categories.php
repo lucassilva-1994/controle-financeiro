@@ -5,15 +5,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    private $table = "categories";
     public function up()
     {
-        Schema::create("categories", function (Blueprint $table){
-            $table->bigIncrements("id_category");
-            $table->string("name",30);
+        Schema::create($this->table, function (Blueprint $table){
+            $table->uuid("id")->primary();
+            $table->bigInteger("sequence");
+            $table->string("name",100);
+            $table->dateTime("created_at");
+            $table->dateTime("updated_at");
+            $table->foreignUuid("user_id")->references("id")->on("users")->onDelete("cascade");
         });
     }
     public function down()
     {
-        Schema::dropIfExists("categories");
+        Schema::dropIfExists($this->table);
     }
 };

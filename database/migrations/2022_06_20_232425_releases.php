@@ -8,18 +8,18 @@ return new class extends Migration
     public function up()
     {
         Schema::create("releases", function(Blueprint $table){
-            $table->bigIncrements("id_release");
-            $table->string("description", 255)->nullable(false);
+            $table->uuid("id")->primary();
+            $table->bigInteger("sequence");
+            $table->string("description", 255);
             $table->longText('details')->nullable();
             $table->decimal("value",14,2);
             $table->date("date");
             $table->enum("type", ["RECEITA","DESPESA"]);
-            $table->unsignedBigInteger("user_id");
-            $table->unsignedBigInteger("category_id");
-            $table->enum("status", ["ATIVO", "INATIVO"])->default("ATIVO");
-            $table->timestamps();
-            $table->foreign("user_id")->references("id_user")->on("users")->onDelete("cascade");
-            $table->foreign("category_id")->references("id_category")->on("categories")->onDelete("cascade");
+            $table->boolean("is_active")->default(0);
+            $table->dateTime("created_at");
+            $table->dateTime("updated_at");
+            $table->foreignUuid("user_id")->references("id")->on("users")->onDelete("cascade");
+            $table->foreignUuid("category_id")->references("id")->on("categories")->onDelete("cascade");
         });
     }
     public function down()
