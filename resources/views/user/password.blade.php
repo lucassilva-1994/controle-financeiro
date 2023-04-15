@@ -1,29 +1,39 @@
 @extends('user.layout')
 @section('subtitle', 'Configurar senha')
 @section('content')
-    @if (isset($findToken))
-        <form action="{{ route('user.save.password') }}" method="POST">
+    @if (isset($findToken) && date('Y-m-d H:i:s') < $findToken->expires_token)
+        <form action="{{ route('user.save.password') }}" method="POST" class="row">
             @csrf
             <input type="hidden" name="token" value="{{ $findToken->token }}" />
-            <div class="input-group mt-2">
-                <label for="cpassword" class="input-group-text"><i class="bi bi-key-fill"></i></label>
-                <input type="password" name="cpassword" placeholder="Senha:" value="{{ old('cpassword') }}" id="cpassword"
+            <div class="col-md-12 mb-2">
+                <label for="cpassword">Senha:</label>
+                <input type="password" name="cpassword" placeholder="Senha" id="cpassword" value="{{ old('cpassword') }}"
                     class="form-control" autocomplete="off" />
             </div>
-            <div class="mt-2 input-group">
-                <label for="ccpassword" class="input-group-text"><i class="bi bi-key-fill"></i></label>
-                <input type="password" name="ccpassword" placeholder="Configurar senha:" value="{{ old('ccpassword') }}"
-                    id="ccpassword" class="form-control" />
+            <div class="col-md-12 mb-2">
+                <label for="ccpassword">Confirmar senha:</label>
+                <input type="password" name="ccpassword" id="ccpassword" placeholder="Confirmar senha"
+                    value="{{ old('ccpassword') }}" class="form-control" autocomplete="off" />
             </div>
-            <div class="form-check mt-2">
-                <input class="form-check-input" type="checkbox" id="checkbox" onclick="showHiddenPasswords()">
-                <label class="form-check-label" for="checkbox">
-                    Conferir senhas
-                </label>
+            <div class="col-md-12 mb-2">
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="checkbox" onclick="showHiddenPasswords()">
+                    <label class="form-check-label" for="checkbox">
+                        Conferir senhas
+                    </label>
+                </div>
             </div>
-            <div class="mb-3 mt-2 d-grid">
-                <button type="submit" class="btn btn-success"><i class="bi bi-send-fill"></i> Enviar</button>
+            <div class="col-md-12 d-grid">
+                <button type="submit" class="btn btn-success"><i class="bi bi-send-check-fill"></i> Alterar senha</button>
             </div>
         </form>
+    @elseif(isset($findToken) && date('Y-m-d H:i:s') > $findToken->expires_token)
+        <div class="alert alert-danger">
+            <h5>Link expirado.</h5>
+        </div>
+    @else
+        <div class="alert alert-danger">
+            <h5>Link indisponível.</h5>
+        </div>
     @endif
 @endsection

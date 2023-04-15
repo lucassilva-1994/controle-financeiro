@@ -27,13 +27,15 @@ Route::get("/", function() {
 
 Route::controller(UsersController::class)->group(function () {
     Route::get("/logout", "logout")->name("logout.user");
-    Route::get("/index","index")->name("index.user");
-    Route::get("user/new", "new")->name("new.user");
-    Route::post("user/create", "create")->name("create.user");
-    Route::get("user/validate/{token}", "validateUser")->name("validate.user");
-    Route::post("/auth", "auth")->name("auth.user");
-    //RESET PASSWORD
+    Route::get("/","signin")->name("user.signin");
+    Route::get("user/signup", "signUp")->name("user.signup");
+    Route::post('/user/auth','auth')->name('user.auth');
+    Route::post('user/resetpassword','resetPassword')->name("user.reset.password");
     Route::get('/user/createpassword/{token}','createPassword')->name('user.create.password');
     Route::post('/user/savepassword','savePassword')->name('user.save.password');
     Route::get('/user/updatepassword/{token}','updatePassword')->name('user.update.password');
+
+    Route::post("user/create", "create")->name("create.user");
+    //RESET PASSWORD
+
 });

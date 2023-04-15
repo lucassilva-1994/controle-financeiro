@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller {
 
-    public function index() {
-        return view("user.index");
+    public function signIn() {
+        return view("user.signin");
     }
 
     public function auth(Request $request) {
@@ -31,8 +31,8 @@ class UsersController extends Controller {
                         . "verifique se o usuário e senha estão corretos ou se sua conta está ativa!",'user'=>$request->user]);
     }
 
-    public function new() {
-        return view("user.new");
+    public function signUp() {
+        return view("user.signup");
     }
 
     public function create(UserRequest $request) {
@@ -54,6 +54,14 @@ class UsersController extends Controller {
 
     public function savePassword(Request $request){
         return User::createOrUpdatePasword($request->only(['cpassword','token']));
+    }
+
+    public function resetPassword(Request $request){
+        $request->validate(
+            ['remail' => 'required|exists:users,email'],
+            ['remail.required' => 'Email é obrigatório','remail.exists' => 'Email não encontrado.']
+        );
+        return User::resetPassword($request->only('remail'));
     }
 
     public function logout() {

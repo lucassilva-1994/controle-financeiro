@@ -9,12 +9,10 @@
     </head>
     <body>
         <div class="container mt-5">
-
             <div class="row justify-content-md-center">
-                <div class="col-sm-12 col-md-12 col-lg-4 bg-light border border-success rounded" style="margin-top: 20px; border-radius: 2;">
+                <div class="col-sm-12 col-md-12 col-lg-5 rounded">
                     <div class="">
-                        <h1 class="text-center mt-3 mb-3 text-success"><i class="bi bi-cash-coin"></i></h1>
-                        <h2 class="text-center mb-3">@yield("subtitle","Controle financeiro")</h2>
+                        <h1 class="mb-3">@yield("subtitle","Controle financeiro")</h1>
                         @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul>
