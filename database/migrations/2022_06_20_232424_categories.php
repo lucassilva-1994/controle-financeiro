@@ -12,6 +12,7 @@ return new class extends Migration
             $table->uuid("id")->primary();
             $table->bigInteger("sequence");
             $table->string("name",100);
+            $table->enum("type",["ENTRADA","SAIDA","AMBOS"]);
             $table->dateTime("created_at");
             $table->dateTime("updated_at");
             $table->foreignUuid("user_id")->references("id")->on("users")->onDelete("cascade");

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->decimal("value",14,2);
             $table->date("date");
             $table->enum("type", ["RECEITA","DESPESA"]);
-            $table->boolean("is_active")->default(0);
+            $table->boolean("is_active")->default(1);
             $table->dateTime("created_at");
             $table->dateTime("updated_at");
             $table->foreignUuid("user_id")->references("id")->on("users")->onDelete("cascade");

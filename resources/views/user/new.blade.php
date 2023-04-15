@@ -23,27 +23,8 @@
                            value="{{old('email')}}" id="email"
                            class="form-control" autocomplete="off"/>
                 </div>
-                <div class="mt-2 input-group">
-                    <label for="cpassword" class="input-group-text"><i class="bi bi-key-fill"></i></label>
-                    <input type="password" name="cpassword" placeholder="Sua senha para acesso"
-                           value="{{old('cpassword')}}" id="cpassword"
-                           class="form-control"/>
-                </div>
-                <div class=" mt-2 input-group">
-                    <label for="ccpassword" class="input-group-text"><i class="bi bi-key-fill"></i></label>
-                    <input type="password" name="ccpassword" placeholder="Confirme sua senha"
-                           value="{{old('ccpassword')}}" id="ccpassword"
-                           class="form-control"/>
-                </div>
-                <div class="form-check mt-2">
-                    <input class="form-check-input" type="checkbox" id="checkbox" onclick="showHiddenPasswords()">
-                    <label class="form-check-label" for="checkbox">
-                        Conferir senhas
-                    </label>
-                </div>
                 <div class="btn-group btn-group-toggle d-flex mb-3 mt-3" role="group" aria-label="Large button group">
                     <input type="submit" value="Salvar" class="btn btn-success"/>
-                    <a href="{{route('index.user')}}" class="btn btn-outline-danger">Voltar</a>
                 </div>
             </form>
 @endsection

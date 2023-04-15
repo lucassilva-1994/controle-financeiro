@@ -33,8 +33,7 @@ Route::controller(UsersController::class)->group(function () {
     Route::get("user/validate/{token}", "validateUser")->name("validate.user");
     Route::post("/auth", "auth")->name("auth.user");
     //RESET PASSWORD
-    Route::get("/user/resetpassword", "resetPassword")->name("resetpassword.user");
-    Route::get("/user/newpassword/{token}", "newPassword")->name("newpassword.user");
-    Route::POST("/user/updatetoken", "updateToken")->name("updatetoken.user");
-    Route::POST("/user/updatepassword", "updatePassword")->name("updatepassword.user");
+    Route::get('/user/createpassword/{token}','createPassword')->name('user.create.password');
+    Route::post('/user/savepassword','savePassword')->name('user.save.password');
+    Route::get('/user/updatepassword/{token}','updatePassword')->name('user.update.password');
 });

@@ -26,7 +26,6 @@
     </div>
     <div class="btn-group btn-group-toggle d-flex mb-3" role="group" aria-label="Large button group">
         <a href="{{route('new.user')}}" class="btn btn-outline-primary">Cadastre-se</a>
-        <a href="{{route('resetpassword.user')}}" class="btn btn-outline-danger">Redefinir senha</a>
     </div>
 </form>
 @endsection
