@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use function PHPSTORM_META\type;
+
 class Category extends Model
 {
     protected $fillable = ["id", "sequence", "name", "type", "user_id"];
@@ -36,12 +38,6 @@ class Category extends Model
             ['id' => $data['id']]
         );
         return redirect()->back()->with('success', 'Categoria atualizada com sucesso.');
-    }
-
-    public static function createCategory(array $data, string $user_id)
-    {
-        $data['user_id'] = $user_id;
-        HelperModel::setData($data, Category::class);
     }
 
     public static function createUserCategory(string $user_id)

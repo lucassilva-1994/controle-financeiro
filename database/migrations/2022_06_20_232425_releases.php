@@ -14,12 +14,13 @@ return new class extends Migration
             $table->longText('details')->nullable();
             $table->decimal("value",14,2);
             $table->date("date");
-            $table->enum("type", ["RECEITA","DESPESA"]);
+            $table->enum("type", ["ENTRADA","SAIDA"]);
             $table->boolean("is_active")->default(1);
             $table->dateTime("created_at");
             $table->dateTime("updated_at");
             $table->foreignUuid("user_id")->references("id")->on("users")->onDelete("cascade");
             $table->foreignUuid("category_id")->references("id")->on("categories")->onDelete("cascade");
+            $table->foreignUuid("payment_id")->references("id")->on("payments")->onDelete("cascade");
         });
     }
     public function down()

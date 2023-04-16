@@ -10,7 +10,7 @@ class CategoriesController extends Controller
     private function categories(string $id= null){
         $category = Category::where('id',$id)->first();
         $categories = Category::where('user_id',session('user_id'))->latest('sequence')->get();
-        return view('categories.categories',compact('categories','category'));
+        return view('dashboard.categories',compact('categories','category'));
     }
 
     public function new(){
@@ -22,6 +22,8 @@ class CategoriesController extends Controller
     }
 
     public function create(Request $request){
+        $request->validate(['name'=>'required','type'=>'required'],
+        ['name.required' => 'Nome é obrigatório','type.required'=>'Tipo é obrigatório.']);
         return Category::createOrUpdate($request->except('token'));
     }
 

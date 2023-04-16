@@ -12,15 +12,12 @@ Route::controller(ReleasesController::class)->middleware("user")->group(function
 
 Route::middleware("user")->group(function () {
     Route::controller(ReleasesController::class)->group(function () {
-        Route::get("/release/", "index")->name("index.release");
+        Route::get("/release/", "show")->name("show.release");
         Route::get("/release/new", "new")->name("new.release");
         Route::get("/release/edit/{id}", "edit")->name("edit.release");
         Route::POST("/release/create", "create")->name("create.release");
-        Route::PUT("/release/update/{id_release}", "update")->name("update.release");
-        Route::get("/release/junks", "junk")->name("junk.release");
-        Route::get("/release/remove/{id_release}", "remove")->name("remove.release");
-        Route::get("/release/restore/{id_release}", "restore")->name("restore.release");
-        Route::get("/release/delete/{id_release}", "delete")->name("delete.release");
+        Route::put("/release/update/", "update")->name("update.release");
+        Route::delete("/release/delete/{id}", "delete")->name("delete.release");
     });
     Route::controller(CategoriesController::class)->group(function(){
         Route::delete('/category/delete/{id}','delete')->name('category.delete');

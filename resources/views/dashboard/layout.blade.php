@@ -15,11 +15,9 @@
             <div class="container d-flex flex-wrap">
                 <ul class="nav me-auto">
                     <li class="nav-item nav-link link-light px-2"><h4><i class="bi bi-cash-coin"></i></h4></li>
-                    <li class="nav-item"><a href="{{ route('index.release') }}" class="nav-link link-light px-2">Lançamentos</a></li>
+                    <li class="nav-item"><a href="{{ route('show.release') }}" class="nav-link link-light px-2">Lançamentos</a></li>
                     <li class="nav-item"><a href="{{ route('new.release') }}" class="nav-link link-light px-2">Novo lançamento</a></li>
                     <li class="nav-item"><a href="{{ route('category.new') }}" class="nav-link link-light px-2">Categorias</a></li>
-
-                    <li class="nav-item"><a href="{{ route('junk.release') }}" class="nav-link link-light px-2">Lixeira</a></li>
                 </ul>
                 <ul class="nav">
                     <li class="nav-item nav-link link-light px-2"><i class="bi bi-person-circle"></i> {{session('user')}}</li>

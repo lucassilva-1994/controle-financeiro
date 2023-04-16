@@ -23,6 +23,7 @@ class User extends Authenticatable
         if($user){
             Mail::queue(new SendWelcome($user));
             Category::createUserCategory($user->id);
+            Payment::createUserPayment($user->id);
             return redirect()->back()->with("success","Usuário cadastrado com sucesso.");
         }
     }

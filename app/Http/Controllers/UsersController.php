@@ -26,8 +26,9 @@ class UsersController extends Controller {
                 "email" => $user->email,
                 "user" => $user->user
             ]);
-            return to_route("index.release");
+            return to_route("new.release");
         }
+        return redirect()->back()->with('error','Falha na autenticação');
     }
 
     public function signUp() {

@@ -1,71 +1,61 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Http\Requests\ReleaseRequest;
+use App\Models\Category;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Models\Release;
-use Illuminate\Support\Facades\DB;
-use DateTime;
 
 class ReleasesController extends Controller
 {
-    public function index(Request $request)
+    public function show()
     {
-        return view("release.releases");
+        $releases = Release::latest('sequence')->get();
+        return view('dashboard.releases.show', compact('releases'));
+    }
+    private function index(string $id = null)
+    {
+        $categories = $this->getListCategory();
+        $payments = $this->getListPayment();
+        $releases = Release::latest('sequence')->limit(3)->get();
+        $release_id = Release::where(['id' => $id])->first();
+        return view("dashboard.releases.form", compact('categories', 'payments', 'releases', 'release_id'));
     }
 
     public function new()
     {
-        $categories = $this->getListCategory();
-        $releases = Release::where("status", "ATIVO")->orderBy("id_release", "desc")->limit(5)->get();
-        return view("release.new", compact("categories", "releases"));
+        return $this->index();
     }
 
-    public function edit($id_release)
+    public function edit(string $id)
     {
-        $release = Release::where(["id_release" => $id_release])->first();
-        $categories = $this->getListCategory();
-
-        return view("release.edit", compact("release", "categories"));
+        return $this->index($id);
     }
 
     public function create(ReleaseRequest $request)
     {
-        Release::createOrUpdate($request->all());
-        return redirect()->back()->with("success", "Lançamento cadastrado com sucesso.");
+        return Release::createOrUpdate($request->except(['_token']));
     }
 
     public function update(Request $request)
     {
-        Release::createOrUpdate($request->all());
-        return redirect()->back()->with("success", "Lançamento atualizado com sucesso.");
+        return Release::createOrUpdate($request->except(['_token', '_method']));
     }
 
-    public function junk()
+    public function delete(string $id)
     {
-        $junks = Release::where(['status' => 'INATIVO'])->orderByDesc('date')->get();
-        return view('release.junks', compact('junks'));
-    }
-
-    public function remove($id_release)
-    {
-        Release::removeOrRestore($id_release, "INATIVO");
-        return redirect()->back()->with("success", "Lançamento removido com sucesso.");
-    }
-
-    public function restore($id_release)
-    {
-        Release::removeOrRestore($id_release, "ATIVO");
-        return redirect()->back()->with("success", "Lançamento restaurado com sucesso.");
-    }
-
-    public function delete($id_release)
-    {
-        Release::where(["id_release" => $id_release, "status" => "INATIVO"])->delete();
-        return redirect()->back()->with("success", "Lançamento excluído com sucesso.");
+        return Release::deleteRelease($id);
     }
 
     private function getListCategory()
     {
-        return DB::table("categories")->orderBy("name", "asc")->get();
+        return Category::where('user_id', session('user_id'))->oldest('name')->get();
+    }
+
+    private function getListPayment()
+    {
+        return Payment::where('user_id', session('user_id'))->oldest('name')->get();
     }
 }
