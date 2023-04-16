@@ -10,7 +10,9 @@ class HelperModel extends Model
         $data['id'] = self::setUuid();
         $data['sequence'] = self::setSequence($model);
         $data['created_at'] = self::setDate();
-        $data['updated_at'] = self::setDate();
+        if(isset($data['updated_data'])){
+            $data['updated_at'] = self::setDate();
+        }
         return $model::create($data);
     }
 
@@ -23,7 +25,7 @@ class HelperModel extends Model
         return Uuid::uuid4();
     }
 
-    private static function setSequence($model){
+    public static function setSequence($model){
         $result = $model::latest('sequence')->first();
         return $result ? $result->sequence + 1 : 1;
     }

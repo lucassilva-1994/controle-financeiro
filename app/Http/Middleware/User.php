@@ -17,8 +17,8 @@ class User
     public function handle(Request $request, Closure $next)
     {
         //Verificando se há sessão aberta.
-        if(!session()->get('id_user')){
-            return redirect()->route('index.user');
+        if(!session()->get('user_id')){
+            return redirect()->route('user.signin');
         }
         return $next($request);
     }

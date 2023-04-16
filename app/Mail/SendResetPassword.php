@@ -25,6 +25,6 @@ class SendResetPassword extends Mailable
         ])
         ->to($this->data['email'])
         ->from(env('MAIL_USERNAME'),"Controle financeiro")
-        ->subject("redefinir senha");
+        ->subject("Redefinir senha");
     }
 }

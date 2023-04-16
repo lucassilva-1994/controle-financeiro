@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Requests\AuthRequest;
+use App\Http\Requests\PasswordRequest;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
-use App\Http\Requests\ResetPassword;
-use Illuminate\Support\Facades\DB;
+use App\Models\Access;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller {
 
@@ -16,19 +15,19 @@ class UsersController extends Controller {
         return view("user.signin");
     }
 
-    public function auth(Request $request) {
-        $request->validate(
-                ['user' => 'required','password' => 'required'],
-                ['user.required' => 'Usuário é obrigatório.','password.required' => 'Senha é obrigatório.']);
-        //Criando Array para Autenticação
-        $credentials = ['user' => $request->user,'password' => $request->password,'status' => 'ATIVO'];
+    public function auth(AuthRequest $request) {
+        $credentials = $request->only(["email","password"]);
         if (Auth::attempt($credentials)) {
-            $user = DB::table("users")->where("user", $request->user)->first();
-            session()->put(["user" => $user->user, "id_user" => $user->id_user]);
+            $user = User::where('email',$request->email)->first();
+            Access::createAccess($user->id,$request->ip());
+            session()->put([
+                "user_id" => $user->id,
+                "name" => $user->name,
+                "email" => $user->email,
+                "user" => $user->user
+            ]);
             return to_route("index.release");
         }
-        return redirect()->back()->with(["error"=>"Usuário não autenticado, "
-                        . "verifique se o usuário e senha estão corretos ou se sua conta está ativa!",'user'=>$request->user]);
     }
 
     public function signUp() {
@@ -52,7 +51,7 @@ class UsersController extends Controller {
         return $this->createOrUpdatePasword($token);
     }
 
-    public function savePassword(Request $request){
+    public function savePassword(PasswordRequest $request){
         return User::createOrUpdatePasword($request->only(['cpassword','token']));
     }
 
@@ -64,8 +63,8 @@ class UsersController extends Controller {
         return User::resetPassword($request->only('remail'));
     }
 
-    public function logout() {
-        session()->forget(['id_user', 'user']);
-        return to_route('index.user');
+    public function signOut() {
+        session()->forget(['user_id','name','email','user']);
+        return to_route('user.signin');
     }
 }

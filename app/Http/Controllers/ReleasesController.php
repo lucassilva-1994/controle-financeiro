@@ -8,47 +8,11 @@ use DateTime;
 
 class ReleasesController extends Controller
 {
-    private function dateConvert($date, $format = "Y-m-d")
-    {
-        $newDate = new DateTime($date);
-        return $newDate->format($format);
-    }
-
-    private function valuesCalculate($list)
-    {
-        $balance = ["expenses" => 0, "revenues" => 0];
-        foreach ($list as $item) {
-            $value = str_replace([".", ","], ["", "."], $item["value"]);
-            if ($item["type"] == "DESPESA" && $item["payment"] == "DÉBITO") {
-                $balance["expenses"] += $value;
-            }
-            if ($item["type"] == "RECEITA" && $item["payment"] == "DÉBITO") {
-                $balance["revenues"] += $value;
-            }
-        }
-        return $balance;
-    }
-
     public function index(Request $request)
     {
-        $title = "Lançamentos";
-        $filter = ["status" => "ATIVO"];
-        $dateFilter = [
-            "initial" => empty($request->start_date) ? date('Y-m-01') : $this->dateConvert($request->start_date),
-            "final" => empty($request->end_date) ? date("Y-m-t") : $this->dateConvert($request->end_date)
-        ];
-        if($request->start_date > $request->end_date){
-            return redirect()->back()->with("error","A data inicial não pode ser maior que a data final.");
-        }
-        if ($request->type) {
-            $filter["type"] = $request->type;
-        }
-        $releases = Release::whereBetween("date", array_values($dateFilter))->where($filter)->orderBy("date","ASC")->paginate(15);
-        $dataReleases = Release::whereBetween("date", array_values($dateFilter))->where($filter)->get()->toArray();
-        $balance = $this->valuesCalculate($dataReleases);
-        return view("release.releases", compact("title", "dateFilter", "releases", "balance"));
+        return view("release.releases");
     }
-    
+
     public function new()
     {
         $categories = $this->getListCategory();
@@ -60,7 +24,7 @@ class ReleasesController extends Controller
     {
         $release = Release::where(["id_release" => $id_release])->first();
         $categories = $this->getListCategory();
-        
+
         return view("release.edit", compact("release", "categories"));
     }
 

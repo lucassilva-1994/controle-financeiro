@@ -17,7 +17,6 @@ class User extends Authenticatable
         $data['name'] = $data['name'];
         $data['email'] = $data['email'];
         $data['user'] = $data['user'];
-        $data['password'] = '123';
         $data['token'] = HelperModel::setUuid();
         $data['expires_token'] = self::expiresDate();
         $user = HelperModel::setData($data,User::class);
@@ -60,5 +59,9 @@ class User extends Authenticatable
 
     public function releases(){
         return $this->hasMany(Release::class,'id','user_id');
+    }
+
+    public function accesses(){
+        return $this->hasMany(Access::class,'id','user_id');
     }
 }

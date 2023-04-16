@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string("name",255)->nullable(false);
             $table->string("email",255)->unique();
             $table->string("user", 50)->unique();
-            $table->string("password", 100);
+            $table->string("password", 100)->nullable();
             $table->boolean('is_active')->default(0);
             $table->uuid("token")->nullable();
             $table->dateTime('expires_token')->nullable();
