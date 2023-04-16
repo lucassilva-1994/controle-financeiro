@@ -21,7 +21,7 @@ class User extends Authenticatable
         $data['expires_token'] = self::expiresDate();
         $user = HelperModel::setData($data,User::class);
         if($user){
-            Mail::send(new SendWelcome($user));
+            Mail::queue(new SendWelcome($user));
             Category::createUserCategory($user->id);
             return redirect()->back()->with("success","Usuário cadastrado com sucesso.");
         }
@@ -49,7 +49,7 @@ class User extends Authenticatable
             'is_active' => 0
         ], User::class,['email'=>$data['remail']]);
         $user = User::where('email',$data['remail'])->first();
-        Mail::send(new SendResetPassword($user));
+        Mail::queue(new SendResetPassword($user));
         return redirect()->back()->with('success','Foi enviado um e-mail para alterar sua senha.');
     }
 
