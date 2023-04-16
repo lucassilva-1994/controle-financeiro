@@ -1,1 +1,1 @@
-Endereço do projeto: https://financial.lucassilvasantos.com/index
+Endereço do projeto: https://financial.lucassilvasantos.com/public
