@@ -3,8 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
-use function PHPSTORM_META\type;
+use Illuminate\Database\Eloquent\Builder;
 
 class Category extends Model
 {
@@ -28,7 +27,6 @@ class Category extends Model
         if (!isset($data['id'])) {
             $data['name'] = $data['name'];
             $data['type'] = $data['type'];
-            $data['user_id'] = $data['user_id'];
             HelperModel::setData($data, Category::class);
             return redirect()->back()->with("success", "Categoria cadastrada com sucesso.");
         }

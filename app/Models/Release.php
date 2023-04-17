@@ -55,10 +55,4 @@ class Release extends Model {
     public function payment(){
         return $this->belongsTo(Payment::class,'payment_id','id');
     }
-
-    protected static function booted() {
-        self::addGlobalScope('session_user', function(Builder $queryBuilder) {
-            $queryBuilder->where(['user_id' => session()->get('user_id')])->latest('id');
-        });
-    }
 }

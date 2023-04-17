@@ -1,14 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Support\Facades\Route;
-
-//GROUP ROUTING (->GROUP)
-Route::controller(ReleasesController::class)->middleware("user")->group(function () {
-    //ROUTING NAMED (->NAME)
-
-});
 
 Route::middleware("user")->group(function () {
     Route::controller(ReleasesController::class)->group(function () {
@@ -26,13 +19,6 @@ Route::middleware("user")->group(function () {
         Route::post('/category/create','create')->name('category.create');
         Route::put('/category/update','update')->name('category.update');
     });
-});
-
-Route::get("/", function () {
-    if (session()->get('id_user')) {
-        return to_route('index.release');
-    }
-    return to_route('index.user');
 });
 
 Route::controller(UsersController::class)->group(function () {

@@ -12,14 +12,14 @@ class ReleasesController extends Controller
 {
     public function show()
     {
-        $releases = Release::latest('sequence')->get();
+        $releases = Release::where('user_id',session('user_id'))->latest('sequence')->get();
         return view('dashboard.releases.show', compact('releases'));
     }
     private function index(string $id = null)
     {
         $categories = $this->getListCategory();
         $payments = $this->getListPayment();
-        $releases = Release::latest('sequence')->limit(3)->get();
+        $releases = Release::where('user_id',session('user_id'))->latest('sequence')->limit(3)->get();
         $release_id = Release::where(['id' => $id])->first();
         return view("dashboard.releases.form", compact('categories', 'payments', 'releases', 'release_id'));
     }
@@ -51,11 +51,11 @@ class ReleasesController extends Controller
 
     private function getListCategory()
     {
-        return Category::where('user_id', session('user_id'))->oldest('name')->get();
+        return Category::where('user_id',session('user_id'))->oldest('name')->get();
     }
 
     private function getListPayment()
     {
-        return Payment::where('user_id', session('user_id'))->oldest('name')->get();
+        return Payment::where('user_id',session('user_id'))->oldest('name')->get();
     }
 }
