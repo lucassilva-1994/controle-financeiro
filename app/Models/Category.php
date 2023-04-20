@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class Category extends Model
 {
@@ -25,17 +24,15 @@ class Category extends Model
     public static function createOrUpdate(array $data)
     {
         if (!isset($data['id'])) {
-            $data['name'] = $data['name'];
-            $data['type'] = $data['type'];
             HelperModel::setData($data, Category::class);
-            return redirect()->back()->with("success", "Categoria cadastrada com sucesso.");
+            return true;
         }
         HelperModel::updateData(
             ['name' => $data['name'], 'type' => $data['type']],
             Category::class,
             ['id' => $data['id']]
         );
-        return redirect()->back()->with('success', 'Categoria atualizada com sucesso.');
+        return true;
     }
 
     public static function createUserCategory(string $user_id)
@@ -52,7 +49,7 @@ class Category extends Model
     public static function deleteCategory(string $id)
     {
         self::where('id', $id)->delete();
-        return redirect()->back()->with("success", "Categoria removido com sucesso.");
+        return true;
     }
 
     public function user()

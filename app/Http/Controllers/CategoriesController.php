@@ -24,14 +24,26 @@ class CategoriesController extends Controller
     public function create(Request $request){
         $request->validate(['name'=>'required','type'=>'required'],
         ['name.required' => 'Nome é obrigatório','type.required'=>'Tipo é obrigatório.']);
-        return Category::createOrUpdate($request->except('token'));
+        if(Category::createOrUpdate($request->except('_token'))):
+            return redirect()->back()->with('success','Categoria cadastrada com sucesso.');
+        else:
+            return redirect()->back()->with('error','Falha ao cadastrar categoria');
+        endif;
     }
 
     public function update(Request $request){
-        return Category::createOrUpdate($request->except('token'));
+        if(Category::createOrUpdate($request->except('_token','_method'))):
+            return redirect()->back()->with('success','Categoria atualizada com sucesso.');
+        else:
+            return redirect()->back()->with('error','Falha  ao atualizar categoria.');
+        endif;
     }
 
     public function delete(string $id){
-        return Category::deleteCategory($id);
+        if(Category::deleteCategory($id)):
+            return redirect()->back()->with('success','Registro removido com sucesso.');
+        else:
+            return redirect()->back()->with('error','Falha ao remover registro.');
+        endif;
     }
 }

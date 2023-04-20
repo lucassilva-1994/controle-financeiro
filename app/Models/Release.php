@@ -1,11 +1,10 @@
 <?php
 
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
-class Release extends Model {
+class Release extends Model
+{
     protected $fillable = [
         'id',
         'sequence',
@@ -22,37 +21,42 @@ class Release extends Model {
     protected $keyType = 'string';
     public $incrementing = false;
 
-    public function getValueAttribute() {
+    public function getValueAttribute()
+    {
         return number_format($this->attributes['value'], 2, ",", ".");
     }
 
-    public static function createOrUpdate(array $data) {
-        if(!isset($data['id'])){
-            $data['value'] = self::formatCurrency($data['value']);
-            HelperModel::setData($data,Release::class);
-            return redirect()->back()->with('success','Lançamento cadastrado com sucesso.');
+    public static function createOrUpdate(array $data)
+    {
+        isset($data['value']) ? $data['value'] =  self::formatCurrency($data['value']) : $data['value'];
+        if (!isset($data['id'])) {
+            HelperModel::setData($data, Release::class);
+            return true;
         }
-        $data['value'] = self::formatCurrency($data['value']);
-        HelperModel::updateData($data,Release::class,['id' => $data['id']]);
-        return redirect()->back()->with('success','Lançamento atualizado com sucesso.');
+        HelperModel::updateData($data, Release::class, ['id' => $data['id']]);
+        return true;
     }
 
-    private static function formatCurrency($value){
+    private static function formatCurrency($value)
+    {
         $value = str_replace(['R$ ', ".", ','], ["", "", "."], $value);
         $value = number_format("" . $value, 2, ".", "");
         return $value;
     }
 
-    public static function deleteRelease(string $id){
-        self::where('id',$id)->delete();
-        return redirect()->back()->with("success","Lançamento removido com sucesso.");
+    public static function deleteRelease(string $id)
+    {
+        self::where('id', $id)->delete();
+        return true;
     }
 
-    public function category() {
+    public function category()
+    {
         return $this->hasOne(Category::class, "id", "category_id");
     }
 
-    public function payment(){
-        return $this->belongsTo(Payment::class,'payment_id','id');
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class, 'payment_id', 'id');
     }
 }

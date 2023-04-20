@@ -7,13 +7,13 @@ use Ramsey\Uuid\Uuid;
 class HelperModel extends Model
 {
     public static function setData(array $data, $model){
-        $data['id'] = self::setUuid();
-        $data['sequence'] = self::setSequence($model);
-        $data['created_at'] = self::setDate();
-        if(isset($data['updated_at'])){
-            $data['updated_at'] = self::setDate();
-        }
-        return $model::create($data);
+            $data['id'] = self::setUuid();
+            $data['sequence'] = self::setSequence($model);
+            $data['created_at'] = self::setDate();
+            if(isset($data['updated_at'])){
+                $data['updated_at'] = self::setDate();
+            }
+            return $model::create($data);
     }
 
     public static function updateData(array $data, $model, array $where){

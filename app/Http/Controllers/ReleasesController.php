@@ -12,14 +12,14 @@ class ReleasesController extends Controller
 {
     public function show()
     {
-        $releases = Release::where('user_id',session('user_id'))->latest('sequence')->get();
+        $releases = Release::where('user_id', session('user_id'))->latest('sequence')->get();
         return view('dashboard.releases.show', compact('releases'));
     }
     private function index(string $id = null)
     {
         $categories = $this->getListCategory();
         $payments = $this->getListPayment();
-        $releases = Release::where('user_id',session('user_id'))->latest('sequence')->limit(3)->get();
+        $releases = Release::where('user_id', session('user_id'))->latest('sequence')->limit(3)->get();
         $release_id = Release::where(['id' => $id])->first();
         return view("dashboard.releases.form", compact('categories', 'payments', 'releases', 'release_id'));
     }
@@ -36,26 +36,38 @@ class ReleasesController extends Controller
 
     public function create(ReleaseRequest $request)
     {
-        return Release::createOrUpdate($request->except(['_token']));
+        if (Release::createOrUpdate($request->except('_token'))) :
+            return redirect()->back()->with('success', 'Lançamento cadastrado com sucesso.');
+        else :
+            return redirect()->back()->with('error', 'Falha ao cadastrar lançamento.');
+        endif;
     }
 
     public function update(Request $request)
     {
-        return Release::createOrUpdate($request->except(['_token', '_method']));
+        if (Release::createOrUpdate($request->except('_token','_method'))) :
+            return  redirect()->back()->with('success', 'Lançamento atualizado com sucesso.');
+        else :
+            return redirect()->back()->with('error', 'Falha ao atualizar registro.');
+        endif;
     }
 
     public function delete(string $id)
     {
-        return Release::deleteRelease($id);
+        if (Release::deleteRelease($id)) :
+            return redirect()->back()->with('success', 'Lançamento removido com sucesso');
+        else :
+            return redirect()->back()->with('error', 'Falha ao remover registro.');
+        endif;
     }
 
     private function getListCategory()
     {
-        return Category::where('user_id',session('user_id'))->oldest('name')->get();
+        return Category::where('user_id', session('user_id'))->oldest('name')->get();
     }
 
     private function getListPayment()
     {
-        return Payment::where('user_id',session('user_id'))->oldest('name')->get();
+        return Payment::where('user_id', session('user_id'))->oldest('name')->get();
     }
 }
