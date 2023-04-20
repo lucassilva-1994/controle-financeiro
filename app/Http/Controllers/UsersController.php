@@ -36,7 +36,9 @@ class UsersController extends Controller {
     }
 
     public function create(UserRequest $request) {
-        return User::createUser($request->only(['name','email','user']));
+        if(User::createUser($request->only(['name','email','user'])))
+            return redirect()->back()->with('success','Usuário cadastrado com sucesso.');
+        return redirect()->back()->with('error','Falha ao registrar usuário.');
     }
 
     private function createOrUpdatePasword(string $token = null){
@@ -53,7 +55,9 @@ class UsersController extends Controller {
     }
 
     public function savePassword(PasswordRequest $request){
-        return User::createOrUpdatePasword($request->only(['cpassword','token']));
+        if(User::createOrUpdatePasword($request->only(['cpassword','token'])))
+            return to_route('user.signin')->with('success', "Senha configurada com sucesso.");
+        return redirect()->back()->with('error','Falha ao configurar senha.');
     }
 
     public function resetPassword(Request $request){
@@ -61,7 +65,9 @@ class UsersController extends Controller {
             ['remail' => 'required|exists:users,email'],
             ['remail.required' => 'Email é obrigatório','remail.exists' => 'Email não encontrado.']
         );
-        return User::resetPassword($request->only('remail'));
+        if(User::resetPassword($request->only('remail')))
+            return redirect()->back()->with('success', 'Foi enviado um e-mail para alterar sua senha.');
+        return redirect()->back()->with('error','Falha ao solicitar redefinição de senha, tente novamente mais tarde.');
     }
 
     public function signOut() {
