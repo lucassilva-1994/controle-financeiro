@@ -6,12 +6,14 @@ use App\Http\Requests\PasswordRequest;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
-use App\Models\Access;
 use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller {
 
     public function signIn() {
+        if(Auth::user()){
+            return to_route('show.release');
+        }
         return view("user.signin");
     }
 
@@ -19,13 +21,6 @@ class UsersController extends Controller {
         $credentials = $request->only(["email","password"]);
         if (Auth::attempt($credentials)) {
             $user = User::where('email',$request->email)->first();
-            Access::createAccess($user->id,$request->ip());
-            session()->put([
-                "user_id" => $user->id,
-                "name" => $user->name,
-                "email" => $user->email,
-                "user" => $user->user
-            ]);
             return to_route("new.release");
         }
         return redirect()->back()->with('error','Falha na autenticação');
@@ -71,7 +66,7 @@ class UsersController extends Controller {
     }
 
     public function signOut() {
-        session()->forget(['user_id','name','email','user']);
+        Auth::logout();
         return to_route('user.signin');
     }
 }

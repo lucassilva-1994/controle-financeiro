@@ -6,6 +6,7 @@ use App\Mail\SendResetPassword;
 use App\Mail\SendWelcome;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -17,7 +18,8 @@ class User extends Authenticatable
     public static function createUser(array $data)
     {
         $data['token'] = HelperModel::setUuid();
-        $data['expires_token'] = self::expiresDate();
+        $data['expires_token'] = now()->add('+24 hours');
+        $data['password'] = Str::random(12);
         $user = HelperModel::setData($data, User::class);
         if ($user) {
             Mail::queue(new SendWelcome($user));
@@ -26,11 +28,6 @@ class User extends Authenticatable
             return true;
         }
         return false;
-    }
-
-    private static function expiresDate()
-    {
-        return date('Y-m-d H:i:s', strtotime('+24 hours'));
     }
 
     public static function createOrUpdatePasword(array $data)
@@ -47,8 +44,8 @@ class User extends Authenticatable
     public static function resetPassword(array $data)
     {
         HelperModel::updateData([
-            'password' => '',
-            'expires_token' => self::expiresDate(),
+            'password' => Str::random(12),
+            'expires_token' => now()->add('+24 hours'),
             'token' => HelperModel::setUuid(),
             'is_active' => 0
         ], User::class, ['email' => $data['remail']]);
@@ -60,6 +57,10 @@ class User extends Authenticatable
     public function categories()
     {
         return $this->hasMany(Category::class, 'id', 'user_id');
+    }
+
+    public function payments(){
+        return $this->hasMany(Payment::class,'id','user_id');
     }
 
     public function releases()

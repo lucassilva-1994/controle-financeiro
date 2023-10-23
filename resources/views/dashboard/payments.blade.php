@@ -1,51 +1,48 @@
 @extends('dashboard.layout')
-@section('title', 'Categorias')
+@section('title', 'Forma de pagamento')
 
 @section('content')
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <h1>Categorias</h1>
-            @include("message")
+            <h1>Formas de pagamento</h1>
+            @include('message')
             <div class="card mb-3">
                 <div class="card-header">
-                    <h5>{{ $category ? 'Editar Categoria' : 'Nova Categoria' }}</h5>
+                    <h5>{{ $payment ? 'Editar forma de pagamento' : 'Nova forma de pagamento' }}</h5>
                 </div>
                 <div class="card-body">
-                    <form class="row"  action="{{ $category ? route('category.update') : route('category.create') }}" method="post">
+                    <form class="row" method="post" action="{{ $payment ? route('payment.update',$payment->id) : route('payment.create') }}">
                         @csrf
-                        @if ($category)
-                            <input type="hidden" name="id" value="{{ $category->id }}" />
+                        @if ($payment)
+                            <input type="hidden" name="id" value="{{ $payment->id }}" />
                             @method('put')
-                        @elseif(!$category)
-                            <input type="hidden" name="user_id" value="{{ auth()->user()->id }}" />
+                        @elseif(!$payment)
+                            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" />
                         @endif
                         <div class="col-md-5">
                             <label for="name">Nome</label>
                             <input type="text" class="form-control" id="name" name="name" autocomplete="off"
-                                value="{{ $category ? $category->name : old('name') }}" autofocus />
+                                value="{{ $payment ? $payment->name : old('name') }}" autofocus />
                         </div>
                         <div class="col-md-3">
-                            <label for="type">Tipo:</label>
-                            <select name="type" id="type" class="form-control">
-                                <option value="ENTRADA" {{ $category && $category->type == 'ENTRADA' ? 'selected' : '' }}>
-                                    Entrada</option>
-                                <option value="SAIDA" {{ $category && $category->type == 'SAIDA' ? 'selected' : '' }}>Saída
-                                </option>
-                                <option value="AMBOS" {{ $category && $category->type == 'AMBOS' ? 'selected' : '' }}>
-                                    Ambos
+                            <label for="calculate">Calculável:</label>
+                            <select name="calculate" id="calculate" class="form-control">
+                                <option value="YES" {{ $payment && $payment->calculate == 'YES' ? 'selected' : '' }}>
+                                    SIM</option>
+                                <option value="NO" {{ $payment && $payment->calculate == 'NO' ? 'selected' : '' }}>Não
                                 </option>
                             </select>
                         </div>
-                        <div class="{{ $category ? 'col-md-2' : 'col-md-2' }} d-grid">
+                        <div class="{{ $payment ? 'col-md-2' : 'col-md-2' }} d-grid">
                             <br />
                             <button type="submit" class="btn btn-success">
-                                <i class="bi bi-send-fill"></i> {{ $category ? 'Atualizar' : 'Enviar' }}
+                                <i class="bi bi-send-fill"></i> {{ $payment ? 'Atualizar' : 'Enviar' }}
                             </button>
                         </div>
                         <div class="col-md-2 d-grid">
                             <br />
-                            @if ($category)
-                                <a href="{{ route('category.new') }}" class="btn btn-primary"><i
+                            @if ($payment)
+                                <a href="{{ route('payment.new') }}" class="btn btn-primary"><i
                                         class="bi bi-clipboard-plus"></i> Novo</a>
                             @endif
                         </div>
@@ -54,15 +51,16 @@
             </div>
             <div class="card mb-3">
                 <div class="card-header">
-                    <h5>Suas Categorias</h5>
+                    <h5>Suas formas de pagamento</h5>
                 </div>
+                @if ($payments->isNotEmpty())
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Nome:</th>
-                                    <th>Tipo:</th>
+                                    <th>Calculavél</th>
                                     <th>Criado em:</th>
                                     <th>Atualizado em:</th>
                                     <th>Nº lançamentos:</th>
@@ -70,24 +68,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($categories as $category)
+                                @foreach ($payments as $payment)
                                     <tr>
-                                        <td>{{ $category->name }}</td>
-                                        <td>{{ $category->type }}</td>
-                                        <td>{{ $category->created_at }}</td>
-                                        <td>{{ $category->updated_at }}</td>
-                                        <td>
-                                            <span>
-                                                    {{ $category->releases->count() }}
-                                            </span>
-                                        </td>
+                                        <td>{{ $payment->name }}</td>
+                                        <td>{{ $payment->calculate == 'YES' ? 'SIM' : 'Não' }}</td>
+                                        <td>{{ $payment->created_at }}</td>
+                                        <td>{{ $payment->updated_at }}</td>
+                                        <td>{{ $payment->releases->count() }}</td>
                                         <td class="list-inline">
                                             <span class="list-inline-item  mb-2">
-                                                <a href="{{ route('category.edit', $category->id) }}"
+                                                <a href="{{ route('payment.edit', $payment->id) }}"
                                                     class="btn btn-primary btn-sm"><i class="bi bi-pencil-fill"></i></a>
                                             </span>
                                             <span class="list-inline-item">
-                                                <form action="{{ route('category.delete', $category->id) }}"
+                                                <form action="{{ route('payment.delete', $payment->id) }}"
                                                     method="post">
                                                     @method('delete')
                                                     @csrf
@@ -103,12 +97,17 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <div class="d-flex justify-content-lg-end">
-                        <strong>
-                            {{ $categories->count() }} registros encontrados.
-                        </strong>
+                    <div class="d-flex  justify-content-lg-end">
+                        <strong>{{ $payments->count() }} registros encontrados.</strong>
                     </div>
                 </div>
+                @else
+                    <div class="card-body">
+                        <div>
+                            <h4>Nenhuma forma de pagamento encontrado.</h4>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

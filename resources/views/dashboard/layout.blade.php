@@ -26,13 +26,16 @@
                             <a class="nav-link link-light" href="{{ route('show.release') }}"><i class="bi bi-card-list"></i> Lançamentos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link link-light" href="{{ route('new.release') }}"><i class="bi bi-clipboard-plus-fill"></i> Novo lançamento</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link link-light" href="{{ route('category.new') }}"><i class="bi bi-tags-fill"></i> Categorias</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link link-light"><i class="bi bi-person-circle"></i> {{ session('user') }}</a>
+                            <a class="nav-link link-light" href="{{ route('payment.new') }}"><i class="bi bi-cash-stack"></i> Formas de pagamento</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link link-light" href="{{ route('creditorclient.new') }}"><i class="bi bi-people-fill"></i> Fornecedores/clientes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link link-light"><i class="bi bi-person-circle"></i> {{ auth()->user()->user }}</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link link-light" href="{{ route('user.signout') }}"><i class="bi bi-box-arrow-in-right"></i> Sair</a>
@@ -45,7 +48,7 @@
 </body>
 <script src="{{ url('js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ url('js/jquery-3.6.0.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
 <script src="{{ url('js/jquery.maskMoney.min.js') }}"></script>
 <script src="{{ url('js/financial.js') }}"></script>
-
 </html>

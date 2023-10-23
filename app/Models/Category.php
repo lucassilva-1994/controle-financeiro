@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
+    use SoftDeletes;
     protected $fillable = ["id", "sequence", "name", "type", "user_id"];
     protected $table = "categories";
     protected $keyType = 'string';
@@ -46,14 +48,18 @@ class Category extends Model
         }
     }
 
-    public static function deleteCategory(string $id)
+    public static function forDelete(string $id)
     {
-        self::where('id', $id)->delete();
+        self::whereId($id)->delete();
         return true;
     }
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function releases(){
+        return $this->hasMany(Release::class,'category_id','id');
     }
 }
