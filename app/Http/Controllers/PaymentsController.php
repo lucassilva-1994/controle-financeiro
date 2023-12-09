@@ -10,7 +10,7 @@ class PaymentsController extends Controller
     private function payments(string $id = null){
         //Retornando a soma dos valores do lançamentos vinculado a cada forma de pagamento.
         //Ordenando as formas de pagamentos das que tem mais lançamentos para menos lançamentos.
-        $payments = Payment::withSum('releases','value')->withCount('releases')->orderBy('releases_count','DESC')->whereUserId($this->id())->get();
+        $payments = Payment::with('releases')->withSum('releases','value')->withCount('releases')->orderBy('releases_count','DESC')->whereUserId($this->id())->get();
         $payment = Payment::whereUserIdAndId($this->id(),$id)->first();
         return view('dashboard.payments', compact('payments','payment'));
     }
@@ -24,7 +24,7 @@ class PaymentsController extends Controller
     }
 
     public function create(Request $request){
-        $request->validate(['name' => 'required|between:3,20'],['name.required' => 'O nome é obrigatório.','name.between' => 'O nome precisa ter entre :min a :max caracteres.']);
+        $request->validate(['name' => 'required|between:3,20']);
         if(Payment::createOrUpdate($request->except(['_token','_method']))){
             return $this->redirect("success", "Cadastrado com sucesso.");
         }
@@ -32,7 +32,7 @@ class PaymentsController extends Controller
     }
 
     public function update(Request $request){
-        $request->validate(['name' => 'required|between:3,20'],['name.required' => 'O nome é obrigatório.','name.between' => 'O nome precisa ter entre :min a :max caracteres.']);
+        $request->validate(['name' => 'required|between:3,20']);
         if(Payment::createOrUpdate($request->except(['_token','_method']))){
             return $this->redirect("success","Atualizado com sucesso.");
         }

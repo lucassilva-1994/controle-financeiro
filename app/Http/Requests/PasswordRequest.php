@@ -17,13 +17,4 @@ class PasswordRequest extends FormRequest
             "ccpassword" => "same:cpassword"
         ];
     }
-
-    public function messages()
-    {
-        return [
-            "cpassword.required" => "A senha é obrigatório.",
-            "cpassword.between" => "A senha deve ter entre :min e :max caracteres.",
-            "ccpassword.same" => "As senhas não conferem."
-        ];
-    }
 }

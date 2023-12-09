@@ -15,7 +15,7 @@ class User extends Authenticatable
     public $timestamps = false;
     protected $keyType = 'string';
     public $incrementing = false;
-
+    
     public static function createUser(array $data)
     {
         $data['token'] = HelperModel::setUuid();
@@ -66,5 +66,9 @@ class User extends Authenticatable
     public function releases()
     {
         return $this->hasMany(Release::class);
+    }
+
+    public function creditorsClients(){
+        return $this->hasMany(CreditorClient::class);
     }
 }

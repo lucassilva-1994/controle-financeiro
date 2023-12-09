@@ -11,7 +11,6 @@ class Category extends Model
     public $timestamps = false;
     protected $keyType = 'string';
     public $incrementing = false;
-    protected $with = ['releases'];
 
     public function getCreatedAtAttribute()
     {

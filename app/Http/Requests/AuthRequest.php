@@ -17,13 +17,4 @@ class AuthRequest extends FormRequest
             "password" =>  "required"
         ];
     }
-
-    public function messages(): array
-    {
-        return [
-            "email.required" => "Email é obrigatório",
-            "email.exists" => "Email não cadastrado.",
-            "password.required" => "A senha é obrigatório."
-        ];
-    }
 }

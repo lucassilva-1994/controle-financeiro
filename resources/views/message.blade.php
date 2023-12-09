@@ -1,20 +1,18 @@
 @if (session('success'))
 <div class="alert alert-success">
-    {{ session('success') }}
+    <i class="bi bi-check-circle"></i> {{ session('success') }}
 </div>
 @endif
 
 @if (session('error'))
 <div class="alert alert-danger">
-    {{ session('error') }}
+    <i class="bi bi-x-circle"></i> {{ session('error') }}
 </div>
 @endif
 @if ($errors->any())
 <div class="alert alert-danger">
-    <ol>
         @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
+        <i class="bi bi-x-circle"></i> {{ $error }}<br/>
         @endforeach
-    </ol>
 </div>
 @endif

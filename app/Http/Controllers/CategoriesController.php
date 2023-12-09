@@ -12,7 +12,7 @@ class CategoriesController extends Controller
         $category = Category::whereId($id)->first();
         //Retornando a soma dos valores do lançamentos vinculado a cada categoria.
         //Ordenando as categorias das que tem mais lançamentos para menos lançamentos.
-        $categories = Category::withSum('releases','value')->withCount('releases')->orderBy('releases_count','DESC')->whereUserId($this->id())->get();
+        $categories = Category::with('releases')->withSum('releases','value')->withCount('releases')->orderBy('releases_count','DESC')->whereUserId($this->id())->get();
         return view('dashboard.categories', compact('categories', 'category'));
     }
 
@@ -32,22 +32,18 @@ class CategoriesController extends Controller
 
     public function create(Request $request)
     {
-        $request->validate(
-            ['name' => 'required', 'type' => 'required'],
-            ['name.required' => 'Nome é obrigatório', 'type.required' => 'Tipo é obrigatório.']
-        );
+        $request->validate(['name' => 'required']);
         if (Category::createOrUpdate($request->except('_token'))) {
             return $this->redirect('success','Categoria cadastrada com sucesso.');
         }
-        return $this->redirect('error', 'Falha ao cadastrar categoria');
+        return $this->redirect('error', 'Falha ao cadastrar categoria.');
     }
 
     public function update(Request $request)
     {
-        if (Category::createOrUpdate($request->except('_token', '_method'))){
+        if (Category::createOrUpdate($request->except('_token', '_method')))
             return $this->redirect('success','Categoria atualizada com sucesso.');
-        }
-        return $this->redirect('error','Falha  ao atualizar categoria.');
+        return $this->redirect('error','Falha ao atualizar categoria.');
     }
 
     public function delete(string $id)

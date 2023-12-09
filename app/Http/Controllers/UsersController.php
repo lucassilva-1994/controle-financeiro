@@ -20,7 +20,6 @@ class UsersController extends Controller {
     public function auth(AuthRequest $request) {
         $credentials = $request->only(["email","password"]);
         if (Auth::attempt($credentials)) {
-            $user = User::where('email',$request->email)->first();
             return to_route("new.release");
         }
         return redirect()->back()->with('error','Falha na autenticação');
@@ -56,10 +55,7 @@ class UsersController extends Controller {
     }
 
     public function resetPassword(Request $request){
-        $request->validate(
-            ['remail' => 'required|exists:users,email'],
-            ['remail.required' => 'Email é obrigatório','remail.exists' => 'Email não encontrado.']
-        );
+        $request->validate(['remail' => 'required|exists:users,email']);
         if(User::resetPassword($request->only('remail')))
             return redirect()->back()->with('success', 'Foi enviado um e-mail para alterar sua senha.');
         return redirect()->back()->with('error','Falha ao solicitar redefinição de senha, tente novamente mais tarde.');

@@ -28,7 +28,7 @@ class Release extends Model
     protected $keyType = 'string';
     public $incrementing = false;
     public $timestamps = false;
-    //protected $with = ['user', 'payment', 'category','files','creditorClient'];
+    protected $with = ['payment', 'category','files','creditorClient'];
 
     public function getValueAttribute()
     {

@@ -99,7 +99,7 @@
                                                 <td>{{ date('d/m/Y', strtotime($release->date)) }}</td>
                                                 <td>{{ isset($release->creditorClient) ? $release->creditorClient->name : 'Não informado.' }}
                                                 </td>
-                                                <td>
+                                                <td class="btn-sm">
                                                     <span class="list-inline-item mb-2">
                                                         <a href="{{ route('edit.release', $release->id) }}"
                                                             class="btn btn-primary  btn-sm">

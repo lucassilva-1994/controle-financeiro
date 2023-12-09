@@ -10,7 +10,6 @@ class Payment extends Model
     public $timestamps = false;
     protected $keyType = 'string';
     public $incrementing = false;
-    protected $with = ['releases'];
 
     public function getCreatedAtAttribute(){
         return date('d/m/Y H:i:s', strtotime($this->attributes['created_at']));

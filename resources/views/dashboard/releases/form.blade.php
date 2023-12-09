@@ -6,27 +6,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <h1>Lançamentos</h1>
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ol>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ol>
-                </div>
-            @endif
+            @include('message')
             <div class="card mb-3">
                 <div class="card-header">
                     <h5>{{ $release_id ? 'Editar lançamento' : 'Novo lançamento' }}</h5>
