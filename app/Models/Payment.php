@@ -31,11 +31,18 @@ class Payment extends Model
 
     public static function createUserPayment(string $user_id)
     {
-        $payments = ['Cartão de débito', 'Cartão de crédito', 'Dinheiro', 'Pix', 'Transferência'];
-        foreach ($payments as $payment) {
-            $data['user_id'] = $user_id;
-            $data['name'] = $payment;
-            HelperModel::setData($data, Payment::class);
+        $payments = [
+            ['name' => 'Dinheiro','calculate' => 'YES','user_id' => $user_id],
+            ['name' => 'Cartão de crédito','calculate' => 'NO','user_id' => $user_id],
+            ['name' => 'Cartão de débito','calculate' => 'YES','user_id' => $user_id],
+            ['name' => 'Transferência bancária','calculate' => 'YES','user_id' => $user_id],
+            ['name' => 'Boleto bancário','calculate' => 'YES','user_id' => $user_id],
+            ['name' => 'Pix','calculate' => 'YES','user_id' => $user_id],
+            ['name' => 'Vale alimentação','calculate' => 'YES','user_id' => $user_id],
+            ['name' => 'Débito em conta','calculate' => 'YES','user_id' => $user_id],
+        ];
+        foreach($payments as $payment){
+            HelperModel::setData($payment,Payment::class);
         }
     }
 

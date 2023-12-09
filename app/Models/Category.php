@@ -39,12 +39,26 @@ class Category extends Model
 
     public static function createUserCategory(string $user_id)
     {
-        $categories = Category_default::get();
-        foreach ($categories as $category) {
-            $data['user_id'] = $user_id;
-            $data['name'] = $category->name;
-            $data['type'] = $category->type;
-            HelperModel::setData($data, Category::class);
+        $categories = [
+            ['name' => 'Alimentação', 'type' => 'SAIDA','user_id' => $user_id],
+            ['name' => 'Saúde', 'type' => 'SAIDA','user_id' => $user_id],
+            ['name' => 'Lazer', 'type' => 'SAIDA','user_id' => $user_id],
+            ['name' => 'Academia', 'type' => 'SAIDA','user_id' => $user_id],
+            ['name' => 'Salário', 'type' => 'ENTRADA','user_id' => $user_id],
+            ['name' => 'Fatura cartão de crédito', 'type' => 'SAIDA','user_id' => $user_id],
+            ['name' => 'Combustível', 'type' => 'SAIDA','user_id' => $user_id],
+            ['name' => 'Supermercado', 'type' => 'SAIDA','user_id' => $user_id],
+            ['name' => 'Viagem', 'type' => 'AMBOS','user_id' => $user_id],
+            ['name' => 'Transportes', 'type' => 'AMBOS','user_id' => $user_id],
+            ['name' => 'Casa', 'type' => 'AMBOS','user_id' => $user_id],
+            ['name' => 'Consertos', 'type' => 'AMBOS','user_id' => $user_id],
+            ['name' => 'Vendas', 'type' => 'AMBOS','user_id' => $user_id],
+            ['name' => 'Serviços online', 'type' => 'AMBOS','user_id' => $user_id],
+            ['name' => 'Benefícios', 'type' => 'ENTRADA','user_id' => $user_id],
+            ['name' => 'Outros', 'type' => 'AMBOS','user_id' => $user_id],
+        ];
+        foreach($categories as $category){
+            HelperModel::setData($category,Category::class);
         }
     }
 

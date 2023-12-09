@@ -12,14 +12,20 @@ class UsersSeeder extends Seeder
     public function run()
     {
         for($i=0;$i<100;$i++){
-            $name = fake()->name();
-            HelperModel::setData([
-                'name' => $name,
-                'email' => self::generateEmail($name),
-                'user' => self::generateUserName($name),
-                'password' => '12345678910',
-                'is_active' => 1    
-            ], User::class);
+            $name = fake()->unique()->name();
+            $email = self::generateEmail($name);
+            $user = self::generateUserName($name);
+            $emailVerify = User::whereEmail($email)->first();
+            $userVerify = User::whereUser($user)->first();
+            if(!$emailVerify && !$userVerify){
+                HelperModel::setData([
+                    'name' => $name,
+                    'email' => $email,
+                    'user' => $user,
+                    'password' => '12345678910',
+                    'is_active' => 1    
+                ], User::class);
+            }
         }
     }
 

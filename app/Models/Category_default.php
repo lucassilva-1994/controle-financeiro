@@ -1,9 +1,0 @@
-<?php
-
-namespace App\Models;
-use Illuminate\Database\Eloquent\Model;
-
-class Category_default extends Model
-{
-    protected $table = 'categories_default';
-}

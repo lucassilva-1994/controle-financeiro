@@ -4,60 +4,33 @@ use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\HelperModel;
 use App\Models\User;
-use Illuminate\Support\Arr;
 
 class CategorySeeder extends Seeder {
 
     public function run() {
-        $categories = [
-            "Alimentação",
-            "Saúde",
-            "Lazer",
-            "Academia",
-            "Salário",
-            "Fatura do cartão",
-            "Combustível",
-            "Supermercado",
-            "Escola",
-            "Entretenimento",
-            "Emprestimos",
-            "Viagem",
-            "Doação",
-            "Crediário",
-            "Bonificação",
-            "Investimentos",
-            "Lanches",
-            "Compras online",
-            "Outros",
-            "Consórcio",
-            "Telefone",
-            "Gastos fixos",
-            "Contas mensais",
-            "Transportes",
-            "Vestuário",
-            "Serviços",
-            "Restaurante",
-            "Casa",
-            "Eletrônicos",
-            "Vendas",
-            "Bebidas",
-            "Serviços online",
-            "Água, energia ou internet",
-            "Estética",
-            "Açougue",
-            "Livraria",
-            "Cosméticos",
-            "Medicamentos",
-            "Consertos",
-        ];
+
         $users = User::get();
         foreach($users as $user){
+            $categories = [
+                ['name' => 'Alimentação', 'type' => 'SAIDA','user_id' => $user->id],
+                ['name' => 'Saúde', 'type' => 'SAIDA','user_id' => $user->id],
+                ['name' => 'Lazer', 'type' => 'SAIDA','user_id' => $user->id],
+                ['name' => 'Academia', 'type' => 'SAIDA','user_id' => $user->id],
+                ['name' => 'Salário', 'type' => 'ENTRADA','user_id' => $user->id],
+                ['name' => 'Fatura cartão de crédito', 'type' => 'SAIDA','user_id' => $user->id],
+                ['name' => 'Combustível', 'type' => 'SAIDA','user_id' => $user->id],
+                ['name' => 'Supermercado', 'type' => 'SAIDA','user_id' => $user->id],
+                ['name' => 'Viagem', 'type' => 'AMBOS','user_id' => $user->id],
+                ['name' => 'Transportes', 'type' => 'AMBOS','user_id' => $user->id],
+                ['name' => 'Casa', 'type' => 'AMBOS','user_id' => $user->id],
+                ['name' => 'Consertos', 'type' => 'AMBOS','user_id' => $user->id],
+                ['name' => 'Vendas', 'type' => 'AMBOS','user_id' => $user->id],
+                ['name' => 'Serviços online', 'type' => 'AMBOS','user_id' => $user->id],
+                ['name' => 'Benefícios', 'type' => 'ENTRADA','user_id' => $user->id],
+                ['name' => 'Outros', 'type' => 'AMBOS','user_id' => $user->id],
+            ];
             foreach($categories as $category){
-                HelperModel::setData([
-                    'name' => $category,
-                    'user_id' => $user->id,
-                    'type' => Arr::random(['ENTRADA','SAIDA','AMBOS'])
-                ],Category::class);
+                HelperModel::setData($category,Category::class);
             }
         }
     }
