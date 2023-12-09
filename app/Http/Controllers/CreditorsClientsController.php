@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class CreditorsClientsController extends Controller
 {
     private function creditorsClients(string $id = null){
-        $creditorsClients = CreditorClient::whereUserId($this->id())->oldest('name')->get();
+        $creditorsClients = CreditorClient::withSum('releases','value')->whereUserId($this->id())->oldest('name')->get();
         $creditorClient_id = CreditorClient::whereUserIdAndId($this->id(),$id)->first();
         return view('dashboard.creditorsclients', compact('creditorsClients','creditorClient_id'));
     }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->uuid("token")->nullable();
             $table->dateTime('expires_token')->nullable();
             $table->dateTime('created_at');
-            $table->dateTime('updated_at');
+            $table->dateTime('updated_at')->nullable();
         });
     }
     public function down()

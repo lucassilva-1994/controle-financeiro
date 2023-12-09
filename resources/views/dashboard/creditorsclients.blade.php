@@ -55,25 +55,25 @@
                 @if($creditorsClients->isNotEmpty())
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>Nome:</th>
                                     <th>Tipo: </th>
                                     <th>Criado em:</th>
-                                    <th>Atualizado em:</th>
-                                    <th>Nº lançamentos:</th>
+                                    <th>Lançamentos:</th>
+                                    <th>Valores:</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($creditorsClients as $creditorclient)
-                                    <tr>
+                                    <tr class="text-nowrap">
                                         <td>{{ $creditorclient->name }}</td>
                                         <td>{{ $creditorclient->type }}</td>
                                         <td>{{ $creditorclient->created_at }}</td>
-                                        <td>{{ $creditorclient->updated_at}}</td>
                                         <td>{{ $creditorclient->releases->count() }}</td>
+                                        <td>R$ {{ number_format($creditorclient->releases_sum_value,2,',','.') }}</td>
                                         <td class="list-inline">
                                             <span class="list-inline-item  mb-2">
                                                 <a href="{{ route('creditorclient.edit', $creditorclient->id) }}"

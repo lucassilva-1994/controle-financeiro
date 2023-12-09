@@ -18,7 +18,6 @@ return new class extends Migration
             $table->dateTime('updated_at');
             $table->foreignUuid('release_id')->references('id')->on('releases')->onDelete('cascade');
             $table->foreignUuid('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->softDeletes();
         });
     }
     public function down()

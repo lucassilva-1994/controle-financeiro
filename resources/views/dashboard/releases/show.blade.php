@@ -75,9 +75,9 @@
                                     <strong>Saldo: </strong>
                                     R$ {{ number_format($balance['revenues'] - $balance['expenses'], 2, ',', '.') }}
                             </div>
-                            <table class="table table-hover">
+                            <table class="table table-striped">
                                 <thead>
-                                    <tr>
+                                    <tr class="text-nowrap">
                                         <th>Descrição:</th>
                                         <th>Valor: </th>
                                         <th>Categoria:</th>
@@ -90,7 +90,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($releases as $release)
-                                            <tr>
+                                            <tr  class="text-nowrap">
                                                 <td>{{ $release->description }}</td>
                                                 <td>R$ {{ $release->value }}</td>
                                                 <td>{{ $release->category->name}}</td>
@@ -99,13 +99,12 @@
                                                 <td>{{ date('d/m/Y', strtotime($release->date)) }}</td>
                                                 <td>{{ isset($release->creditorClient) ? $release->creditorClient->name : 'Não informado.' }}
                                                 </td>
-                                                <td class="list-inline col-md-2">
+                                                <td>
                                                     <span class="list-inline-item mb-2">
                                                         <a href="{{ route('edit.release', $release->id) }}"
-                                                            class="btn btn-primary">
+                                                            class="btn btn-primary  btn-sm">
                                                             <i class="bi bi-pencil-fill"></i>
                                                         </a>
-                                                    </span>
                                                     <span class="list-inline-item">
                                                         <form action="{{ route('delete.release', $release->id) }}"
                                                             method="post">
@@ -113,7 +112,7 @@
                                                             @csrf
                                                             <input type="hidden" name="id"
                                                                 value="{{ $release->id }}" />
-                                                            <button type="submit" class="btn btn-danger"><i
+                                                            <button type="submit" class="btn btn-danger btn-sm"><i
                                                                     class="bi bi-trash-fill"></i></button>
                                                         </form>
                                                     </span>

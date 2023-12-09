@@ -56,25 +56,25 @@
                 @if ($payments->isNotEmpty())
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>Nome:</th>
                                     <th>Calculavél</th>
                                     <th>Criado em:</th>
-                                    <th>Atualizado em:</th>
-                                    <th>Nº lançamentos:</th>
+                                    <th>Lançamentos:</th>
+                                    <th>Valores:</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($payments as $payment)
-                                    <tr>
+                                    <tr class="text-nowrap">
                                         <td>{{ $payment->name }}</td>
-                                        <td>{{ $payment->calculate == 'YES' ? 'SIM' : 'Não' }}</td>
+                                        <td>{{ $payment->calculate == 'YES' ? 'SIM' : 'NÃO' }}</td>
                                         <td>{{ $payment->created_at }}</td>
-                                        <td>{{ $payment->updated_at }}</td>
                                         <td>{{ $payment->releases->count() }}</td>
+                                        <td>R$ {{ number_format($payment->releases_sum_value,2,',','.') }}</td>
                                         <td class="list-inline">
                                             <span class="list-inline-item  mb-2">
                                                 <a href="{{ route('payment.edit', $payment->id) }}"

@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class PaymentsController extends Controller
 {
     private function payments(string $id = null){
-        $payments = Payment::whereUserId($this->id())->get();
+        //Retornando a soma dos valores do lançamentos vinculado a cada forma de pagamento.
+        //Ordenando as formas de pagamentos das que tem mais lançamentos para menos lançamentos.
+        $payments = Payment::withSum('releases','value')->withCount('releases')->orderBy('releases_count','DESC')->whereUserId($this->id())->get();
         $payment = Payment::whereUserIdAndId($this->id(),$id)->first();
         return view('dashboard.payments', compact('payments','payment'));
     }

@@ -2,12 +2,10 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class File extends Model
 {
-    use SoftDeletes;
-    protected $table= "files";
+    protected $table= 'files';
     protected $fillable = ['id','sequence','name','path','user_id','release_id'];
 
     public static function createFiles(array $data, string $release_id, string $user_id, $file){

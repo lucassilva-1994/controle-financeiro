@@ -14,9 +14,8 @@ return new class extends Migration
             $table->string("name",100);
             $table->enum("type",["ENTRADA","SAIDA","AMBOS"]);
             $table->dateTime("created_at");
-            $table->dateTime("updated_at");
+            $table->dateTime("updated_at")->nullable();
             $table->foreignUuid("user_id")->references("id")->on("users")->onDelete("cascade");
-            $table->softDeletes();
         });
     }
     public function down()

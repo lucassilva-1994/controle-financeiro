@@ -3,11 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 
 class Release extends Model
 {
-    use SoftDeletes;
     protected $fillable = [
         'id',
         'sequence',
@@ -21,17 +20,19 @@ class Release extends Model
         'status_pay',
         'category_id',
         'payment_id',
-        'creditorsclients_id'
+        'creditorsclients_id',
+        'created_at',
+        'updated_at'
     ];
-    protected $table = "releases";
+    protected $table = 'releases';
     protected $keyType = 'string';
     public $incrementing = false;
-    //Carregar a model já com os relacionamentos.
-    protected $with = ['user', 'payment', 'category','files','creditorClient'];
+    public $timestamps = false;
+    //protected $with = ['user', 'payment', 'category','files','creditorClient'];
 
     public function getValueAttribute()
     {
-        return number_format($this->attributes['value'], 2, ",", ".");
+        return number_format($this->attributes['value'], 2, ',', '.');
     }
 
     public static function createOrUpdate(array $data)
@@ -62,8 +63,8 @@ class Release extends Model
 
     private static function formatCurrency($value)
     {
-        $value = str_replace(['R$ ', ".", ','], ["", "", "."], $value);
-        $value = number_format("" . $value, 2, ".", "");
+        $value = str_replace(['R$ ', '.', ','], ['', '', '.'], $value);
+        $value = number_format('' . $value, 2, '.', '');
         return $value;
     }
 
@@ -74,17 +75,15 @@ class Release extends Model
     }
 
     public static function whereLike(string $words){
-        $releases = Release::leftJoin('payments','releases.payment_id','=','payments.id')
-        ->leftJoin('categories','releases.category_id','=','categories.id')
-        ->leftJoin('creditorsclients','releases.creditorsclients_id','=','creditorsclients.id')
-        ->select('releases.*')
-        ->orWhere('payments.name','like',"%$words%")
-        ->orWhere('categories.name','like',"%$words%")
-        ->orWhere('creditorsclients.name','like',"%$words%")
-        ->orWhere('creditorsclients.type','like',"%$words%")
-        ->orWhere('releases.description','like',"%$words%")
-        ->orWhere('releases.type','like',"%$words%")
-        ->orWhere('releases.details','like',"%$words%")
+        $releases = Release::where('type','like',"%{$words}%")
+        ->orWhere('status_pay','like',"%{$words}%")
+        ->orWhere('description','like',"%{$words}%")
+        ->orWhereHas('payment', function(Builder $query) use ($words){
+            $query->where('name','like', "%{$words}%");
+        })
+        ->orWhereHas('category', function(Builder $query) use ($words){
+            $query->where('name','like', "%{$words}%");
+        })
         ->latest('date')
         ->paginate(10);
         return $releases;
@@ -92,12 +91,12 @@ class Release extends Model
 
     public function category()
     {
-        return $this->hasOne(Category::class,'id','category_id')->withTrashed();
+        return $this->hasOne(Category::class,'id','category_id');
     }
 
     public function payment()
     {
-        return $this->hasOne(Payment::class,'id','payment_id')->withTrashed();
+        return $this->hasOne(Payment::class,'id','payment_id');
     }
 
     public function user()
@@ -106,10 +105,19 @@ class Release extends Model
     }
 
     public function creditorClient(){
-        return $this->hasOne(CreditorClient::class,'id','creditorsclients_id')->withTrashed();
+        return $this->hasOne(CreditorClient::class,'id','creditorsclients_id');
     }
 
     public function files(){
         return $this->hasMany(File::class,'release_id','id');
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('users', function (Builder $builder) {
+            if(auth()->check()){
+                $builder->where('user_id', '=', auth()->user()->id);
+            }
+        });
     }
 }

@@ -6,18 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private $table = "payments";
+    private $table = 'payments';
     public function up()
     {
         Schema::create($this->table, function (Blueprint $table) {
-            $table->uuid("id")->primary();
-            $table->bigInteger("sequence");
-            $table->string("name");
+            $table->uuid('id')->primary();
+            $table->bigInteger('sequence');
+            $table->string('name');
             $table->enum('calculate',['YES','NO']);
-            $table->dateTime("created_at");
-            $table->dateTime("updated_at");
-            $table->foreignUuid("user_id")->references("id")->on("users")->onDelete("cascade");
-            $table->softDeletes();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at')->nullable();
+            $table->foreignUuid('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -2,11 +2,14 @@
 namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
+use App\Models\HelperModel;
+use App\Models\User;
+use Illuminate\Support\Arr;
 
 class CategorySeeder extends Seeder {
 
     public function run() {
-        $names = [
+        $categories = [
             "Alimentação",
             "Saúde",
             "Lazer",
@@ -47,10 +50,15 @@ class CategorySeeder extends Seeder {
             "Medicamentos",
             "Consertos",
         ];
-        foreach ($names as $name) {
-            Category::create([
-                'name' => $name
-            ]);
+        $users = User::get();
+        foreach($users as $user){
+            foreach($categories as $category){
+                HelperModel::setData([
+                    'name' => $category,
+                    'user_id' => $user->id,
+                    'type' => Arr::random(['ENTRADA','SAIDA','AMBOS'])
+                ],Category::class);
+            }
         }
     }
 }

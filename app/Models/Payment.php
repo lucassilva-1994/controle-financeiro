@@ -2,15 +2,15 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
 {
-    use SoftDeletes;
-    protected $fillable = ['id','sequence','user_id','name','calculate'];
-    protected $table = "payments";
+    protected $fillable = ['id','sequence','user_id','name','calculate','created_at','updated_at'];
+    protected $table = 'payments';
+    public $timestamps = false;
     protected $keyType = 'string';
     public $incrementing = false;
+    protected $with = ['releases'];
 
     public function getCreatedAtAttribute(){
         return date('d/m/Y H:i:s', strtotime($this->attributes['created_at']));
@@ -31,7 +31,7 @@ class Payment extends Model
 
     public static function createUserPayment(string $user_id)
     {
-        $payments = ["Cartão de débito", "Cartão de crédito", "Dinheiro", "Pix", "Transferência"];
+        $payments = ['Cartão de débito', 'Cartão de crédito', 'Dinheiro', 'Pix', 'Transferência'];
         foreach ($payments as $payment) {
             $data['user_id'] = $user_id;
             $data['name'] = $payment;

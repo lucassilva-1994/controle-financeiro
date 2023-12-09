@@ -58,29 +58,25 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-striped">
                             <thead>
-                                <tr>
+                                <tr class="text-nowrap">
                                     <th>Nome:</th>
                                     <th>Tipo:</th>
                                     <th>Criado em:</th>
-                                    <th>Atualizado em:</th>
-                                    <th>Nº lançamentos:</th>
-                                    <th>Ações</th>
+                                    <th>Lançamentos:</th>
+                                    <th>Valores:</th>
+                                    <th>Ações:</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($categories as $category)
-                                    <tr>
+                                    <tr  class="text-nowrap">
                                         <td>{{ $category->name }}</td>
                                         <td>{{ $category->type }}</td>
                                         <td>{{ $category->created_at }}</td>
-                                        <td>{{ $category->updated_at }}</td>
-                                        <td>
-                                            <span>
-                                                    {{ $category->releases->count() }}
-                                            </span>
-                                        </td>
+                                        <td>{{ $category->releases->count() }}</td>
+                                        <td>R$ {{ number_format($category->releases_sum_value,2,',','.') }}</td>
                                         <td class="list-inline">
                                             <span class="list-inline-item  mb-2">
                                                 <a href="{{ route('category.edit', $category->id) }}"

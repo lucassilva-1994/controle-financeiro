@@ -10,8 +10,8 @@ class HelperModel extends Model
             $data['id'] = self::setUuid();
             $data['sequence'] = self::setSequence($model);
             $data['created_at'] = now();
-            if(isset($data['updated_at'])){
-                $data['updated_at'] = now();
+            if(isset($data['password'])){
+                $data['password'] = bcrypt($data['password']);
             }
             return $model::create($data);
     }
@@ -25,7 +25,7 @@ class HelperModel extends Model
         return Uuid::uuid4();
     }
 
-    public static function setSequence($model){
+    private static function setSequence($model){
         $result = $model::latest('sequence')->first();
         return $result ? $result->sequence += 1 : 1;
     }

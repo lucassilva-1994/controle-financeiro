@@ -10,8 +10,9 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    protected $fillable = ['id', 'sequence', 'name', 'email', 'user', 'password', 'token', 'expires_token'];
-    protected $table = "users";
+    protected $fillable = ['id', 'sequence', 'name', 'email', 'user', 'password', 'token', 'expires_token','created_at','updated_at'];
+    protected $table = 'users';
+    public $timestamps = false;
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -19,7 +20,6 @@ class User extends Authenticatable
     {
         $data['token'] = HelperModel::setUuid();
         $data['expires_token'] = now()->add('+24 hours');
-        $data['password'] = Str::random(12);
         $user = HelperModel::setData($data, User::class);
         if ($user) {
             Mail::queue(new SendWelcome($user));
@@ -56,20 +56,15 @@ class User extends Authenticatable
 
     public function categories()
     {
-        return $this->hasMany(Category::class, 'id', 'user_id');
+        return $this->hasMany(Category::class);
     }
 
     public function payments(){
-        return $this->hasMany(Payment::class,'id','user_id');
+        return $this->hasMany(Payment::class);
     }
 
     public function releases()
     {
-        return $this->hasMany(Release::class, 'id', 'user_id');
-    }
-
-    public function accesses()
-    {
-        return $this->hasMany(Access::class, 'id', 'user_id');
+        return $this->hasMany(Release::class);
     }
 }

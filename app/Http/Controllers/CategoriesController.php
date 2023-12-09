@@ -10,7 +10,9 @@ class CategoriesController extends Controller
     private function categories(string $id = null)
     {
         $category = Category::whereId($id)->first();
-        $categories = Category::whereUserId($this->id())->get();
+        //Retornando a soma dos valores do lançamentos vinculado a cada categoria.
+        //Ordenando as categorias das que tem mais lançamentos para menos lançamentos.
+        $categories = Category::withSum('releases','value')->withCount('releases')->orderBy('releases_count','DESC')->whereUserId($this->id())->get();
         return view('dashboard.categories', compact('categories', 'category'));
     }
 

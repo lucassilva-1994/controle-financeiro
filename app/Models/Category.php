@@ -3,24 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use SoftDeletes;
-    protected $fillable = ["id", "sequence", "name", "type", "user_id"];
-    protected $table = "categories";
+    protected $fillable = ['id', 'sequence', 'name', 'type', 'user_id','created_at','updated_at'];
+    protected $table = 'categories';
+    public $timestamps = false;
     protected $keyType = 'string';
     public $incrementing = false;
+    protected $with = ['releases'];
 
     public function getCreatedAtAttribute()
     {
-        return date("d/m/Y H:i:s", strtotime($this->attributes['created_at']));
+        return date('d/m/Y H:i:s', strtotime($this->attributes['created_at']));
     }
 
     public function getUpdatedAtAttribute()
     {
-        return date("d/m/Y H:i:s", strtotime($this->attributes['updated_at']));
+        return date('d/m/Y H:i:s', strtotime($this->attributes['updated_at']));
     }
 
     public static function createOrUpdate(array $data)

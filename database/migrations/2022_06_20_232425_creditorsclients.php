@@ -13,11 +13,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->bigInteger('sequence');
             $table->string('name');
-            $table->enum("type",["CLIENTE","FORNECEDOR","AMBOS"]);
+            $table->enum('type',['CLIENTE','FORNECEDOR','AMBOS']);
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
             $table->foreignUuid('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->softDeletes();
         });
     }
     public function down()
