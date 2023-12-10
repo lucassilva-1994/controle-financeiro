@@ -12,5 +12,6 @@ class DatabaseSeeder extends Seeder
             PaymentsSeeder::class,
             ReleasesSeeder::class
         ]);
+        
     }
 }

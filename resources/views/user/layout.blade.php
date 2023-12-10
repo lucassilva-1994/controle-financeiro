@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="{{url('css/bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{env('APP_URL').'css/bootstrap.min.css'}}" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
         <title>@yield('title','Controle financeiro')</title>
     </head>
@@ -20,8 +20,8 @@
                 </div>
             </div>
         </div>
-        <script src="{{url('js/bootstrap.bundle.min.js')}}"></script>
-        <script src="{{url('js/financial.js')}}"></script>
+        <script src="{{env('APP_URL').'js/bootstrap.bundle.min.js'}}"></script>
+        <script src="{{env('APP_URL').'js/financial.js'}}"></script>
     </body>
 </html>
 

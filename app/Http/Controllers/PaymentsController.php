@@ -26,17 +26,17 @@ class PaymentsController extends Controller
     public function create(Request $request){
         $request->validate(['name' => 'required|between:3,20']);
         if(Payment::createOrUpdate($request->except(['_token','_method']))){
-            return $this->redirect("success", "Cadastrado com sucesso.");
+            return $this->redirect('success', 'Cadastrado com sucesso.');
         }
-        return $this->redirect("error", "Falha ao cadastrar.");
+        return $this->redirect('error', 'Falha ao cadastrar.');
     }
 
     public function update(Request $request){
         $request->validate(['name' => 'required|between:3,20']);
         if(Payment::createOrUpdate($request->except(['_token','_method']))){
-            return $this->redirect("success","Atualizado com sucesso.");
+            return $this->redirect('success','Atualizado com sucesso.');
         }
-        return $this->redirect("error","Falha ao atualizar.");
+        return $this->redirect('error','Falha ao atualizar.');
     }
 
     private function redirect($classCss, $message){
@@ -45,9 +45,9 @@ class PaymentsController extends Controller
 
     public function delete(string $id){
         if(Payment::forDelete($id)){
-         return $this->redirect("success","Removido com sucesso.");
+         return $this->redirect('success','Removido com sucesso.');
         }
-        return $this->redirect("error","Falha ao remover.");
+        return $this->redirect('error','Falha ao remover.');
     }
 
     private function id(){

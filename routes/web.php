@@ -35,6 +35,11 @@ Route::middleware('auth')->group(function () {
         Route::put('creditorclient/update/{id}','update')->name('creditorclient.update');
         Route::delete('creditorclient/delete/{id}','delete')->name('creditorclient.delete');
     });
+
+    Route::controller(FilesController::class)->group(function(){
+        Route::get('file/delete/{id}','delete')->name('file.delete');
+        Route::get('file/download/{id}','download')->name('file.download');
+    });
 });
 
 Route::controller(UsersController::class)->group(function () {

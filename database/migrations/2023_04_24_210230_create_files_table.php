@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('name',100);
             $table->string('path',200);
             $table->dateTime('created_at');
-            $table->dateTime('updated_at');
+            $table->dateTime('updated_at')->nullable();
             $table->foreignUuid('release_id')->references('id')->on('releases')->onDelete('cascade');
             $table->foreignUuid('user_id')->references('id')->on('users')->onDelete('cascade');
         });

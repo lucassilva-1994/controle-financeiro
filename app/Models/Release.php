@@ -28,7 +28,6 @@ class Release extends Model
     protected $keyType = 'string';
     public $incrementing = false;
     public $timestamps = false;
-    protected $with = ['payment', 'category','files','creditorClient'];
 
     public function getValueAttribute()
     {
@@ -75,7 +74,7 @@ class Release extends Model
     }
 
     public static function whereLike(string $words){
-        $releases = Release::where('type','like',"%{$words}%")
+        $releases = Release::with('payment','category','creditorClient')->where('type','like',"%{$words}%")
         ->orWhere('status_pay','like',"%{$words}%")
         ->orWhere('description','like',"%{$words}%")
         ->orWhereHas('payment', function(Builder $query) use ($words){

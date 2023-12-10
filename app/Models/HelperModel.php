@@ -26,7 +26,7 @@ class HelperModel extends Model
     }
 
     private static function setSequence($model){
-        $result = $model::latest('sequence')->first();
+        $result = $model::withoutGlobalScope('users')->latest('sequence')->first();
         return $result ? $result->sequence += 1 : 1;
     }
 }

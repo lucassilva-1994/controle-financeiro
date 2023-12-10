@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ReleaseRequest;
 use App\Models\Category;
 use App\Models\CreditorClient;
+use App\Models\File;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Models\Release;
+use Illuminate\Support\Facades\Storage;
 
 class ReleasesController extends Controller
 {
@@ -30,13 +32,13 @@ class ReleasesController extends Controller
         if($request->words && Release::whereUserId($this->id())->first()){
             $releases = Release::whereLike($request->words);
             $balance = $this->calculate($releases);
-            $releases_total = Release::whereUserId($this->id())->get();
+            $releases_total = Release::with('payment','category','creditorClient')->whereUserId($this->id())->get();
             $balance_total = $this->calculate($releases_total);
             return view('dashboard.releases.show', compact('releases','balance','balance_total','releases_total'));
         }
-        $releases = Release::whereUserId($this->id())->latest('date')->paginate(10);
+        $releases = Release::with('payment','category','creditorClient')->whereUserId($this->id())->latest('date')->paginate(10);
         $balance = $this->calculate($releases);
-        $releases_total = Release::whereUserId($this->id())->get();
+        $releases_total = Release::with('payment','category','creditorClient')->whereUserId($this->id())->get();
         $balance_total = $this->calculate($releases_total);
         return view('dashboard.releases.show', compact('releases','balance','balance_total','releases_total'));
     }
@@ -80,8 +82,14 @@ class ReleasesController extends Controller
 
     public function delete(string $id)
     {
+        $release = Release::find($id);
+        $files = File::whereReleaseId($release->id)->get();
+        if($files){
+            foreach($files as $file)
+                Storage::delete($file->path);
+        }
         if (Release::forDelete($id)) :
-            return redirect()->back()->with('success', 'Lançamento removido com sucesso');
+            return redirect()->back()->with('success', 'Lançamento removido com sucesso.');
         else :
             return redirect()->back()->with('error', 'Falha ao remover registro.');
         endif;

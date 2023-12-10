@@ -18,8 +18,7 @@ class ReleaseRequest extends FormRequest
             'value' => 'required',
             'date' => 'required|date',
             'type' => 'required',
-            'category_id' => 'required',
-            'files' => 'nullable|mimes:png,jpg,pdf'
+            'category_id' => 'required'
         ];
     }
 }

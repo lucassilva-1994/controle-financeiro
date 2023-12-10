@@ -58,8 +58,7 @@
                                 <option value="ENTRADA"
                                     {{ $release_id && $release_id->type == 'ENTRADA' ? 'selected' : '' }}>ENTRADA
                                 </option>
-                                <option value="SAIDA"
-                                    {{ $release_id && $release_id->type == 'SAIDA' ? 'selected' : '' }}>
+                                <option value="SAIDA" {{ $release_id && $release_id->type == 'SAIDA' ? 'selected' : '' }}>
                                     SAIDA</option>
                             </select>
                         </div>
@@ -111,13 +110,31 @@
                         </div>
                         @if ($release_id)
                             <div class="col-md-4 d-grid">
-                                <br/>
-                                <a href="{{ route('new.release') }}" class="btn btn-primary"><i class="bi bi-clipboard-plus-fill"></i> Novo</a>
+                                <br />
+                                <a href="{{ route('new.release') }}" class="btn btn-primary"><i
+                                        class="bi bi-clipboard-plus-fill"></i> Novo</a>
                             </div>
                         @endif
                     </form>
                 </div>
             </div>
+            @if ($release_id && $release_id->files->count())
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Arquivos ({{ $release_id->files->count() }})</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach ($release_id->files as $file)
+                            <div class="btn-group  btn-group-sm m-1">
+                                <a href="{{ env('APP_URL_FILES') . $file->path }}" target="_blank"
+                                    class="btn btn-outline-primary">{{ $file->name }}</a>
+                                <a href="{{ route('file.delete',$file->id) }}" class="btn btn-danger">Excluir</a>
+                                <a href="{{ route('file.download',$file->id) }}" class="btn btn-primary">Baixar</a>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
             @if ($releases->isNotEmpty())
                 <div class="card mb-3">
@@ -141,7 +158,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($releases as $release)
-                                        <tr>
+                                        <tr class="text-nowrap">
                                             <td>{{ $release->description }}</td>
                                             <td>R$ {{ $release->value }}</td>
                                             <td>{{ $release->category->name }}</td>
@@ -153,7 +170,7 @@
                                             <td class="list-inline">
                                                 <span class="list-inline-item mb-2">
                                                     <a href="{{ route('edit.release', $release->id) }}"
-                                                        class="btn btn-primary">
+                                                        class="btn btn-primary btn-sm">
                                                         <i class="bi bi-pencil-fill"></i>
                                                     </a>
                                                 </span>
@@ -164,7 +181,7 @@
                                                         @csrf
                                                         <input type="hidden" name="id"
                                                             value="{{ $release->id }}" />
-                                                        <button type="submit" class="btn btn-danger"><i
+                                                        <button type="submit" class="btn btn-danger btn-sm"><i
                                                                 class="bi bi-trash-fill"></i></button>
                                                     </form>
                                                 </span>

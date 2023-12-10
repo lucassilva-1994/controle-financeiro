@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Refresh" content="600" />
-    <link href="{{ url('css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link href="{{ env('APP_URL').'css/bootstrap.min.css' }}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" />
 
 
@@ -46,9 +46,9 @@
     </nav>
     <div class="container mt-3">@yield('content')</div>
 </body>
-<script src="{{ url('js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ url('js/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ env('APP_URL').'js/bootstrap.bundle.min.js' }}"></script>
+<script src="{{ env('APP_URL').'js/jquery-3.6.0.min.js' }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
-<script src="{{ url('js/jquery.maskMoney.min.js') }}"></script>
-<script src="{{ url('js/financial.js') }}"></script>
+<script src="{{ env('APP_URL').'js/jquery.maskMoney.min.js' }}"></script>
+<script src="{{ env('APP_URL').'js/financial.js' }}"></script>
 </html>
