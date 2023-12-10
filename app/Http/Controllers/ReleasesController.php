@@ -48,8 +48,8 @@ class ReleasesController extends Controller
         $categories = $this->getListCategories();
         $payments = $this->getListPayments();
         $creditorsClients = $this->getListCreditosClients();
-        $releases = Release::whereUserId($this->id())->latest('date')->limit(5)->get();
-        $release_id = Release::whereId($id)->first();
+        $releases = Release::with('payment','category','creditorClient')->whereUserId($this->id())->latest('date')->limit(5)->get();
+        $release_id = Release::with('payment','category')->whereId($id)->first();
         return view("dashboard.releases.form", compact('categories', 'payments', 'releases', 'release_id','creditorsClients'));
     }
 

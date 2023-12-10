@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 class File extends Model
 {
     protected $table= 'files';
-    protected $fillable = ['id','sequence','name','path','user_id','release_id','created_at','updated_at'];
+    protected $fillable = ['id','sequence','name','path','user_id','release_id','created_at'];
     public $timestamps = false;
     protected $keyType = 'string';
 

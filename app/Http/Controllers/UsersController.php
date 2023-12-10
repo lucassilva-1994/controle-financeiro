@@ -14,23 +14,23 @@ class UsersController extends Controller {
         if(Auth::user()){
             return to_route('show.release');
         }
-        return view("user.signin");
+        return view('user.signin');
     }
 
     public function auth(AuthRequest $request) {
-        $credentials = $request->only(["email","password"]);
+        $credentials = $request->only(['email','password']);
         if (Auth::attempt($credentials)) {
-            return to_route("new.release");
+            return to_route('new.release');
         }
         return redirect()->back()->with('error','Falha na autenticação');
     }
 
     public function signUp() {
-        return view("user.signup");
+        return view('user.signup');
     }
 
     public function create(UserRequest $request) {
-        if(User::createUser($request->only(['name','email','user'])))
+        if(User::createUser($request->only(['name','email','username'])))
             return redirect()->back()->with('success','Usuário cadastrado com sucesso.');
         return redirect()->back()->with('error','Falha ao registrar usuário.');
     }
@@ -50,7 +50,7 @@ class UsersController extends Controller {
 
     public function savePassword(PasswordRequest $request){
         if(User::createOrUpdatePasword($request->only(['cpassword','token'])))
-            return to_route('user.signin')->with('success', "Senha configurada com sucesso.");
+            return to_route('user.signin')->with('success', 'Senha configurada com sucesso.');
         return redirect()->back()->with('error','Falha ao configurar senha.');
     }
 

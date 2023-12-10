@@ -35,7 +35,7 @@
                             <a class="nav-link link-light" href="{{ route('creditorclient.new') }}"><i class="bi bi-people-fill"></i> Fornecedores/clientes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link link-light"><i class="bi bi-person-circle"></i> {{ auth()->user()->user }}</a>
+                            <a class="nav-link link-light"><i class="bi bi-person-circle"></i> {{ auth()->user()->username }}</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link link-light" href="{{ route('user.signout') }}"><i class="bi bi-box-arrow-in-right"></i> Sair</a>

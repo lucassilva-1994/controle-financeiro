@@ -16,14 +16,14 @@ class UsersSeeder extends Seeder
             $email = self::generateEmail($name);
             $user = self::generateUserName($name);
             $emailVerify = User::whereEmail($email)->first();
-            $userVerify = User::whereUser($user)->first();
-            if(!$emailVerify && !$userVerify){
+            $usernameVerify = User::where('username',$user)->first();
+            if(!$emailVerify && !$usernameVerify){
                 HelperModel::setData([
                     'name' => $name,
                     'email' => $email,
-                    'user' => $user,
+                    'username' => $user,
                     'password' => '12345678910',
-                    'is_active' => 1    
+                    'active' => 1    
                 ], User::class);
             }
         }

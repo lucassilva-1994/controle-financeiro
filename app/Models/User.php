@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    protected $fillable = ['id', 'sequence', 'name', 'email', 'user', 'password', 'token', 'expires_token','created_at','updated_at'];
+    protected $fillable = ['id', 'sequence', 'name', 'email', 'username', 'password', 'token', 'expires_token','created_at','updated_at'];
     protected $table = 'users';
     public $timestamps = false;
     protected $keyType = 'string';
@@ -36,7 +36,7 @@ class User extends Authenticatable
             'password' => bcrypt($data['cpassword']),
             'expires_token' => null,
             'token' => null,
-            'is_active' => 1
+            'active' => 1
         ], User::class, ['token' => $data['token']]);
         return true;
     }
@@ -47,7 +47,7 @@ class User extends Authenticatable
             'password' => Str::random(12),
             'expires_token' => now()->add('+24 hours'),
             'token' => HelperModel::setUuid(),
-            'is_active' => 0
+            'active' => 0
         ], User::class, ['email' => $data['remail']]);
         $user = User::where('email', $data['remail'])->first();
         Mail::queue(new SendResetPassword($user));

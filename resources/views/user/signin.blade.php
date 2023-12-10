@@ -80,8 +80,8 @@
                         </div>
                         <div class="col-md-12 mb-2">
                             <label for="user">Usuário:</label>
-                            <input type="user" class="form-control" placeholder="Usuário de acesso"
-                                autocomplete="off" value="{{ old('user') }}" id="user" name="user" />
+                            <input type="username" class="form-control" placeholder="Usuário de acesso"
+                                autocomplete="off" value="{{ old('username') }}" id="username" name="username" />
                         </div>
                         <div class="col-md-12 mb-2">
                             <label for="email">Email:</label>

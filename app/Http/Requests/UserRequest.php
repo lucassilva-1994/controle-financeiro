@@ -12,7 +12,7 @@ class UserRequest extends FormRequest {
     public function rules() {
         return [
             'name' => 'required|max:100',
-            'user' => 'required|max:30|min:05|unique:users',
+            'username' => 'required|max:30|min:05|unique:users',
             'email' => 'required| max:100|unique:users|email:rfc,dns',
         ];
     }
