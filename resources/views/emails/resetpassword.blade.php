@@ -3,4 +3,4 @@
     link expira em 24 horas, caso você acesse após 24 horas você deverá solicitar
     um novo reset de senha.
 </p>
-<p><a href="{{ env('APP_URL').'/user/createpassword/'.$token }}">Resetar senha</a></p>
+<p><a href="{{ env('APP_URL').'user/createpassword/'.$token }}">Resetar senha</a></p>
