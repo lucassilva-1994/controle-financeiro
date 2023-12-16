@@ -2,13 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\HelperModel;
+use App\Helpers\Model;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 
 class UsersSeeder extends Seeder
 {
+    use Model;
     public function run()
     {
         for($i=0;$i<10;$i++){
@@ -18,7 +19,7 @@ class UsersSeeder extends Seeder
             $emailVerify = User::whereEmail($email)->first();
             $usernameVerify = User::where('username',$user)->first();
             if(!$emailVerify && !$usernameVerify){
-                HelperModel::setData([
+               self::setData([
                     'name' => $name,
                     'email' => $email,
                     'username' => $user,

@@ -2,13 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\HelperModel;
+use App\Helpers\Model;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class PaymentsSeeder extends Seeder
 {
+    use Model;
     public function run()
     {
         $users = User::get();
@@ -24,7 +25,7 @@ class PaymentsSeeder extends Seeder
                 ['name' => 'Débito em conta','calculate' => 'YES','user_id' => $user->id],
             ];
             foreach($payments as $payment){
-                HelperModel::setData($payment,Payment::class);
+                self::setData($payment,Payment::class);
             }
         }
     }

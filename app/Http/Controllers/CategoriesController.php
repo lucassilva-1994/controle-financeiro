@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
+use App\Helpers\Model;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoriesController extends Controller
 {
+    use Model;
+    use Helper;
     private function categories(string $id = null)
     {
         $category = Category::whereId($id)->first();
@@ -26,32 +30,28 @@ class CategoriesController extends Controller
         return $this->categories($id);
     }
 
-    private function redirect($session, $message){
-        return redirect()->back()->with($session,$message);
-    }
-
     public function create(Request $request)
     {
         $request->validate(['name' => 'required']);
-        if (Category::createOrUpdate($request->except('_token'))) {
-            return $this->redirect('success','Categoria cadastrada com sucesso.');
+        if (self::setData($request->except('_token'),Category::class)) {
+            return self::redirect('success','criado');
         }
-        return $this->redirect('error', 'Falha ao cadastrar categoria.');
+        return self::redirect('error','criar');
     }
 
     public function update(Request $request)
     {
-        if (Category::createOrUpdate($request->except('_token', '_method')))
-            return $this->redirect('success','Categoria atualizada com sucesso.');
-        return $this->redirect('error','Falha ao atualizar categoria.');
+        if (self::updateData($request->except('id','_token', '_method'),Category::class,['id' => $request->id]))
+            return self::redirect('success','atualizado');
+        return self::redirect('error','atualizar');
     }
 
     public function delete(string $id)
     {
-        if (Category::forDelete($id)){
-            return $this->redirect('success','Registro removido com sucesso.');
+        if (Category::find($id)->delete()){
+            return self::redirect('success','excluido');
         }
-        return $this->redirect('error','Falha ao remover registro.');
+        return self::redirect('error','excluir');
     }
 
     private function id()

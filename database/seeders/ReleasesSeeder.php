@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\HelperModel;
+use App\Helpers\Model;
 use App\Models\Release;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -10,12 +10,13 @@ use Illuminate\Support\Arr;
 
 class ReleasesSeeder extends Seeder
 {
+    use Model;
     public function run()
     {
           $users = User::get();
           foreach($users as $user){
             foreach(self::descriptions() as $description){
-                HelperModel::setData([
+                self::setData([
                     'description' => $description,
                     'value' => fake()->randomFloat(2,10,1500),
                     'date' => fake()->date(),

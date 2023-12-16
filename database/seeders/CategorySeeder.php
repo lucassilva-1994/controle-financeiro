@@ -1,12 +1,14 @@
 <?php
 namespace Database\Seeders;
+
+use App\Helpers\Model;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
-use App\Models\HelperModel;
 use App\Models\User;
 
 class CategorySeeder extends Seeder {
 
+    use Model;
     public function run() {
 
         $users = User::get();
@@ -30,7 +32,7 @@ class CategorySeeder extends Seeder {
                 ['name' => 'Outros', 'type' => 'AMBOS','user_id' => $user->id],
             ];
             foreach($categories as $category){
-                HelperModel::setData($category,Category::class);
+                self::setData($category,Category::class);
             }
         }
     }

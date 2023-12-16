@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Helpers\Helper;
 use App\Http\Requests\AuthRequest;
 use App\Http\Requests\PasswordRequest;
 use App\Models\User;
@@ -10,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller {
 
+    use Helper;
     public function signIn() {
         if(Auth::user()){
             return to_route('show.release');
@@ -19,10 +22,13 @@ class UsersController extends Controller {
 
     public function auth(AuthRequest $request) {
         $credentials = $request->only(['email','password']);
-        if (Auth::attempt($credentials)) {
-            return to_route('new.release');
+        if(User::whereEmail($request->email)->first()->active){
+            if (Auth::attempt($credentials)) {
+                return to_route('new.release');
+            }
+            return redirect()->back()->with('error','Falha na autenticação.');
         }
-        return redirect()->back()->with('error','Falha na autenticação');
+        return redirect()->back()->with('error','Usuário inativo.');
     }
 
     public function signUp() {
@@ -31,8 +37,8 @@ class UsersController extends Controller {
 
     public function create(UserRequest $request) {
         if(User::createUser($request->only(['name','email','username'])))
-            return redirect()->back()->with('success','Usuário cadastrado com sucesso.');
-        return redirect()->back()->with('error','Falha ao registrar usuário.');
+            return self::redirect('success','cadastrado');
+        return self::redirect('error','cadastrar');
     }
 
     private function createOrUpdatePasword(string $token = null){

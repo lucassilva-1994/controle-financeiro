@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Model;
+use App\Helpers\Helper;
 use App\Http\Requests\ReleaseRequest;
 use App\Models\Category;
 use App\Models\CreditorClient;
@@ -13,6 +15,8 @@ use Illuminate\Support\Facades\Storage;
 
 class ReleasesController extends Controller
 {
+    use Model;
+    use Helper;
     private function calculate($list){
         $balance = ["expenses"=> 0, "revenues" => 0];
 
@@ -65,19 +69,32 @@ class ReleasesController extends Controller
 
     public function create(ReleaseRequest $request)
     {
-        if (Release::createOrUpdate($request->except('_token'))) {
-            return redirect()->back()->with('success', 'Lançamento cadastrado com sucesso.');
+        $request['value'] =  self::formatCurrency($request['value']);
+        $create = self::setData($request->except('_token'),Release::class);
+        if ($create) {
+            if ($request->hasFile('files')) {
+                $files = $request->file('files');
+                foreach ($files as $file) {
+                    File::createFiles($create->id, $create->user_id, $file);
+                }
+            }
+            return self::redirect('success','criado');
         }
-        return redirect()->back()->with('error', 'Falha ao cadastrar lançamento.');
+        return self::redirect('error','criar');
     }
 
     public function update(Request $request)
     {
-        if (Release::createOrUpdate($request->except('_token', '_method'))) :
-            return  redirect()->back()->with('success', 'Lançamento atualizado com sucesso.');
-        else :
-            return redirect()->back()->with('error', 'Falha ao atualizar registro.');
-        endif;
+        $request['value'] =  self::formatCurrency($request['value']);
+        if(self::updateData($request->except('id','_method','_token','files'),Release::class,['id' => $request->id])){
+            if ($request->hasFile('files')) {
+                $files = $request->file('files');
+                foreach ($files as $file) {
+                    File::createFiles($request->id, $this->id(), $file);
+                }
+            }
+            return self::redirect('success','atualizado');
+        }
     }
 
     public function delete(string $id)
@@ -88,10 +105,10 @@ class ReleasesController extends Controller
             foreach($files as $file)
                 Storage::delete($file->path);
         }
-        if (Release::forDelete($id)) :
-            return redirect()->back()->with('success', 'Lançamento removido com sucesso.');
+        if (Release::find($id)->delete()) :
+            return self::redirect('success','excluido');
         else :
-            return redirect()->back()->with('error', 'Falha ao remover registro.');
+            return self::redirect('error','excluir');
         endif;
     }
 

@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\Helpers\Model as ModelTrait;
 
 class Release extends Model
 {
+    use ModelTrait;
     protected $fillable = [
         'id',
         'sequence',
@@ -34,50 +36,14 @@ class Release extends Model
         return number_format($this->attributes['value'], 2, ',', '.');
     }
 
-    public static function createOrUpdate(array $data)
-    {
-        isset($data['value']) ? $data['value'] =  self::formatCurrency($data['value']) : $data['value'];
-        if (!isset($data['id'])) {
-            $create = HelperModel::setData($data, Release::class);
-            if ($create) {
-                if (!empty($data['files'])) {
-                    $files = $data['files'];
-                    foreach ($files as $file) {
-                        File::createFiles($data, $create->id, $create->user_id, $file);
-                    }
-                }
-                return true;
-            }
-        }
-        if(!empty($data['files'])){
-            $files = $data['files'];
-            unset($data['files']);
-            foreach ($files as $file) {
-                File::createFiles($data, $data['id'], auth()->user()->id, $file);
-            }
-        }
-        HelperModel::updateData($data, Release::class, ['id' => $data['id']]);
-        return true;
-    }
-
-    private static function formatCurrency($value)
-    {
-        $value = str_replace(['R$ ', '.', ','], ['', '', '.'], $value);
-        $value = number_format('' . $value, 2, '.', '');
-        return $value;
-    }
-
-    public static function forDelete(string $id)
-    {
-        self::whereId($id)->delete();
-        return true;
-    }
-
     public static function whereLike(string $words){
         $releases = Release::with('payment','category','creditorClient')->where('type','like',"%{$words}%")
         ->orWhere('status_pay','like',"%{$words}%")
         ->orWhere('description','like',"%{$words}%")
         ->orWhereHas('payment', function(Builder $query) use ($words){
+            $query->where('name','like', "%{$words}%");
+        })
+        ->orWhereHas('creditorClient', function(Builder $query) use ($words){
             $query->where('name','like', "%{$words}%");
         })
         ->orWhereHas('category', function(Builder $query) use ($words){

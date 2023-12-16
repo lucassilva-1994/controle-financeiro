@@ -14,7 +14,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg mb-3" style="background-color: #0a3b24;">
-            <div class="container">
+            <div class="container-fluid">
                 <h2 class="text-white"><i class="bi bi-cash-coin"></i></h2>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@
                 </div>
         </div>
     </nav>
-    <div class="container mt-3">@yield('content')</div>
+    <div class="container-fluid mt-3">@yield('content')</div>
 </body>
 <script src="{{ env('APP_URL').'js/bootstrap.bundle.min.js' }}"></script>
 <script src="{{ env('APP_URL').'js/jquery-3.6.0.min.js' }}"></script>

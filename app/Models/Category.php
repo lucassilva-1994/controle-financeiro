@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\Model as ModelTrait;
 
 class Category extends Model
 {
+    use ModelTrait;
     protected $fillable = ['id', 'sequence', 'name', 'type', 'user_id','created_at','updated_at'];
     protected $table = 'categories';
     public $timestamps = false;
@@ -20,20 +22,6 @@ class Category extends Model
     public function getUpdatedAtAttribute()
     {
         return date('d/m/Y H:i:s', strtotime($this->attributes['updated_at']));
-    }
-
-    public static function createOrUpdate(array $data)
-    {
-        if (!isset($data['id'])) {
-            HelperModel::setData($data, Category::class);
-            return true;
-        }
-        HelperModel::updateData(
-            ['name' => $data['name'], 'type' => $data['type']],
-            Category::class,
-            ['id' => $data['id']]
-        );
-        return true;
     }
 
     public static function createUserCategory(string $user_id)
@@ -57,22 +45,16 @@ class Category extends Model
             ['name' => 'Outros', 'type' => 'AMBOS','user_id' => $user_id],
         ];
         foreach($categories as $category){
-            HelperModel::setData($category,Category::class);
+            self::setData($category,self::class);
         }
-    }
-
-    public static function forDelete(string $id)
-    {
-        self::whereId($id)->delete();
-        return true;
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class);
     }
 
     public function releases(){
-        return $this->hasMany(Release::class,'category_id','id');
+        return $this->hasMany(Release::class);
     }
 }

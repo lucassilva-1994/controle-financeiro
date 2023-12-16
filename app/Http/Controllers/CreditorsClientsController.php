@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
+use App\Helpers\Model;
 use App\Models\CreditorClient;
 use Illuminate\Http\Request;
 
 class CreditorsClientsController extends Controller
 {
+    use Model;
+    use Helper;
     private function creditorsClients(string $id = null){
         $creditorsClients = CreditorClient::withSum('releases','value')->whereUserId($this->id())->oldest('name')->get();
         $creditorClient_id = CreditorClient::whereUserIdAndId($this->id(),$id)->first();
@@ -21,40 +25,33 @@ class CreditorsClientsController extends Controller
         return $this->creditorsClients($id);
     }
 
-    private function redirect($session,$message){
-        return redirect()->back()->with($session,$message);
-    }
-
     public function create(Request $request){
         $request->validate(
-            ['name' => 'required|between:3,50'],
-            ['name.required' => 'Nome é obrigatório.','name.between' => 'O nome deve ter entre :min e :max carcteres.']
+            ['name' => 'required|between:3,50']
         );
-        if(CreditorClient::createOrUpdate($request->except('_token'))){
-            return $this->redirect('success','Registro cadastrado com sucesso.');
+        if(self::setData($request->except('_token'),CreditorClient::class)){
+            return self::redirect('success','criado');
         }
-        return $this->redirect('error','Falha no registro.');
+        return self::redirect('error','criar');
     }
 
     public function update(Request $request){
         $request->validate(
-            ['name' => 'required|between:3,50'],
-            ['name.required' => 'Nome é obrigatório.','name.between' => 'O nome deve ter entre :min e :max carcteres.']
+            ['name' => 'required|between:3,50']
         );
-        if(CreditorClient::createOrUpdate($request->except('_token','_method'))){
-            return $this->redirect('success','Registro atualizado com sucesso.');
+        if(self::updateData($request->except('_token','_method'),CreditorClient::class,['id' => $request->id])){
+            return self::redirect('success','atualizado');
         }
-        return $this->redirect('error','Falha no registro.');
+        return self::redirect('error','atualizar');
     }
 
     public function delete(string $id){
-        if(CreditorClient::forDelete($id)){
-            return $this->redirect('success','Registro removido com sucesso.');
+        if(CreditorClient::find($id)->delete()){
+            return self::redirect('success','excluido');
         }
-        return $this->redirect('error','Falha ao remover registro.');
+        return self::redirect('error','excluir');
     }
-
-
+    
     private function id(){
         return auth()->user()->id;
     }

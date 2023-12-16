@@ -2,9 +2,11 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\Model as ModelTrait;
 
 class Payment extends Model
 {
+    use ModelTrait;
     protected $fillable = ['id','sequence','user_id','name','calculate','created_at','updated_at'];
     protected $table = 'payments';
     public $timestamps = false;
@@ -17,15 +19,6 @@ class Payment extends Model
 
     public function getUpdatedAtAttribute(){
         return date('d/m/Y H:i:s', strtotime($this->attributes['updated_at']));
-    }
-
-    public static function createOrUpdate(array $data){
-        if(!isset($data['id'])){
-            HelperModel::setData($data,Payment::class);
-            return true;
-        }
-        HelperModel::updateData($data, Payment::class,['id' => $data['id']]);
-        return true;
     }
 
     public static function createUserPayment(string $user_id)
@@ -41,20 +34,15 @@ class Payment extends Model
             ['name' => 'Débito em conta','calculate' => 'YES','user_id' => $user_id],
         ];
         foreach($payments as $payment){
-            HelperModel::setData($payment,Payment::class);
+            self::setData($payment,self::class);
         }
     }
 
-    public static function forDelete(string $id){
-        self::whereId($id)->delete();
-        return true;
-    }
-
     public function user(){
-        return $this->belongsTo(User::class,'user_id','id');
+        return $this->belongsTo(User::class);
     }
 
     public function releases(){
-        return $this->hasMany(Release::class,'payment_id','id');
+        return $this->hasMany(Release::class);
     }
 }
