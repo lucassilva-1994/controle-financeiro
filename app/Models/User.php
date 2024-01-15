@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Mail\SendResetPassword;
-use App\Mail\SendWelcome;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -22,11 +21,7 @@ class User extends Authenticatable
     {
         $data['token'] = self::setUuid();
         $data['expires_token'] = now()->add('+24 hours');
-        $user = self::setData($data, User::class);
-        if ($user) {
-            Mail::queue(new SendWelcome($user));
-            Category::createUserCategory($user->id);
-            Payment::createUserPayment($user->id);
+        if (self::setData($data, User::class)) {
             return true;
         }
         return false;

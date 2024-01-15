@@ -8,8 +8,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UsersSeeder::class,
-            CategorySeeder::class,
-            PaymentsSeeder::class,
+            // CategorySeeder::class,
+            // PaymentsSeeder::class,
             ReleasesSeeder::class
         ]);
         
