@@ -6,14 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private $table = "releases_categories";
+    private $table = 'files';
     public function up()
     {
-        Schema::create($this->table, function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->bigInteger('sequence');
-            $table->foreignUuid('release_id')->references('id')->on('releases')->onDelete('cascade');
-            $table->foreignUuid('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->string('name',100);
+            $table->string('path',200);
             $table->dateTime('created_at');
+            $table->foreignUuid('release_id')->references('id')->on('releases')->cascadeOnDelete();
         });
     }
     public function down()

@@ -6,17 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private $table = "files";
+    private $table = 'clients_creditors';
     public function up()
     {
-        Schema::create('files', function (Blueprint $table) {
+        Schema::create($this->table, function(Blueprint $table){
             $table->uuid('id')->primary();
             $table->bigInteger('sequence');
-            $table->string('name',100);
-            $table->string('path',200);
+            $table->string('name');
+            $table->enum('type',['CLIENT','CREDITOR','BOTH']);
+            $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->dateTime('created_at');
-            $table->foreignUuid('release_id')->references('id')->on('releases')->onDelete('cascade');
-            $table->foreignUuid('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->dateTime('updated_at')->nullable();
         });
     }
     public function down()

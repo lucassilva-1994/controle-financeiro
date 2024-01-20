@@ -2,12 +2,14 @@
 
 namespace App\Observers;
 
+use App\Helpers\Model;
 use App\Mail\SendWelcome;
-use App\Models\{User, Payment, Category};
+use App\Models\{User, Payment, Category, Log};
 use Illuminate\Support\Facades\Mail;
 
 class UserObserver
 {
+    use Model;
     public function created(User $user)
     {
         if (config('app.events_enabled')) {
@@ -15,6 +17,12 @@ class UserObserver
         }
         Category::createUserCategory($user->id);
         Payment::createUserPayment($user->id);
+        self::setData([
+            'entity' => 'User',
+            'new_values' => json_encode($user),
+            'action' => 'create',
+            'user_id' => $user->id,
+        ],Log::class);
     }
     public function updated(User $user)
     {

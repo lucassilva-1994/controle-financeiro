@@ -6,11 +6,12 @@ use App\Mail\SendResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Laravel\Passport\HasApiTokens;
 use App\Helpers\Model as ModelTrait;
 
 class User extends Authenticatable
 {
-    use ModelTrait;
+    use ModelTrait, HasApiTokens;
     protected $fillable = ['id', 'sequence', 'name', 'email', 'username', 'password', 'token', 'expires_token','created_at','updated_at'];
     protected $table = 'users';
     public $timestamps = false;

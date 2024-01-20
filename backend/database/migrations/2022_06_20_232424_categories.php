@@ -5,20 +5,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private $table = 'users';
+    private $table = 'categories';
     public function up()
     {
-        Schema::create($this->table, function(Blueprint $table){
+        Schema::create($this->table, function (Blueprint $table){
             $table->uuid('id')->primary();
             $table->bigInteger('sequence');
-            $table->string('name',255)->nullable(false);
-            $table->string('email',255)->unique();
-            $table->string('username', 50)->unique();
-            $table->string('password', 100)->nullable();
-            $table->boolean('active')->default(0);
-            $table->uuid('token')->nullable();
-            $table->dateTime('expires_token')->nullable();
+            $table->string('name',100);
+            $table->enum('type',['INCOME','EXPENSE','BOTH']);
             $table->dateTime('created_at');
+            $table->foreignUuid('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->dateTime('updated_at')->nullable();
         });
     }
