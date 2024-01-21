@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use App\Helpers\Model as ModelTrait;
+use App\Models\Scopes\UserScope;
+use Illuminate\Database\Eloquent\{Model,Builder};
 
 class Release extends Model
 {
-    use ModelTrait;
     protected $fillable = [
         'id',
         'sequence',
@@ -19,10 +17,10 @@ class Release extends Model
         'due_date',
         'type',
         'user_id',
-        'status_pay',
+        'status',
         'category_id',
         'payment_id',
-        'creditorsclients_id',
+        'client_creditor_id',
         'created_at',
         'updated_at'
     ];
@@ -30,6 +28,12 @@ class Release extends Model
     protected $keyType = 'string';
     public $incrementing = false;
     public $timestamps = false;
+
+    public function setValueAttribute($value) {
+        $value = str_replace(['R$ ', ".", ','], ["", "", "."], $value);
+        $value = number_format("" . $value, 2, ".", "");
+        $this->attributes['value'] = $value;
+    }
 
     public function getValueAttribute()
     {
@@ -66,23 +70,19 @@ class Release extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class);
     }
 
-    public function creditorClient(){
-        return $this->hasOne(CreditorClient::class,'id','creditorsclients_id');
+    public function clientOrCreditor(){
+        return $this->hasOne(ClientCreditor::class,'id','client_creditor_id');
     }
 
     public function files(){
-        return $this->hasMany(File::class,'release_id','id');
+        return $this->hasMany(File::class);
     }
 
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::addGlobalScope('users', function (Builder $builder) {
-            if(auth()->check()){
-                $builder->where('user_id', '=', auth()->user()->id);
-            }
-        });
+        static::addGlobalScope(new UserScope);
     }
 }

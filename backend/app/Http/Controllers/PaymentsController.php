@@ -2,54 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Helper;
-use App\Helpers\Model;
+use App\Helpers\HelperModel;
+use App\Helpers\Messages;
+use App\Http\Requests\PaymentRequest;
 use App\Models\Payment;
-use Illuminate\Http\Request;
 
 class PaymentsController extends Controller
 {
-    use Model;
-    use Helper;
-    private function payments(string $id = null){
-        //Retornando a soma dos valores do lançamentos vinculado a cada forma de pagamento.
-        //Ordenando as formas de pagamentos das que tem mais lançamentos para menos lançamentos.
-        $payments = Payment::with('releases')->withSum('releases','value')->withCount('releases')->orderBy('releases_count','DESC')->whereUserId($this->id())->get();
-        $payment = Payment::whereUserIdAndId($this->id(),$id)->first();
-        return view('dashboard.payments', compact('payments','payment'));
+    use Messages, HelperModel;
+    public function index(){
+        return Payment::get();
     }
 
-    public function new(){
-        return $this->payments();
-    }
-
-    public function edit(string $id){
-        return $this->payments($id);
-    }
-
-    public function create(Request $request){
-        $request->validate(['name' => 'required|between:3,20']);
-        if(self::setData($request->except('_token'),Payment::class))
-            return self::redirect('success','criado');
-        return self::redirect('error','criar');
-    }
-
-    public function update(Request $request){
-        $request->validate(['name' => 'required|between:3,20']);
-        if(self::updateData($request->except('id','_method','_token'),Payment::class,['id'=> $request->id])){
-            return self::redirect('success','atualizado');
+    public function show(string $id){
+        if(Payment::find($id)){
+            return Payment::find($id);
         }
-        return self::redirect('error','atualizar');
+        return $this->messageNotFound();
+    }
+
+    public function create(PaymentRequest $request){
+        try {
+            self::setData($request->all(), Payment::class);
+            return $this->messageSuccess();
+        } catch (\Throwable $th) {
+            return $this->messageFailed();
+        }
+    }
+
+    public function update(PaymentRequest $request){
+        try {
+            self::updateData($request->only('name','calculate'), Payment::class,['id' => $request->id]);
+            return $this->messageSuccess();
+        } catch (\Throwable $th) {
+            return $this->messageFailed();
+        }
     }
 
     public function delete(string $id){
-        if(Payment::find($id)->delete()){
-         return self::redirect('success','excluído');
+        try {
+            if(Payment::find($id)->delete()){
+                return $this->messageDeleted();
+            }
+        } catch (\Throwable $th) {
+            return $this->messageFailed();
         }
-        return self::redirect('error','excluir');
-    }
-
-    private function id(){
-        return auth()->user()->id;
     }
 }

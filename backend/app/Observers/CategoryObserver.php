@@ -2,12 +2,12 @@
 
 namespace App\Observers;
 
-use App\Helpers\Model;
+use App\Helpers\HelperModel;
 use App\Models\{Category,Log};
 
 class CategoryObserver
 {
-    use Model;
+    use HelperModel;
     /**
      * Handle the Category "created" event.
      *
@@ -16,12 +16,12 @@ class CategoryObserver
      */
     public function created(Category $category)
     {
-        self::setData([
-            'entity' => 'Category',
-            'new_values' => json_encode($category),
-            'action' => 'create',
-            'user_id' => $category->user_id,
-        ],Log::class);
+        // self::setData([
+        //     'entity' => 'Category',
+        //     'new_values' => json_encode($category),
+        //     'action' => 'create',
+        //     'user_id' => $category->user_id,
+        // ],Log::class);
     }
 
     /**
@@ -32,13 +32,13 @@ class CategoryObserver
      */
     public function updated(Category $category)
     {
-        self::setData([
-            'entity' => 'Category',
-            'old_values' => json_encode($category->getOriginal()),
-            'new_values' => json_encode($category),
-            'action' => 'create',
-            'user_id' => $category->user_id,
-        ],Log::class);
+        // self::setData([
+        //     'entity' => 'Category',
+        //     'old_values' => json_encode($category->getOriginal()),
+        //     'new_values' => json_encode($category),
+        //     'action' => 'create',
+        //     'user_id' => $category->user_id,
+        // ],Log::class);
     }
 
     /**
@@ -49,13 +49,13 @@ class CategoryObserver
      */
     public function deleted(Category $category)
     {
-        self::setData([
-            'entity' => 'Category',
-            'old_values' => json_encode($category->getOriginal()),
-            'new_values' => json_encode($category->getOriginal()),
-            'action' => 'create',
-            'user_id' => $category->user_id,
-        ],Log::class);
+        // self::setData([
+        //     'entity' => 'Category',
+        //     'old_values' => json_encode($category->getOriginal()),
+        //     'new_values' => json_encode($category->getOriginal()),
+        //     'action' => 'create',
+        //     'user_id' => $category->user_id,
+        // ],Log::class);
     }
 
     /**

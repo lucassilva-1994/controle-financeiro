@@ -2,14 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Helpers\Model;
-use App\Models\Payment;
-use App\Models\User;
+use App\Helpers\HelperModel;
+use App\Models\{Payment,User};
 use Illuminate\Database\Seeder;
 
 class PaymentsSeeder extends Seeder
 {
-    use Model;
+    use HelperModel;
     public function run()
     {
         $users = User::get();

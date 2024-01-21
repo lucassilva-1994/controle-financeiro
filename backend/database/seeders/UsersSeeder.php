@@ -2,19 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Helpers\Model;
+use App\Helpers\HelperModel;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 
 class UsersSeeder extends Seeder
 {
-    use Model;
+    use HelperModel;
     public function run()
     {
         config(['app.events_enabled' => false]);
         $count = 0;
-        for($i=0;$i<100;$i++){
+        for($i=0;$i<5;$i++){
             $name = fake()->name();
             $email = self::generateEmail($name);
             $username = self::generateUserName($name);

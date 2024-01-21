@@ -2,36 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\{HelperModel,Messages};
-use App\Http\Requests\CategoryRequest;
-use App\Models\Category;
+use App\Helpers\HelperModel;
+use App\Helpers\Messages;
+use App\Http\Requests\ClientCreditorRequest;
+use App\Models\ClientCreditor;
 
-class CategoriesController extends Controller
+class ClientsCreditorsController extends Controller
 {
-    use HelperModel, Messages;
+    use Messages, HelperModel;
     public function index(){
-        return Category::get();
+        return ClientCreditor::get();
     }
 
     public function show(string $id){
-        if(Category::find($id)){
-            return Category::find($id);
+        if(ClientCreditor::find($id)){
+            return ClientCreditor::find($id);
         }
         return $this->messageNotFound();
     }
 
-    public function create(CategoryRequest $request){
+    public function create(ClientCreditorRequest $request){
         try {
-            self::setData($request->all(), Category::class);
+            self::setData($request->all(), ClientCreditor::class);
             return $this->messageSuccess();
         } catch (\Throwable $th) {
             return $this->messageFailed();
         }
     }
 
-    public function update(CategoryRequest $request){
+    public function update(ClientCreditorRequest $request){
         try {
-            self::updateData($request->only('name','type'), Category::class,['id' => $request->id]);
+            self::updateData($request->only('name','type'), ClientCreditor::class,['id' => $request->id]);
             return $this->messageSuccess();
         } catch (\Throwable $th) {
             return $this->messageFailed();
@@ -40,7 +41,7 @@ class CategoriesController extends Controller
 
     public function delete(string $id){
         try {
-            if(Category::find($id)->delete()){
+            if(ClientCreditor::find($id)->delete()){
                 return $this->messageDeleted();
             }
         } catch (\Throwable $th) {

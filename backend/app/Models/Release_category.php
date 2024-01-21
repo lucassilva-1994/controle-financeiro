@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Models;
+
+use App\Helpers\HelperModel;
 use Illuminate\Database\Eloquent\Model;
 
 class Release_category extends Model
 {
+    use HelperModel;
     protected $table = "releases_categories";
     protected $fillable = ['sequence','release_id','category_id', 'created_at'];
     protected $keyType = "string";

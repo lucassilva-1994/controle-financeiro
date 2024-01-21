@@ -2,73 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Helper;
-use App\Http\Requests\AuthRequest;
-use App\Http\Requests\PasswordRequest;
+use App\Helpers\{HelperModel,Messages};
 use App\Models\User;
-use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class UsersController extends Controller {
-
-    use Helper;
-    public function signIn() {
-        if(Auth::user()){
-            return to_route('show.release');
-        }
-        return view('user.signin');
-    }
-
-    public function auth(AuthRequest $request) {
-        $credentials = $request->only(['email','password']);
-        if(User::whereEmail($request->email)->first()->active){
-            if (Auth::attempt($credentials)) {
-                return to_route('new.release');
+class UsersController extends Controller
+{
+    use HelperModel, Messages;
+    public function SignIn(Request $request)
+    {
+        if (User::whereEmail($request->email)->first()->active) {
+            if (auth()->attempt($request->only('email', 'password'))) {
+                $token = $request->user()->createToken('token')->accessToken;
+                return response()->json($token);
             }
-            return redirect()->back()->with('error','Falha na autenticação.');
+            return response()->json('Falha na autenticação');
         }
-        return redirect()->back()->with('error','Usuário inativo.');
+        return response()->json('Usuário inativo');
     }
 
-    public function signUp() {
-        return view('user.signup');
+    public function signUp(Request $request)
+    {
+        try {
+            $user = self::setData($request->all(), User::class);
+            return response()->json($user);
+        } catch (\Throwable $th) {
+            return response()->json($th->getMessage());
+        }
     }
 
-    public function create(UserRequest $request) {
-        if(User::createUser($request->only(['name','email','username'])))
-            return self::redirect('success','cadastrado');
-        return self::redirect('error','cadastrar');
+    public function whoAmI(){
+        return User::with('payments','categories','clientsAndCreditors','releases')->whereId(auth()->user()->id)->get();
     }
 
-    private function createOrUpdatePasword(string $token = null){
-        $findToken = User::where('token',$token)->first();
-        return view('user.password',compact('findToken'));
-    }
-
-    public function createPassword(string $token = null){
-        return $this->createOrUpdatePasword($token);
-    }
-
-    public function updatePassword(string $token = null){
-        return $this->createOrUpdatePasword($token);
-    }
-
-    public function savePassword(PasswordRequest $request){
-        if(User::createOrUpdatePasword($request->only(['cpassword','token'])))
-            return to_route('user.signin')->with('success', 'Senha configurada com sucesso.');
-        return redirect()->back()->with('error','Falha ao configurar senha.');
-    }
-
-    public function resetPassword(Request $request){
-        $request->validate(['remail' => 'required|exists:users,email']);
-        if(User::resetPassword($request->only('remail')))
-            return redirect()->back()->with('success', 'Foi enviado um e-mail para alterar sua senha.');
-        return redirect()->back()->with('error','Falha ao solicitar redefinição de senha, tente novamente mais tarde.');
-    }
-
-    public function signOut() {
-        Auth::logout();
-        return to_route('user.signin');
+    public function signOut()
+    {
+        if(auth()->user()->token()->delete()){
+            return response()->json('Logout realizado com sucesso.');
+        }
+        return $this->messageFailed();
     }
 }

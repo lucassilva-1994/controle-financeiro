@@ -10,7 +10,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create($this->table, function (Blueprint $table) {
-            $table->bigInteger('id');
+            $table->bigIncrements('id');
             $table->foreignUuid('release_id')->references('id')->on('releases')->cascadeOnDelete();
             $table->foreignUuid('category_id')->references('id')->on('categories')->cascadeOnDelete();
             $table->dateTime('created_at');

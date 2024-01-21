@@ -18,6 +18,7 @@ return new class extends Migration
             $table->boolean('active')->default(0);
             $table->uuid('token')->nullable();
             $table->dateTime('expires_token')->nullable();
+            $table->string('photo',200)->nullable();
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();
         });

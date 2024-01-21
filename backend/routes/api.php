@@ -1,19 +1,48 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\{
+    CategoriesController,
+    ClientsCreditorsController,
+    UsersController,
+    ReleasesController,
+    PaymentsController
+};
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::middleware('auth:api')->group(function(){
+    Route::get('signout',[UsersController::class,'signOut']);
+    Route::get('whoami',[UsersController::class,'whoAmI']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    Route::controller(ReleasesController::class)->prefix('releases')->group(function(){
+        Route::get('/','index');
+        Route::get('show/{release}','show');
+        Route::post('create','create');
+        Route::put('update','update');
+        Route::delete('delete/{release}','delete');
+    });
+    Route::controller(PaymentsController::class)->prefix('payments')->group(function(){
+        Route::get('/','index');
+        Route::get('show/{id}','show');
+        Route::post('create','create');
+        Route::put('update','update');
+        Route::delete('delete/{id}','delete');
+    });
+    Route::controller(CategoriesController::class)->prefix('categories')->group(function(){
+        Route::get('/','index');
+        Route::get('show/{id}','show');
+        Route::post('create','create');
+        Route::put('update','update');
+        Route::delete('delete/{id}','delete');
+    });
+    Route::controller(ClientsCreditorsController::class)->prefix('clientscreditors')->group(function(){
+        Route::get('/','index');
+        Route::get('show/{id}','show');
+        Route::post('create','create');
+        Route::put('update','update');
+        Route::delete('delete/{id}','delete');
+    });
+});
+Route::controller(UsersController::class)->prefix('users')->group(function(){
+    Route::post('signin','signIn');
+    Route::post('signup','signUp');
 });

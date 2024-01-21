@@ -2,15 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Helpers\Model;
-use App\Models\Release;
-use App\Models\User;
+use App\Helpers\HelperModel;
+use App\Models\{Release,User};
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 
 class ReleasesSeeder extends Seeder
 {
-    use Model;
+    use HelperModel;
     public function run()
     {
           $users = User::get();
@@ -20,8 +19,8 @@ class ReleasesSeeder extends Seeder
                     'description' => $description,
                     'value' => fake()->randomFloat(2,10,1500),
                     'date' => fake()->date(),
-                    'status_pay' => Arr::random(['QUITADO','ABERTO']),
-                    'type' => Arr::random(['ENTRADA','SAIDA']),
+                    'status' => Arr::random(['PENDING','PAID']),
+                    'type' => Arr::random(['INCOME','EXPENSE']),
                     'user_id' => $user->id,
                     'category_id' => Arr::random($user->categories->pluck('id')->toArray()),
                     'payment_id' => Arr::random($user->payments->pluck('id')->toArray()),
