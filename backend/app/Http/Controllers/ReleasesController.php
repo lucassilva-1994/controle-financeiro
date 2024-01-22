@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\{HelperModel, Messages};
 use App\Http\Requests\ReleaseRequest;
-use App\Models\File;
-use App\Models\Release;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
+use App\Models\{File,Release};
 
 class ReleasesController extends Controller
 {
@@ -25,24 +22,20 @@ class ReleasesController extends Controller
         return $this->messageNotFound();
     }
 
-    public function create(Request $request)
+    public function create(ReleaseRequest $request)
     {
-        $request['category_id'] = Arr::random(auth()->user()->categories->pluck('id')->toArray());
-        $request['payment_id']  = Arr::random(auth()->user()->payments->pluck('id')->toArray());
-        //$request['value'] = fake()->randomFloat(2, 10, 1500);
-        //$request['value'] = self::formatCurrency($request['value']);
-        $request['date']  = date('Y-m-d');
-        $request['status'] = Arr::random(['PENDING', 'PAID']);
-        $request['type']    = Arr::random(['INCOME', 'EXPENSE']);
         try {
             $create = self::setData($request->except('files'), Release::class);
             foreach ($request->file('files') as $file) {
-                $file->store('uploads');
+                $data['path']       = $file->store("releases/".$create->id);
+                $data['name']       = $file->getClientOriginalName();
+                $data['release_id'] = $create->id;
+                self::setData($data,File::class);
             }
             return $this->messageSuccess();
         } catch (\Throwable $th) {
             return response()->json($th->getMessage());
-            //return $this->messageFailed();
+            // return $this->messageFailed();
         }
     }
 

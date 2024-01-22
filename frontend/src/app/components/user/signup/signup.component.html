@@ -1,0 +1,49 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header text-center">
+          <h1>Cadastro</h1>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="form">
+            <div class="mb-3">
+              <label for="nome" class="form-label">Nome:</label>
+              <input type="text" class="form-control" formControlName="name">
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">E-mail:</label>
+              <input type="email" class="form-control" formControlName="email">
+            </div>
+
+            <div class="mb-3">
+              <label for="username" class="form-label">Usuário:</label>
+              <input type="text" class="form-control" formControlName="username">
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Senha:</label>
+              <input type="password" class="form-control" formControlName="password">
+            </div>
+            <div class="mb-3 alert alert-success" *ngIf="message">
+              {{ message }}
+            </div>
+            <div class="mb-3" *ngIf="errors">
+              <div class="mb-3 alert alert-danger" *ngFor="let error of errors">
+                {{ error }}
+              </div>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success" (click)="create()"><i class="bi bi-send-plus-fill"></i>
+                Cadastrar</button>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer text-center">
+          <h5>&copy; Financeiro</h5>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
