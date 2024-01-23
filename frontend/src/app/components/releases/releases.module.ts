@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ReleasesRoutingModule } from './releases-routing.module';
 import { ReleasesComponent } from './releases.component';
-import { SharedModule } from 'src/app/shared/Shared.module';
+import { SharedModule } from '../shared/Shared.module';
 
 
 @NgModule({
