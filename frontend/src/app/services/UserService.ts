@@ -12,7 +12,10 @@ const apiUrl = environment.apiUrl+'users';
 export class UserService{
     constructor(private httpClient:HttpClient, private localStorageService:LocalStorageService){}
     auth(user:User){
-        return this.httpClient.post(apiUrl+'/signin',user);
+        return this.httpClient.post(apiUrl+'/signin',user)
+        .pipe(tap(response =>{
+            this.localStorageService.setItem(response);
+        }));
     }
     create(user:User){
         return this.httpClient.post(apiUrl+'/signup',user);

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ReleasesRoutingModule } from './releases-routing.module';
 import { ReleasesComponent } from './releases.component';
+import { SharedModule } from 'src/app/shared/Shared.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { ReleasesComponent } from './releases.component';
   ],
   imports: [
     CommonModule,
-    ReleasesRoutingModule
+    ReleasesRoutingModule,
+    SharedModule
   ]
 })
 export class ReleasesModule { }
