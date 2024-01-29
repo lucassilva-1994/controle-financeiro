@@ -11,7 +11,7 @@ class PaymentsController extends Controller
 {
     use Messages, HelperModel;
     public function index(){
-        return Payment::get();
+        return Payment::with('releases')->get();
     }
 
     public function show(string $id){

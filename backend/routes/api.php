@@ -24,21 +24,21 @@ Route::middleware('auth:api')->group(function(){
         Route::get('/','index');
         Route::get('show/{id}','show');
         Route::post('create','create');
-        Route::put('update','update');
+        Route::put('update/{id}','update');
         Route::delete('delete/{id}','delete');
     });
     Route::controller(CategoriesController::class)->prefix('categories')->group(function(){
         Route::get('/','index');
-        Route::get('show/{id}','show');
+        Route::get('show/{category}','show');
         Route::post('create','create');
-        Route::put('update','update');
-        Route::delete('delete/{id}','delete');
+        Route::put('update/{id}','update');
+        Route::delete('delete/{category}','delete');
     });
     Route::controller(ClientsCreditorsController::class)->prefix('clientscreditors')->group(function(){
         Route::get('/','index');
         Route::get('show/{id}','show');
         Route::post('create','create');
-        Route::put('update','update');
+        Route::put('update/{id}','update');
         Route::delete('delete/{id}','delete');
     });
 });

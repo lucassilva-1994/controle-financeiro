@@ -10,7 +10,7 @@ import { UserService } from 'src/app/services/UserService';
 })
 export class SigninComponent implements OnInit {
   form: FormGroup;
-  message:string;
+  message: string;
   constructor(private formBuilder: FormBuilder, private userService: UserService) { }
   ngOnInit(): void {
     this.form = this.formBuilder.group({
@@ -25,7 +25,7 @@ export class SigninComponent implements OnInit {
       .subscribe((response) => {
         this.form.reset();
       }, (error) => {
-        this.message = 'Falha no processo de autenticação.'; 
+        this.message = 'Falha no processo de autenticação.';
       });
   }
 }

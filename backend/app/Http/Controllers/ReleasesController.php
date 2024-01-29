@@ -11,7 +11,7 @@ class ReleasesController extends Controller
     use HelperModel, Messages;
     public function index()
     {
-        return Release::with(['payment:id,name','category:id,name','clientOrCreditor'])->paginate();
+        return Release::with(['payment:id,name','category:id,name','clientOrCreditor'])->paginate(50)->flatten();
     }
 
     public function show(Release $release)

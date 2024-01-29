@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: '',
     component: ReleasesComponent,
-    title:'Lançamentos'
+    title: 'Lançamentos'
   }
 ];
 

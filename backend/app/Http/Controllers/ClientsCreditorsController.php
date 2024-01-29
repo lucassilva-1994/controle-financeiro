@@ -11,7 +11,7 @@ class ClientsCreditorsController extends Controller
 {
     use Messages, HelperModel;
     public function index(){
-        return ClientCreditor::get();
+        return ClientCreditor::with('releases')->get();
     }
 
     public function show(string $id){

@@ -1,0 +1,29 @@
+<app-layout [title]="title">
+    <div class="card mb-4">
+        <div class="card-header  d-flex justify-content-between align-items-center">
+            <h4>{{ id ? 'Atualizar registro' : 'Novo registro' }}</h4>
+            <h6><a [routerLink]="['/clientscreditors']" class="btn btn-secondary btn-sm"><i
+                        class="bi bi-card-checklist"></i> Listagem</a></h6>
+        </div>
+        <div class="card-body">
+            <form class="row" [formGroup]="form" (submit)="id ? update(id) : create()">
+                <div class="form-group col-sm-6">
+                    <label for="name">Nome:</label>
+                    <input type="text" class="form-control" id="name" required formControlName="name">
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="type">Tipo:</label>
+                    <select class="form-control" id="type" required formControlName="type">
+                        <option value="CLIENT">Cliente</option>
+                        <option value="CREDITOR">Fornecedor</option>
+                        <option value="BOTH">Ambos</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-2  d-grid"><br />
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <app-message [message]="message" [class]="class"></app-message>
+</app-layout>

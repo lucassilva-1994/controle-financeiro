@@ -10,14 +10,15 @@ class CategoriesController extends Controller
 {
     use HelperModel, Messages;
     public function index(){
-        return Category::get();
+        return Category::with('user','releases')->get();
     }
 
-    public function show(string $id){
-        if(Category::find($id)){
-            return Category::find($id);
+    public function show(Category $category){
+        try {
+            return $category->load('user','releases')->setHidden(['user_id']);
+        } catch (\Throwable $th) {
+            return $this->messageNotFound();
         }
-        return $this->messageNotFound();
     }
 
     public function create(CategoryRequest $request){
@@ -38,9 +39,9 @@ class CategoriesController extends Controller
         }
     }
 
-    public function delete(string $id){
+    public function delete(Category $category){
         try {
-            if(Category::find($id)->delete()){
+            if($category->delete()){
                 return $this->messageDeleted();
             }
         } catch (\Throwable $th) {

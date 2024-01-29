@@ -24,7 +24,7 @@ class ClientCreditor extends Model
 
 
     public function releases():HasMany{
-        return $this->hasMany(Release::class,'creditorsclients_id','id');
+        return $this->hasMany(Release::class,'id','creditorsclients_id');
     }
 
     protected static function booted(): void

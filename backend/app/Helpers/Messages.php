@@ -9,18 +9,18 @@ trait Messages{
     }
 
     public function messageSuccess(){
-        return response()->json('Operação realizado com sucesso.');
+        return response()->json(['message' => 'Operação realizada com sucesso.']);
     }
 
     public function messageNotFound(){
-        return response()->json('Registro não encontrado.');
+        return response()->json(['Registro não encontrado.']);
     }
 
     public function messageDeleted(){
-        return response()->json('Registro excluido com sucesso.');
+        return response()->json(['message' => 'Registro excluido com sucesso.']);
     }
 
     public function messageFailed(){
-        return response()->json('Falha ao realizar a operação.');
+        return response()->json(['Falha ao realizar a operação.']);
     }
 } 

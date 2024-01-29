@@ -3,19 +3,22 @@ import { HeaderComponent } from "./header/header.component";
 import { CommonModule } from "@angular/common";
 import { LayoutComponent } from './layout/layout.component';
 import { RouterModule } from "@angular/router";
+import { MessageComponent } from "./message/message.component";
 
 @NgModule({
-    declarations:[
+    declarations: [
         HeaderComponent,
-        LayoutComponent
+        LayoutComponent,
+        MessageComponent
     ],
-    imports:[
+    imports: [
         CommonModule,
         RouterModule
     ],
-    exports:[
+    exports: [
         HeaderComponent,
-        LayoutComponent
+        LayoutComponent,
+        MessageComponent
     ]
-})  
-export class SharedModule{}
+})
+export class SharedModule { }

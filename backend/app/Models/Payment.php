@@ -13,13 +13,13 @@ class Payment extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    // public function getCreatedAtAttribute(){
-    //     return date('d/m/Y H:i:s', strtotime($this->attributes['created_at']));
-    // }
+    public function getCreatedAtAttribute(){
+        return date('d/m/Y H:i:s', strtotime($this->attributes['created_at']));
+    }
 
-    // public function getUpdatedAtAttribute(){
-    //     return date('d/m/Y H:i:s', strtotime($this->attributes['updated_at']));
-    // }
+    public function getUpdatedAtAttribute(){
+        return date('d/m/Y H:i:s', strtotime($this->attributes['updated_at']));
+    }
 
     public function user():BelongsTo{
         return $this->belongsTo(User::class);

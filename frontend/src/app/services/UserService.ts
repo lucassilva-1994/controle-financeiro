@@ -5,19 +5,19 @@ import { environment } from "src/environments/environment";
 import { tap } from "rxjs";
 import { LocalStorageService } from "./LocalStorageService";
 
-const apiUrl = environment.apiUrl+'users';
+const apiUrl = environment.apiUrl + 'users';
 @Injectable({
-    providedIn:'root'
+    providedIn: 'root'
 })
-export class UserService{
-    constructor(private httpClient:HttpClient, private localStorageService:LocalStorageService){}
-    auth(user:User){
-        return this.httpClient.post(apiUrl+'/signin',user)
-        .pipe(tap(response =>{
-            this.localStorageService.setItem(response);
-        }));
+export class UserService {
+    constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService) { }
+    auth(user: User) {
+        return this.httpClient.post(apiUrl + '/signin', user)
+            .pipe(tap(response => {
+                this.localStorageService.setItem(response);
+            }));
     }
-    create(user:User){
-        return this.httpClient.post(apiUrl+'/signup',user);
+    create(user: User) {
+        return this.httpClient.post(apiUrl + '/signup', user);
     }
 }

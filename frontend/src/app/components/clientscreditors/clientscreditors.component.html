@@ -1,1 +1,41 @@
-<p>clientscreditors works!</p>
+<app-layout [title]="title">
+    <app-message [message]="message" [class]="class"></app-message>
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4>Fornecedores/clientes</h4>
+            <h6><a [routerLink]="['add']" class="btn btn-primary btn-sm"><i class="bi bi-plus"></i> Novo
+                    fornecedor/cliente</a></h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Criado em</th>
+                            <th>Lançamentos</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let clientCreditor of clientscreditors$ | async">
+                            <td>{{ clientCreditor.name }}</td>
+                            <td>{{ clientCreditor.type|genericpipe }}</td>
+                            <td>{{ clientCreditor.created_at }}</td>
+                            <td>{{ clientCreditor.releases.length }}</td>
+                            <td>
+                                <span class="btn-group btn-group-sm">
+                                    <button (click)="delete(clientCreditor.id)" class="btn btn-danger"><i
+                                            class="bi bi-trash"></i></button>
+                                    <a [routerLink]="['edit/',clientCreditor.id]" class="btn btn-primary"><i
+                                            class="bi bi-pencil"></i> </a>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</app-layout>
