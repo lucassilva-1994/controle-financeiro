@@ -11,7 +11,7 @@ class ReleasesController extends Controller
     use HelperModel, Messages;
     public function index()
     {
-        return Release::with(['payment:id,name','category:id,name','clientOrCreditor'])->paginate(50)->flatten();
+        return Release::with(['payment:id,name','category:id,name','clientOrCreditor'])->orderBy('created_at','DESC')->get();
     }
 
     public function show(Release $release)
@@ -35,7 +35,6 @@ class ReleasesController extends Controller
             return $this->messageSuccess();
         } catch (\Throwable $th) {
             return response()->json($th->getMessage());
-            // return $this->messageFailed();
         }
     }
 
@@ -46,7 +45,6 @@ class ReleasesController extends Controller
             return $this->messageSuccess();
         } catch (\Throwable $th) {
             return response()->json($th->getMessage());
-            //return $this->messageFailed();
         }
     }
 

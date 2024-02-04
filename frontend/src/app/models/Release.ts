@@ -13,5 +13,5 @@ export class Release extends Model{
     type: 'INCOME' | 'EXPENSE'
     category: Category;
     payment: Payment;
-    clientCreditor: ClientCreditor;
+    client_or_creditor: ClientCreditor;
 }

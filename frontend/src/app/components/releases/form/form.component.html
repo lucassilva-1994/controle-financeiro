@@ -1,0 +1,67 @@
+<app-layout [title]="title">
+    <div class="card mb-4">
+        <div class="card-header  d-flex justify-content-between align-items-center">
+            <h4>{{ id ? 'Atualizar lançamento' : 'Novo lançamento' }}</h4>
+            <h6><a [routerLink]="['/releases']" class="btn btn-secondary btn-sm"><i class="bi bi-card-checklist"></i>
+                    Listagem</a></h6>
+        </div>
+        <div class="card-body">
+            <form class="row" [formGroup]="form" (submit)="id ? update(id) : create()">
+                <div class="form-group col-sm-9">
+                    <label for="name">Descrição:</label>
+                    <input type="text" class="form-control" id="name" required formControlName="description"
+                    placeholder="Descrição do lançamento">
+                </div>
+                <div class="form-group col-sm-3">
+                    <label for="value">Valor:</label>
+                    <input type="tel" id="value" formControlName="value" required class="form-control"
+                    placeholder="R$ 0,00"/>
+                </div>
+                <div class="form-group col-sm-12">
+                    <label for="value">Categorias:</label>
+                    <select formControlName="category_id" class="form-select">
+                        <option *ngFor="let category of categories" value="{{ category.id }}">{{ category.name }}</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3">
+                    <label for="value">Formas de pagamento:</label>
+                    <select formControlName="payment_id" class="form-select">
+                        <option *ngFor="let payment of payments" value="{{ payment.id }}">{{ payment.name }}</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3">
+                    <label for="value">Fornecedor/Cliente:</label>
+                    <select formControlName="client_creditor_id" class="form-select">
+                        <option *ngFor="let clientCreditor of clientsCreditors" value="{{ clientCreditor.id }}">{{ clientCreditor.name }}</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3">
+                    <label for="date">Data:</label>
+                    <input type="date" formControlName="date" class="form-control" id="date"/>
+                </div>
+                <div class="form-group col-sm-3">
+                    <label for="due_date">Vencimento:</label>
+                    <input type="date" formControlName="due_date" class="form-control" id="due_date"/>
+                </div>
+                <div class="form-group col-sm-3">
+                    <label for="status">Status:</label>
+                    <select class="form-select" id="status" formControlName="status">
+                        <option value="PAID">Quitado</option>
+                        <option value="PENDING">Em aberto</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3">
+                    <label for="type">Tipo:</label>
+                    <select class="form-select" id="type" formControlName="type">
+                        <option value="INCOME">Entrada</option>
+                        <option value="EXPENSE">Saída</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3  d-grid"><br />
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <app-message [message]="message" [class]="class"></app-message>
+</app-layout>

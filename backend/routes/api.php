@@ -17,7 +17,7 @@ Route::middleware('auth:api')->group(function(){
         Route::get('/','index');
         Route::get('show/{release}','show');
         Route::post('create','create');
-        Route::put('update','update');
+        Route::put('update/{id}','update');
         Route::delete('delete/{release}','delete');
     });
     Route::controller(PaymentsController::class)->prefix('payments')->group(function(){

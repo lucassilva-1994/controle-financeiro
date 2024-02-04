@@ -2,12 +2,12 @@
     <app-message [message]="message" [class]="class"></app-message>
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h4>Seus lançamentos</h4>
+            <h4>Seus lançamentos ({{ (releases$ | async)?.length }})</h4>
             <h6><a [routerLink]="['add']" class="btn btn-primary btn-sm"><i class="bi bi-plus"></i> Nova lançamento</a>
             </h6>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
+            <div class="table-responsive" *ngIf="!loading;else loadingTemplate">
                 <table class="table table-hover text-nowrap">
                     <thead>
                         <tr>
@@ -18,6 +18,7 @@
                             <th>Tipo</th>
                             <th>Categoria</th>
                             <th>Pagamento</th>
+                            <th>Fornecedor/cliente</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -30,6 +31,7 @@
                             <td>{{ release.type|genericpipe }}</td>
                             <td>{{ release.category.name }}</td>
                             <td>{{ release.payment.name }}</td>
+                            <td>{{ release.client_or_creditor?.name || 'Não informado' }}</td>
                             <td>
                                 <span class="btn-group btn-group-sm">
                                     <button (click)="delete(release.id)" class="btn btn-danger"><i
@@ -42,6 +44,11 @@
                     </tbody>
                 </table>
             </div>
+            <ng-template #loadingTemplate>
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+            </ng-template>
         </div>
     </div>
 </app-layout>
