@@ -1,38 +1,45 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Helpers\HelperModel;
+use App\Models\Category;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\{Category,User};
 
-class CategorySeeder extends Seeder {
+class CategorySeeder extends Seeder
+{
 
     use HelperModel;
-    public function run() {
-
-        $users = User::get();
-        foreach($users as $user){
-            $categories = [
-                ['name' => 'Alimentação', 'type' => 'EXPENSE','user_id' => $user->id],
-                ['name' => 'Saúde', 'type' => 'EXPENSE','user_id' => $user->id],
-                ['name' => 'Lazer', 'type' => 'EXPENSE','user_id' => $user->id],
-                ['name' => 'Academia', 'type' => 'EXPENSE','user_id' => $user->id],
-                ['name' => 'Salário', 'type' => 'INCOME','user_id' => $user->id],
-                ['name' => 'Fatura cartão de crédito', 'type' => 'EXPENSE','user_id' => $user->id],
-                ['name' => 'Combustível', 'type' => 'EXPENSE','user_id' => $user->id],
-                ['name' => 'Supermercado', 'type' => 'EXPENSE','user_id' => $user->id],
-                ['name' => 'Viagem', 'type' => 'BOTH','user_id' => $user->id],
-                ['name' => 'Transportes', 'type' => 'BOTH','user_id' => $user->id],
-                ['name' => 'Casa', 'type' => 'BOTH','user_id' => $user->id],
-                ['name' => 'Consertos', 'type' => 'BOTH','user_id' => $user->id],
-                ['name' => 'Vendas', 'type' => 'BOTH','user_id' => $user->id],
-                ['name' => 'Serviços online', 'type' => 'BOTH','user_id' => $user->id],
-                ['name' => 'Benefícios', 'type' => 'INCOME','user_id' => $user->id],
-                ['name' => 'Outros', 'type' => 'BOTH','user_id' => $user->id],
-            ];
-            foreach($categories as $category){
-                self::setData($category,Category::class);
-            }
+    public function run(): void
+    {
+        foreach(self::categories() as $category){
+            self::createRecord(Category::class,$category);
         }
+    }
+
+
+    public static function categories(){
+        return [
+            ['name' => 'Salário', 'type' => 'INCOME', 'description' => 'Recebimento mensal de salário'],
+            ['name' => 'Renda Extra', 'type' => 'INCOME', 'description' => 'Renda adicional proveniente de trabalhos extras'],
+            ['name' => 'Renda de Investimentos', 'type' => 'INCOME', 'description' => 'Ganhos provenientes de investimentos financeiros'],
+            ['name' => 'Renda de Aluguel', 'type' => 'INCOME', 'description' => 'Renda obtida com aluguéis de imóveis'],
+            ['name' => 'Presentes', 'type' => 'INCOME', 'description' => 'Ganhos provenientes de presentes recebidos'],
+            ['name' => 'Renda de Juros', 'type' => 'INCOME', 'description' => 'Ganhos provenientes de juros de investimentos'],
+            ['name' => 'Outras Receitas', 'type' => 'INCOME', 'description' => 'Outras fontes de renda'],
+        
+            ['name' => 'Aluguel', 'type' => 'EXPENSE', 'description' => 'Pagamento mensal do aluguel do imóvel'],
+            ['name' => 'Despesas de Utilidades', 'type' => 'EXPENSE', 'description' => 'Despesas mensais com água, luz, gás, etc.'],
+            ['name' => 'Compras de Supermercado', 'type' => 'EXPENSE', 'description' => 'Despesas com compras de alimentos e produtos de supermercado'],
+            ['name' => 'Transporte', 'type' => 'EXPENSE', 'description' => 'Despesas relacionadas a transporte público ou privado'],
+            ['name' => 'Seguro', 'type' => 'EXPENSE', 'description' => 'Pagamento de seguros diversos'],
+            ['name' => 'Despesas Médicas', 'type' => 'EXPENSE', 'description' => 'Despesas com consultas médicas, medicamentos, etc.'],
+            ['name' => 'Entretenimento', 'type' => 'EXPENSE', 'description' => 'Gastos com entretenimento, como cinema, teatro, etc.'],
+            ['name' => 'Educação', 'type' => 'EXPENSE', 'description' => 'Gastos com mensalidades escolares, cursos, etc.'],
+            ['name' => 'Pagamentos de Dívidas', 'type' => 'EXPENSE', 'description' => 'Pagamentos de parcelas de dívidas'],
+            ['name' => 'Outras Despesas', 'type' => 'EXPENSE', 'description' => 'Outras despesas não categorizadas']
+        ];
+        
     }
 }

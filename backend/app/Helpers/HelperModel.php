@@ -1,44 +1,68 @@
 <?php
-
 namespace App\Helpers;
 
-use App\Models\Scopes\UserScope;
 use Ramsey\Uuid\Uuid;
 
 trait HelperModel
 {
-    public static function setData(array $data, $model)
-    {
-        $data['id'] = self::setUuid();
-        $data['sequence'] = self::setSequence($model);
+    use HelperMessage;
+    public static function createRecord(string $model, array $data)
+    {   
+        $fillable = (new $model)->getFillable();
+        $data = array_intersect_key($data, array_flip($fillable));
+        $data['id'] = self::generateUuid();
+        $data['sequence'] = self::setSequenceNumber($model);
         $data['created_at'] = now();
-        if(in_array('user_id', (new $model)->getFillable()) && auth()->check()) {
-            $data['user_id'] = auth()->user()->id;
+        if (in_array('token', $fillable)) {
+            $data['token'] = base64_encode(str()->random(75));
         }
-        if(in_array('token', (new $model)->getFillable()) && in_array('expires_token', (new $model)->getFillable()) ) {
-            $data['token'] = self::setUuid();
-            $data['expires_token'] =  now()->add('+24 hours');
+        if (in_array('token_expires_at', $fillable)) {
+            $data['token_expires_at'] = now()->addDay(1);
         }
-        if (isset($data['password'])) {
+        if (in_array('password', $fillable)) {
             $data['password'] = bcrypt($data['password']);
         }
-        return $model::updateOrCreate($data);
+        if (in_array('user_id', $fillable) && auth()->check()) {
+            $data['user_id'] = auth()->user()->id;
+        }
+        if (isset($data['name']) && auth()->check()) {
+            $data['name'] = self::ensureUniqueValue('name',$data['name'], $model);
+        }
+        try {
+            $model::updateOrCreate($data);
+            return self::success();
+        } catch (\Throwable $th) {
+            return self::error();
+        }
     }
 
-    public static function updateData(array $data, $model, array $where)
-    {
+    public static function updateRecord(string $model, array $data, array $where){
         $data['updated_at'] = now();
         return $model::updateOrCreate($where, $data);
     }
 
-    public static function setUuid()
-    {
+    public static function markAsDeleted(string $model, array $where) {
+        $data['deleted'] = 1;
+        $data['updated_at'] = now();
+        return $model::where($where)->update($data);
+    }
+
+    public static function setSequenceNumber(string $model) {
+        return $model::max('sequence') + 1;
+    }
+
+    public static function generateUuid(){
         return Uuid::uuid7(now());
     }
 
-    private static function setSequence($model)
+    private static function ensureUniqueValue($field, $value, $model)
     {
-        $result = $model::withoutGlobalScope(new UserScope)->latest('sequence')->first();
-        return $result ? $result->sequence += 1 : 1;
+        $originalValue = $value;
+        $counter = 1;
+        while ($model::where($field, $value)->exists()) {
+            $value = "{$originalValue} ({$counter})";
+            $counter++;
+        }
+        return $value;
     }
 }

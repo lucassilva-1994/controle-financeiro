@@ -1,1 +1,0 @@
-[04-Aug-2022 17:58:54 America/Fortaleza] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.0.2". You are running 7.4.28. in /home4/luca4307/financial.lucassilvasantos.com/vendor/composer/platform_check.php on line 24

@@ -2,40 +2,21 @@
 
 namespace App\Models;
 
-use App\Helpers\HelperModel;
-use App\Models\Scopes\UserScope;
+use App\Models\Scopes\{NotDeletedScope, UserScope};
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo};
 
+#[ScopedBy([UserScope::class, NotDeletedScope::class])]
 class Category extends Model
 {
-    use HelperModel;
     protected $table = 'categories';
-    protected $fillable = ['id', 'sequence', 'name', 'type', 'user_id','created_at','updated_at'];
-    public $timestamps = false;
-    protected $keyType = 'string';
+    protected $fillable = ['id','sequence','name','type','description','deleted','created_at','updated_at','user_id'];
+    protected $primaryKey = 'id';
     public $incrementing = false;
+    public $timestamps;
 
-    public function getCreatedAtAttribute()
-    {
-        return date('d/m/Y H:i:s', strtotime($this->attributes['created_at']));
-    }
-
-    public function getUpdatedAtAttribute()
-    {
-        return date('d/m/Y H:i:s', strtotime($this->attributes['updated_at']));
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function releases(){
-        return $this->hasMany(Release::class);
-    }
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new UserScope);
+    public function user(): BelongsTo{
+        return $this->belongsTo(User::class)->select(['id','name','username','email']);
     }
 }

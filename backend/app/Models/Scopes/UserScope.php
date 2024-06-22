@@ -8,10 +8,8 @@ use Illuminate\Database\Eloquent\Scope;
 
 class UserScope implements Scope
 {
-    public function apply(Builder $builder, Model $model)
+    public function apply(Builder $builder, Model $model): void
     {
-        if(auth()->check()){
-            $builder->where('user_id',auth()->user()->id);
-        }
+        $builder->where('user_id',auth()->user()->id);
     }
 }

@@ -1,2 +1,0 @@
-Acessando rota indevidamente.
-

@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class CategoryRequest extends FormRequest
 {
@@ -14,8 +13,8 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required','max:100'],
-            'type' => ['required',Rule::in(['INCOME','EXPENSE','BOTH'])]
+            'name' => ['required','min:3','max:40'],
+            'description' => ['nullable','min:3','max:100']
         ];
     }
 }

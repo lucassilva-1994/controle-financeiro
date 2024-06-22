@@ -2,27 +2,25 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Pagination\Paginator;
-class AppServiceProvider extends ServiceProvider {
 
+class AppServiceProvider extends ServiceProvider
+{
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register() {
-        config(['app.events_enabled' => true]);
+    public function register(): void
+    {
+        //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot() {
-        Paginator::useBootstrapFive();
-        Paginator::useBootstrapFour();
+    public function boot(): void
+    {
+        User::observe(UserObserver::class);
     }
-
 }
