@@ -10,22 +10,54 @@ class UserObserver
     use HelperModel;
     public function created(User $user): void
     {
-        self::paymentsAndCategories($user->id);
+        self::paymentsAndCategories($user->id->toString());
+    }
+
+    /**
+     * Handle the User "updated" event.
+     */
+    public function updated(User $user): void
+    {
+        //
+    }
+
+    /**
+     * Handle the User "deleted" event.
+     */
+    public function deleted(User $user): void
+    {
+        //
+    }
+
+    /**
+     * Handle the User "restored" event.
+     */
+    public function restored(User $user): void
+    {
+        //
+    }
+
+    /**
+     * Handle the User "force deleted" event.
+     */
+    public function forceDeleted(User $user): void
+    {
+        //
     }
 
     public static function paymentsAndCategories($user_id){
         $payments =  [
-            ['name' => 'Dinheiro', 'type' => 'BOTH', 'description' => 'Pagamento em dinheiro físico'],
-            ['name' => 'Cartão de Crédito', 'type' => 'BOTH', 'description' => 'Pagamento utilizando cartão de crédito'],
-            ['name' => 'Cartão de Débito', 'type' => 'BOTH', 'description' => 'Pagamento utilizando cartão de débito'],
-            ['name' => 'Transferência Bancária', 'type' => 'BOTH', 'description' => 'Transferência entre contas bancárias'],
-            ['name' => 'Boleto Bancário', 'type' => 'BOTH', 'description' => 'Pagamento através de boleto bancário'],
-            ['name' => 'Pix', 'type' => 'BOTH', 'description' => 'Pagamento instantâneo via Pix'],
-            ['name' => 'Cheque', 'type' => 'EXPENSE', 'description' => 'Pagamento através de cheque'],
-            ['name' => 'Vale Alimentação', 'type' => 'BOTH', 'description' => 'Pagamento utilizando vale alimentação'],
-            ['name' => 'Vale Refeição', 'type' => 'BOTH', 'description' => 'Pagamento utilizando vale refeição'],
-            ['name' => 'Criptomoeda', 'type' => 'BOTH', 'description' => 'Pagamento utilizando criptomoeda'],
-            ['name' => 'Outro', 'type' => 'BOTH', 'description' => 'Outro método de pagamento não especificado'],
+            ['name' => 'Dinheiro', 'type' => 'BOTH', 'description' => 'Pagamento em dinheiro físico', 'is_calculable' => true],
+            ['name' => 'Cartão de Crédito', 'type' => 'BOTH', 'description' => 'Pagamento utilizando cartão de crédito', 'is_calculable' => false],
+            ['name' => 'Cartão de Débito', 'type' => 'BOTH', 'description' => 'Pagamento utilizando cartão de débito', 'is_calculable' => true],
+            ['name' => 'Transferência Bancária', 'type' => 'BOTH', 'description' => 'Transferência entre contas bancárias', 'is_calculable' => true],
+            ['name' => 'Boleto Bancário', 'type' => 'BOTH', 'description' => 'Pagamento através de boleto bancário', 'is_calculable' => true],
+            ['name' => 'Pix', 'type' => 'BOTH', 'description' => 'Pagamento instantâneo via Pix', 'is_calculable' => true],
+            ['name' => 'Cheque', 'type' => 'EXPENSE', 'description' => 'Pagamento através de cheque', 'is_calculable' => false],
+            ['name' => 'Vale Alimentação', 'type' => 'BOTH', 'description' => 'Pagamento utilizando vale alimentação', 'is_calculable' => false],
+            ['name' => 'Vale Refeição', 'type' => 'BOTH', 'description' => 'Pagamento utilizando vale refeição', 'is_calculable' => false],
+            ['name' => 'Criptomoeda', 'type' => 'BOTH', 'description' => 'Pagamento utilizando criptomoeda', 'is_calculable' => true],
+            ['name' => 'Outro', 'type' => 'BOTH', 'description' => 'Outro método de pagamento não especificado', 'is_calculable' => true],
         ];
 
         $categories = [

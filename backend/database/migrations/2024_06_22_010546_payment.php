@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('name',40);
             $table->enum('type',['INCOME','EXPENSE','BOTH'])->default('EXPENSE');
             $table->string('description',100)->nullable();
+            $table->boolean('is_calculable')->default(true);
             $table->boolean('deleted')->default(0);
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();

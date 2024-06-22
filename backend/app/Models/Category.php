@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\Scopes\{NotDeletedScope, UserScope};
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany};
 
 #[ScopedBy([UserScope::class, NotDeletedScope::class])]
 class Category extends Model
@@ -18,5 +18,9 @@ class Category extends Model
 
     public function user(): BelongsTo{
         return $this->belongsTo(User::class)->select(['id','name','username','email']);
+    }
+
+    public function financialRecords(): BelongsToMany{
+        return $this->belongsToMany(FinancialRecord::class,'category_financial_record','category_id','financial_record_id');
     }
 }

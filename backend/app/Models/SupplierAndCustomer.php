@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\Scopes\{NotDeletedScope, UserScope};
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
 #[ScopedBy([UserScope::class, NotDeletedScope::class])]
 class SupplierAndCustomer extends Model
@@ -18,5 +18,9 @@ class SupplierAndCustomer extends Model
 
     public function user():BelongsTo{
         return $this->belongsTo(User::class);
+    }
+
+    public function financialRecords(): HasMany{
+        return $this->hasMany(FinancialRecord::class);
     }
 }
