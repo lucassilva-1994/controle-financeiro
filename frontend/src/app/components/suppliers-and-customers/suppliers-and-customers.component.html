@@ -1,0 +1,72 @@
+<app-layout title="Fornecedores/Clientes">
+    <div *ngIf="mode == 'view'">
+        <app-table 
+        [itens]="suppliersAndCustommers" 
+        [cols]="cols" path="/suppliers-and-customers" 
+        (deleteEvent)="delete($event)"
+        (showEvent)="show($event)"
+        ></app-table>
+    </div>
+    <div *ngIf="mode === 'new' || mode === 'edit'">
+        <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
+        <form [formGroup]="form" (submit)="onSubmit()">
+            <div class="row align-items-end">
+                <div class="col-md-4 mb-3">
+                    <div class="form-group">
+                        <label for="name">
+                            <i class="fas fa-briefcase"></i> Nome
+                        </label>
+                        <input id="name" formControlName="name" type="text" class="form-control" required
+                            placeholder="Nome">
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <div class="form-group">
+                        <label for="type">
+                            <i class="fas fa-list-alt"></i> Tipo
+                        </label>
+                        <select id="type" formControlName="type" class="form-control">
+                            <option value="SUPPLIER">Fornecedor</option>
+                            <option value="CUSTOMER">Cliente</option>
+                            <option value="BOTH">Ambos</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i> Email (Opcional)
+                        </label>
+                        <input id="email" formControlName="email" type="email" class="form-control"
+                            placeholder="Email">
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <div class="form-group">
+                        <label for="phone">
+                            <i class="fas fa-phone"></i> Telefone (Opcional)
+                        </label>
+                        <input id="phone" formControlName="phone" type="tel" class="form-control"
+                            placeholder="Telefone" (input)="phoneMask($event)">
+                    </div>
+                </div>
+                <div class="col-md-10 mb-3">
+                    <div class="form-group">
+                        <label for="description">
+                            <i class="fas fa-info-circle"></i> Descrição (Opcional)
+                        </label>
+                        <input id="description" formControlName="description" type="text" class="form-control"
+                            maxlength="100" placeholder="Descrição (Máximo 100 caracteres).">
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-save"></i> Salvar
+                    </button>
+                </div>
+            </div>
+        </form>
+        
+        <app-table [itens]="suppliersAndCustommers" [cols]="cols" path="/suppliers-and-customers" (deleteEvent)="delete($event)"></app-table>
+    </div>
+</app-layout>

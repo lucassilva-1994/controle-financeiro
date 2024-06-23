@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     use HelperModel;
     public function run(): void
     {
-        for($i = 0; $i<10; $i++){
+        for($i = 0; $i<1000; $i++){
             $name = self::replaceName(fake()->name());
             $email = self::generateEmail($name);
             $username = self::generateUsername($name);
@@ -21,7 +21,8 @@ class UserSeeder extends Seeder
                     'name' => $name,
                     'email' => $email,
                     'username' => $username,
-                    'password' => '12345678910'
+                    'password' => '12345678910',
+                    'active' => Arr::random([0,1])
                 ]);
             }
         }

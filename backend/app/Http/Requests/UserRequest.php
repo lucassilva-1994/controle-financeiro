@@ -16,8 +16,15 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => ['required','min:5','max:100'],
-            'username' => ['nullable','min:5','max:40', Rule::unique('users')],
-            'email' => ['required','min:5','max:100', Rule::unique('users')],
+            'username' => ['nullable','min:5','max:40','regex:/^[a-zA-Z0-9_]+$/', Rule::unique('users')],
+            'email' => ['required','min:5','max:100','email','email:dns', Rule::unique('users')],
+            'password' => ['required','min:5','max:20','confirmed']
+        ];
+    }
+
+    public function messages(): array{
+        return [
+            'username.regex' => 'O campo usuário não pode ter espaço e caracteres especiais.'
         ];
     }
 }

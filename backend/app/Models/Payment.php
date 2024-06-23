@@ -16,10 +16,6 @@ class Payment extends Model
     public $incrementing = false;
     public $timestamps;
 
-    protected $casts = [
-        'is_calculable' => 'boolean',
-    ];
-
     public function user(): BelongsTo{
         return $this->belongsTo(User::class);
     }

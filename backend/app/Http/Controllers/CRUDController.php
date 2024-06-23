@@ -19,8 +19,14 @@ class CRUDController extends Controller
     }
 
     public function show(){
-        return $this->model::get()->load($this->relationships);
+        $query = $this->model::query();
+        return response()->json([
+            'pages' => ceil($query->paginate()->total() / request()->query('perPage', 15)),
+            'total' => $query->paginate()->total(),
+            'itens' => $query->paginate(request()->query('perPage', 15))->load($this->relationships)
+        ]);
     }
+    
 
     public function showById(string $id){
         return $this->model::findOrFail($id)->load($this->relationships);

@@ -14,6 +14,7 @@ return new class extends Migration
             $table->integer('sequence');
             $table->string('name', 60);
             $table->enum('type', ['SUPPLIER', 'CUSTOMER', 'BOTH'])->default('BOTH');
+            $table->string('description',100)->nullable();
             $table->string('email',100)->nullable();
             $table->string('phone',15)->nullable();
             $table->boolean('deleted')->default(0);

@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 class SupplierAndCustomer extends Model
 {
     protected $table = 'suppliers_and_customers';
-    protected $fillable = ['id','sequence','name','type','email','phone','deleted','created_at','updated_at','user_id'];
+    protected $fillable = ['id','sequence','name','type','description','email','phone','deleted','created_at','updated_at','user_id'];
     protected $primaryKey = 'id';
-    public $incremeting = false;
+    public $incrementing = false;
     public $timestamps = false;
 
     public function user():BelongsTo{

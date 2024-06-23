@@ -14,7 +14,8 @@ class SupplierAndCustomerRequest extends FormRequest
         return [
             'name' => ['required','min:3','max:60'],
             'email' => ['nullable','min:3','max:100'],
-            'phone' => ['nullable','min:14','max:15']
+            'phone' => ['nullable','min:14','max:15'],
+            'description' => ['nullable','min:3','max:100']
         ];
     }
 }

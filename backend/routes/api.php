@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(UserController::class)->prefix('users')->group(function(){
     Route::post('sign-in','signIn');
-    Route::post('sign-up','signUp');
+    Route::post('sign-up','signUp')->name('signup');
     Route::get('active-user','activateUser');
 });
 

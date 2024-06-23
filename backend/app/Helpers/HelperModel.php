@@ -26,12 +26,15 @@ trait HelperModel
         if (isset($data['name']) && auth()->check()) {
             $data['name'] = self::ensureUniqueValue('name',$data['name'], $model);
         }
-        try {
-            $model::create($data);
-            return self::success();
-        } catch (\Throwable $th) {
-            return self::error();
-        }
+        
+        return request()->routeIs('signup') ? $model::create($data) : (function() use ($model, $data) {
+            try {
+                $model::create($data);
+                return self::success();
+            } catch (\Throwable $th) {
+                return self::error();
+            }
+        })();
     }
 
     public static function updateRecord(string $model, array $data, array $where){
