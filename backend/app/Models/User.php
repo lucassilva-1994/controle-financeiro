@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -20,13 +22,21 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
+    public function accesses():HasMany{
+        return $this->hasMany(Access::class);
+    }
+
     public function getJWTCustomClaims()
     {
+        $latestAccess = $this->accesses()->orderByDesc('sequence')->first();
         return [
             'name' => $this->name,
             'email' => $this->email,
             'username' => $this->username,
-            'user_since' => date('d/m/Y H:i:s', strtotime($this->created_at))
+            'member_since' => formatBrazilianDate($this->created_at),
+            'last_login_time' =>  $latestAccess ? formatBrazilianDate($latestAccess->created_at) : 'Primeiro acesso',
+            'last_login_locale' => $latestAccess->city ??  'Primeiro acesso',
+            'last_updated_at' => $this->updated_at ? formatBrazilianDate($this->updated_at) : 'Nenhuma alteração realizada',
         ];
     }
 }

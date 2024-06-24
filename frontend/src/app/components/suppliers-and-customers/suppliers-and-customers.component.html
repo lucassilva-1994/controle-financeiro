@@ -3,6 +3,7 @@
         <app-table 
         [itens]="suppliersAndCustommers" 
         [cols]="cols" path="/suppliers-and-customers" 
+        [pages]="pages"
         (deleteEvent)="delete($event)"
         (showEvent)="show($event)"
         ></app-table>

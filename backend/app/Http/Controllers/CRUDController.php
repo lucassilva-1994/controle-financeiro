@@ -11,15 +11,23 @@ class CRUDController extends Controller
     private $model;
     private $request;
     private $relationships;
+    private $fields;
 
-    public function __construct($model, $request, $relationships = []) {
+    public function __construct($model, $request, $relationships = [], $fields = []) {
         $this->model = $model;
         $this->request = $request;
         $this->relationships = $relationships;
+        $this->fields = $fields;
     }
 
     public function show(){
         $query = $this->model::query();
+        if(request()->has('search')){
+            $search = request()->search;
+            foreach($this->fields as $field){
+                $query->orWhere($field,'like', "%$search%");
+            }
+        }
         return response()->json([
             'pages' => ceil($query->paginate()->total() / request()->query('perPage', 15)),
             'total' => $query->paginate()->total(),

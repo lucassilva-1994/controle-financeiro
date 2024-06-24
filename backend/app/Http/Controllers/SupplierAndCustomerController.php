@@ -8,6 +8,6 @@ use App\Models\SupplierAndCustomer;
 class SupplierAndCustomerController extends CRUDController
 {
     public function __construct() {
-        parent::__construct(SupplierAndCustomer::class, SupplierAndCustomerRequest::class,['user']);
+        parent::__construct(SupplierAndCustomer::class, SupplierAndCustomerRequest::class,['user'],['name','type','description','email','phone']);
     }
 }

@@ -3,6 +3,7 @@
         <app-table 
         [itens]="payments" 
         [cols]="cols" path="/payments" 
+        [pages]="pages"
         (deleteEvent)="delete($event)"
         (showEvent)="show($event)"
         ></app-table>

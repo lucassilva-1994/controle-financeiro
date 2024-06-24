@@ -32,6 +32,7 @@ trait HelperModel
                 $model::create($data);
                 return self::success();
             } catch (\Throwable $th) {
+                return $th->getMessage();
                 return self::error();
             }
         })();

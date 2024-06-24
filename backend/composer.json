@@ -9,7 +9,8 @@
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
-        "tymon/jwt-auth": "^2.1"
+        "tymon/jwt-auth": "^2.1",
+        "jenssegers/agent": "^2.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -25,7 +26,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/helpers/HelperGeneric.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

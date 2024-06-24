@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
+import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-table',
@@ -9,17 +10,20 @@ import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
   styleUrls: ['./table.component.css'],
   providers: [GenericPipe, DatePipe]
 })
-export class TableComponent {
+export class TableComponent implements OnInit, OnDestroy {
   @Input() cols: { key: string, label: string, icon?: string }[] = [];
   @Input() itens: any[] = [];
   @Input() path: string = '';
   id: string = '';
   mode: string;
   @Output() deleteEvent = new EventEmitter<{ id: string }>();
-  @Output() showEvent = new EventEmitter<{perPage: number}>();
+  @Output() showEvent = new EventEmitter<{ perPage: number, page: number, search: string }>();
   perPage: number = 10;
   page: number = 1;
-  pages: number;
+  search: string;
+  private searchSubject: Subject<string> = new Subject();
+  private searchSubscription: Subscription;
+  @Input() pages: number;
   total: number;
   options: Number[] = [5, 10, 25, 50, 100];
 
@@ -29,8 +33,28 @@ export class TableComponent {
     this.mode = this.router.snapshot.data['mode'];
   }
 
-  show(){
-    this.showEvent.emit({ perPage: this.perPage});
+  ngOnInit(): void {
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(3000), // 3 segundos
+      distinctUntilChanged()
+    ).subscribe(search => {
+      this.search = search;
+      this.show();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  filter(): void {
+    this.searchSubject.next(this.search);
+  }
+
+  show(): void {
+    this.showEvent.emit({ perPage: this.perPage, page: this.page, search: this.search });
   }
 
   delete(id: string) {
@@ -67,6 +91,7 @@ export class TableComponent {
   changePage(page: number) {
     if (page >= 1 && page <= this.pages) {
       this.page = page;
+      this.show();
     }
   }
 

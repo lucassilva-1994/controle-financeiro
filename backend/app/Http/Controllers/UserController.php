@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\HelperModel;
 use App\Http\Requests\UserRequest;
+use App\Models\Access;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -29,6 +30,7 @@ class UserController extends Controller
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['Login e senha inválidos.'], 401);
         }
+        self::createAccess();
         return response()->json($token, 200);
     }
 
@@ -37,6 +39,18 @@ class UserController extends Controller
         if (self::createRecord(User::class, $request->all())) {
             return response()->json(['message' => "Cadastro realizado com sucesso, foi enviado um link de ativação para o e-mail {$request->email}, o link expira em: " . now()->addDay(1)->format('d/m/y H:i:s')], 201);
         }
+    }
+
+    private static function createAccess()
+    {
+        $agent = new \Jenssegers\Agent\Agent();
+        $data = json_decode(file_get_contents("http://ipinfo.io/json"), true);
+        self::createRecord(Access::class, [
+            'city' => $data['city'] . ' ' . $data['region'] . ' ' . $data['country'],
+            'ip_address' => $data['ip'],
+            'platform' => $agent->platform(),
+            'browser' => $agent->browser() . ' - ' . $agent->version($agent->browser())
+        ]);
     }
 
     public function activateUser(Request $request)

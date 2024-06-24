@@ -26,6 +26,7 @@ export class SuppliersAndCustomersComponent implements OnInit {
   id: string;
   suppliersAndCustommers: SupplierAndCustomer[] = [];
   backendErrors: string[] = [];
+  pages: number;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -39,13 +40,16 @@ export class SuppliersAndCustomersComponent implements OnInit {
         this.showById(this.id);
       }
     });
-    this.mode === 'view' ? this.show({perPage:10}) : this.recentRecords();
+    this.mode === 'view' ? this.show({perPage:10, page:1, search:''}) : this.recentRecords();
   }
 
 
-  show(event: {perPage:number}) {
-    this.supplierAndCustomerService.show(event.perPage)
-      .pipe(tap(response => this.suppliersAndCustommers = response.itens))
+  show(event: {perPage:number, page: number, search: string}) {
+    this.supplierAndCustomerService.show(event.perPage, event.page, event.search)
+      .pipe(tap(response => {
+        this.suppliersAndCustommers = response.itens;
+        this.pages = response.pages
+      }))
       .subscribe();
   }
 
@@ -73,7 +77,7 @@ export class SuppliersAndCustomersComponent implements OnInit {
 
   onSubmit() {
     const form = this.form.getRawValue() as SupplierAndCustomer;
-    const handleSuccess = () => { this.mode === 'new' ? this.form.reset() : null; this.show({ perPage: 10 }); this.backendErrors = []; };
+    const handleSuccess = () => { this.mode === 'new' ? this.form.reset() : null; this.show({perPage:10, page:1, search:''}); this.backendErrors = []; };
     const handleErrors = (error: HttpErrorResponse) => {
       this.backendErrors = Object.values(error.error.errors);
       return of(null);
@@ -84,7 +88,7 @@ export class SuppliersAndCustomersComponent implements OnInit {
 
   delete(event: { id: string }) {
     this.supplierAndCustomerService.delete(event.id)
-      .pipe(tap(() => this.show({perPage:10}))).subscribe();
+      .pipe(tap(() => this.show({perPage:10, page:1, search:''}))).subscribe();
   }
 
   phoneMask(event: Event): void {

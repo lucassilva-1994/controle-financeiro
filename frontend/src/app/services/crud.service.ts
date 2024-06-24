@@ -1,9 +1,8 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { Inject, Injectable, InjectionToken, Optional } from "@angular/core";
 import { Observable, map, take } from "rxjs";
 import { environment } from "src/environments/environment";
 export const RESOURCE_URL = new InjectionToken<string>('RESOURCE_URL');
-
 @Injectable({ providedIn: 'root' })
 export class CrudService<Model> {
     private apiUrl: string;
@@ -16,7 +15,7 @@ export class CrudService<Model> {
         const params = new HttpParams()
             .set('perPage', perPage)
             .set('page', page)
-            .set('search', search);
+            .set('search', this.translate(search));
         return this.httpClient.get<{ pages: number, total: number, search: string, itens: Model[] }>(`${this.apiUrl}/show`, { params })
             .pipe(take(1));
     }
@@ -55,5 +54,26 @@ export class CrudService<Model> {
     delete(id: string): Observable<{ message: string }> {
         return this.httpClient.delete<{ message: string }>(`${this.apiUrl}/delete/${id}`)
             .pipe(take(1));
+    }
+
+    translate(value: string): string | number {
+        switch (value) {
+            case 'ENTRADA':
+                return 'INCOME';
+            case 'SAÍDA':
+                return 'EXPENSE';
+            case 'FORNECEDOR':
+                return 'SUPPLIER';
+            case 'CLIENTE':
+                return 'CUSTOMER';
+            case 'AMBOS':
+                return 'BOTH';
+            case 'SIM':
+                return 1;
+            case 'NÃO':
+                return 0;
+            default:
+                return String(value);
+        }
     }
 }

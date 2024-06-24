@@ -24,6 +24,7 @@ export class CategoriesComponent implements OnInit {
   id: string;
   categories: Category[] = [];
   backendErrors: string[] = [];
+  pages: number;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -37,13 +38,16 @@ export class CategoriesComponent implements OnInit {
         this.showById(this.id);
       }
     });
-    this.mode === 'view' ? this.show({ perPage: 10 }) : this.recentRecords();
+    this.mode === 'view' ? this.show({ perPage: 10, page:1 , search:''}) : this.recentRecords();
   }
 
 
-  show(event: { perPage: number }) {
-    this.categoryService.show(event.perPage)
-      .pipe(tap(response => this.categories = response.itens))
+  show(event: { perPage: number, page: number, search: string }) {
+    this.categoryService.show(event.perPage, event.page, event.search)
+      .pipe(tap(response => {
+        this.categories = response.itens;
+        this.pages = response.pages;
+      }))
       .subscribe();
   }
 
@@ -73,7 +77,7 @@ export class CategoriesComponent implements OnInit {
 
   onSubmit() {
     const form = this.form.getRawValue() as Category;
-    const handleSuccess = () => { this.mode === 'new' ? this.form.reset() : null; this.show({ perPage: 10 }); this.backendErrors = []; };
+    const handleSuccess = () => { this.mode === 'new' ? this.form.reset() : null; this.show({ perPage: 10, page:1, search:'' }); this.backendErrors = []; };
     const handleErrors = (error: HttpErrorResponse) => {
       this.backendErrors = Object.values(error.error.errors);
       return of(null);
@@ -86,7 +90,7 @@ export class CategoriesComponent implements OnInit {
     this.categoryService.delete(event.id)
       .pipe(
         tap(() => {
-          this.show({ perPage: 10 });
+          this.show({ perPage: 10, page:1, search:''});
         })
       ).subscribe();
   }

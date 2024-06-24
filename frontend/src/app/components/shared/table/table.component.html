@@ -7,15 +7,15 @@
             <i class="fas fa-table"></i> Listar registros
         </a>
         <span class="mx-2"></span>
-        <a *ngIf="mode !== 'new'" [routerLink]="[path,'new']" class="btn btn-success btn-sm">
+        <a *ngIf="mode === 'edit'" [routerLink]="[path,'new']" class="btn btn-success btn-sm">
             <i class="fas fa-plus"></i> Novo registro
         </a>
     </div>
 </div>
 <div class="row align-items-center" *ngIf="mode === 'view'">
-    <div class="col-md-10 d-flex justify-content-end mb-3">
+    <div class="col-md-8 d-flex justify-content-end mb-3">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Digite sua busca aqui">
+            <input type="search" class="form-control" [(ngModel)]="search" (keyup)="filter()" placeholder="Digite sua busca aqui">
             <span class="input-group-text"><i class="fas fa-search"></i></span>
         </div>
     </div>
@@ -27,8 +27,12 @@
             <span class="input-group-text"><i class="fas fa-list"></i></span>
         </div>
     </div>
+    <div class="col-md-2 mb-3">
+        <a [routerLink]="[path,'new']" class="btn btn-success btn-md w-100">
+            <i class="fas fa-plus"></i> Novo registro
+        </a>
+    </div>
 </div>
-
 
 <div class="table-responsive mt-1 mb-3" style="max-height: 400px; overflow-y: auto;">
     <table class="table table-striped">
@@ -61,4 +65,26 @@
             </tr>
         </tbody>
     </table>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3" *ngIf="pages != 0 && mode == 'view'">
+    <div class="dataTables_info">
+        Página {{ page }} de {{ pages }}
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-end">
+            <li class="page-item" [class.disabled]="page === 1">
+                <a class="page-link" (click)="changePage(page - 1)" style="cursor: pointer;">
+                    <span>&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item" *ngFor="let p of pageNumbers()" [class.active]="p === page">
+                <a class="page-link" (click)="changePage(p)" style="cursor: pointer;">{{ p }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="page === pages">
+                <a class="page-link" (click)="changePage(page + 1)" style="cursor: pointer;">
+                    <span>&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
