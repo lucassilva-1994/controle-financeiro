@@ -7,6 +7,8 @@ import { MessageComponent } from "./message/message.component";
 import { MessagesValidatorsComponent } from './messages-validators/messages-validators.component';
 import { LayoutComponent } from './layout/layout.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { CardFormComponent } from './card-form/card-form.component';
+import { ButtonSubmitComponent } from './button-submit/button-submit.component';
 
 
 @NgModule({
@@ -15,7 +17,9 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
         SpinnerComponent,
         MessageComponent,
         MessagesValidatorsComponent,
-        LayoutComponent
+        LayoutComponent,
+        CardFormComponent,
+        ButtonSubmitComponent
     ], 
     imports: [
         CommonModule,
@@ -28,7 +32,9 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
         SpinnerComponent,
         MessageComponent,
         MessagesValidatorsComponent,
-        LayoutComponent
+        LayoutComponent,
+        CardFormComponent,
+        ButtonSubmitComponent
     ]
 })
 export class SharedModule{}

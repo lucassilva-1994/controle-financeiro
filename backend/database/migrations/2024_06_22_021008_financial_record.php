@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('installment_total')->default(1);
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();
+            $table->longText('details')->nullable();
             $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreignUuid('payment_id')->references('id')->on('payments');
             $table->foreignUuid('supplier_customer_id')->nullable()->references('id')->on('suppliers_and_customers');

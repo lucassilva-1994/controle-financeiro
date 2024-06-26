@@ -21,6 +21,6 @@ class Payment extends Model
     }
 
     public function financialRecords(): HasMany{
-        return $this->hasMany(FinancialRecord::class);
+        return $this->hasMany(FinancialRecord::class,'payment_id','id');
     }
 }

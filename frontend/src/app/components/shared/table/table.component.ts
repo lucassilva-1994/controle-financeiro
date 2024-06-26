@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, formatCurrency } from '@angular/common';
 import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs'
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
-  providers: [GenericPipe, DatePipe]
+  providers: [GenericPipe, DatePipe, CurrencyPipe]
 })
 export class TableComponent implements OnInit, OnDestroy {
   @Input() cols: { key: string, label: string, icon?: string }[] = [];
@@ -28,7 +28,10 @@ export class TableComponent implements OnInit, OnDestroy {
   options: Number[] = [5, 10, 25, 50, 100];
 
   constructor(
-    private router: ActivatedRoute, private genericPipe: GenericPipe, private datePipe: DatePipe) {
+    private router: ActivatedRoute, 
+    private genericPipe: GenericPipe, 
+    private datePipe: DatePipe,
+    private currencyPipe:CurrencyPipe) {
     this.id = this.router.snapshot.params['id'];
     this.mode = this.router.snapshot.data['mode'];
   }
@@ -77,6 +80,9 @@ export class TableComponent implements OnInit, OnDestroy {
       case 'email':
       case 'phone':
         return item[key] ?? 'Não informado';
+      case 'financial_records_sum_amount':
+        return this.currencyPipe.transform(item[key],'BRL') 
+        //return  formatCurrency(item[key], 'pt-BR', 'BRL');;
       default:
         return item[key];
     }

@@ -1,0 +1,4 @@
+<button type="submit" class="btn btn-success w-100">
+    <i class="fas" [ngClass]="mode === 'edit' ? 'fa-sync-alt' : 'fa-plus-circle'"></i>
+    {{ mode === 'edit' ? 'Atualizar' : 'Cadastrar' }}
+</button>

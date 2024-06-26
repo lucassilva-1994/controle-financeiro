@@ -12,12 +12,16 @@ class CRUDController extends Controller
     private $request;
     private $relationships;
     private $fields;
+    private $withCount;
+    private $withSum;
 
-    public function __construct($model, $request, $relationships = [], $fields = []) {
+    public function __construct($model, $request, $relationships = [], $fields = [], $withCount = [], $withSum = []) {
         $this->model = $model;
         $this->request = $request;
         $this->relationships = $relationships;
         $this->fields = $fields;
+        $this->withCount = $withCount;
+        $this->withSum = $withSum;
     }
 
     public function show(){
@@ -26,6 +30,14 @@ class CRUDController extends Controller
             $search = request()->search;
             foreach($this->fields as $field){
                 $query->orWhere($field,'like', "%$search%");
+            }
+        }
+        if(!empty($this->withCount)){
+            $query->withCount($this->withCount);
+        }
+        if (!empty($this->withSum)) {
+            foreach ($this->withSum as $relation => $column) {
+                $query->withSum($relation, $column);
             }
         }
         return response()->json([

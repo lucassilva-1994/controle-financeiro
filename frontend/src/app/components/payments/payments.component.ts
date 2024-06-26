@@ -17,6 +17,8 @@ export class PaymentsComponent implements OnInit {
     { key: 'type', label: 'Tipo', icon: 'fas fa-list-alt' },
     { key: 'is_calculable', label: 'Calculado?', icon: 'fas fa-calculator' },
     { key: 'description', label: 'Descrição', icon: 'fas fa-info-circle' },
+    { key: 'financial_records_count', label: 'Registros', icon: 'fas fa-database' },
+    { key: 'financial_records_sum_amount', label: 'Movimentações', icon: 'fas fa-money-bill-wave' },
     { key: 'created_at', label: 'Criado em', icon: 'fas fa-calendar-plus' },
     { key: 'updated_at', label: 'Alterado em', icon: 'fas fa-calendar-check' },
   ];

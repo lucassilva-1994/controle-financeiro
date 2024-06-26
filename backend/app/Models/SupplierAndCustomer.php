@@ -21,6 +21,6 @@ class SupplierAndCustomer extends Model
     }
 
     public function financialRecords(): HasMany{
-        return $this->hasMany(FinancialRecord::class);
+        return $this->hasMany(FinancialRecord::class,'supplier_customer_id','id');
     }
 }
