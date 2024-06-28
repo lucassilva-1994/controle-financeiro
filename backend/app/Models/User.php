@@ -13,6 +13,7 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = ['id','sequence','name','email','username','password','photo','token','active','token_expires_at','created_at','updated_at'];
     public $incrementing = false;
     public $timestamps = false;
+    protected $hidden = ['password','sequence','id','token','token_expires_at','created_at','updated_at'];
     protected $casts = [
         'active' => 'boolean',
     ];

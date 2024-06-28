@@ -26,16 +26,17 @@ trait HelperModel
         if (isset($data['name']) && auth()->check()) {
             $data['name'] = self::ensureUniqueValue('name',$data['name'], $model);
         }
-        
-        return request()->routeIs('signup') ? $model::create($data) : (function() use ($model, $data) {
-            try {
-                $model::create($data);
-                return self::success();
-            } catch (\Throwable $th) {
-                return $th->getMessage();
-                return self::error();
-            }
-        })();
+        try {
+            return response()->json([
+                'message' => 'Os dados foram cadastrados com sucesso.',
+                'data' => $model::updateOrCreate($data)
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Houve um problema ao cadastrar os dados. Por favor, tente novamente mais tarde.',
+                'data' => null
+            ], 400);
+        }
     }
 
     public static function updateRecord(string $model, array $data, array $where){
@@ -52,18 +53,33 @@ trait HelperModel
         }
         $data['updated_at'] = now();
         try {
-            $model::updateOrCreate($where, $data);
-            return self::success();
+            return response()->json([
+                'message' => 'As alterações foram salvas com sucesso.',
+                'data' => $model::updateOrCreate($where, $data)
+            ], 200);
         } catch (\Throwable $th) {
-            return self::error();
+            return response()->json([
+                'message' => 'Ocorreu um erro durante a atualização. Por favor, tente novamente.',
+                'data' => null
+            ], 400);
         }
     }
 
     public static function markAsDeleted(string $model, array $where) {
         $data['deleted'] = 1;
         $data['updated_at'] = now();
-        return $model::where($where)->update($data);
+        try {
+            $model::updateOrCreate($where, $data);
+            return response()->json([
+                'message' => 'Registro excluído com sucesso.'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Não foi possível excluir o registro. Por favor, tente novamente.'
+            ], 400); 
+        }
     }
+    
 
     public static function setSequenceNumber(string $model) {
         return $model::max('sequence') + 1;

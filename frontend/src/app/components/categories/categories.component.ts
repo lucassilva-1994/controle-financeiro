@@ -24,6 +24,7 @@ export class CategoriesComponent implements OnInit {
   mode: string;
   form: FormGroup;
   id: string;
+  message: string;
   categories: Category[] = [];
   backendErrors: string[] = [];
   pages: number;
@@ -40,6 +41,9 @@ export class CategoriesComponent implements OnInit {
         this.showById(this.id);
       }
     });
+    this.categoryService.message$.subscribe( message => {
+      this.message = message
+    })
     this.mode === 'view' ? this.show({ perPage: 10, page:1 , search:''}) : this.recentRecords();
   }
 

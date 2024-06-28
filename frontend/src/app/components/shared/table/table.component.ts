@@ -81,8 +81,7 @@ export class TableComponent implements OnInit, OnDestroy {
       case 'phone':
         return item[key] ?? 'Não informado';
       case 'financial_records_sum_amount':
-        return this.currencyPipe.transform(item[key],'BRL') 
-        //return  formatCurrency(item[key], 'pt-BR', 'BRL');;
+        return this.currencyPipe.transform(item[key] ?? 0,'BRL') 
       default:
         return item[key];
     }

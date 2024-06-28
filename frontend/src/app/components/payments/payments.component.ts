@@ -26,6 +26,7 @@ export class PaymentsComponent implements OnInit {
   mode: string;
   form: FormGroup;
   id: string;
+  message: string;
   payments: Payment[] = [];
   backendErrors: string[] = [];
   pages: number;
@@ -42,6 +43,9 @@ export class PaymentsComponent implements OnInit {
         this.showById(this.id);
       }
     });
+    this.paymentService.message$.subscribe( message => {
+      this.message = message
+    })
     this.mode === 'view' ? this.show({perPage:10, page:1, search: ''}) : this.recentRecords();
   }
 

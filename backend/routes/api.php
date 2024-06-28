@@ -37,5 +37,6 @@ Route::middleware('auth:api')->group(function(){
         Route::post('store','store');
         Route::put('update/{id}','update');
         Route::delete('delete/{id}','delete');
+        Route::get('calculate-income-expense','calculateIncomeExpense');
     });
 });

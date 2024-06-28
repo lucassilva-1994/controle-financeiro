@@ -1,1 +1,35 @@
-<app-layout title="Registros financeiros"></app-layout>
+<app-layout title="Registros financeiros">
+    <app-message [message]="message"></app-message>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card h-100 border-primary shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <i class="fas fa-arrow-alt-circle-up me-2"></i> <span class="h5">Entradas</span>
+                </div>
+                <div class="card-body d-flex justify-content-center align-items-center">
+                    <p class="fs-4 text-primary fw-bold">{{ total_income | currency:'BRL':'symbol':'1.2-2' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 border-danger shadow">
+                <div class="card-header bg-danger text-white text-center">
+                    <i class="fas fa-arrow-alt-circle-down me-2"></i> <span class="h5">Saídas</span>
+                </div>
+                <div class="card-body d-flex justify-content-center align-items-center">
+                    <p class="fs-4 text-danger fw-bold">{{ total_expense | currency:'BRL':'symbol':'1.2-2' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 border-success shadow">
+                <div class="card-header bg-success text-white text-center">
+                    <i class="fas fa-balance-scale me-2"></i> <span class="h5">Saldo</span>
+                </div>
+                <div class="card-body d-flex justify-content-center align-items-center">
+                    <p class="fs-4 text-success fw-bold">{{ balance | currency:'BRL':'symbol':'1.2-2' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-layout>

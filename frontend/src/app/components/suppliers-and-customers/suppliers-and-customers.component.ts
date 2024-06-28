@@ -28,6 +28,7 @@ export class SuppliersAndCustomersComponent implements OnInit {
   suppliersAndCustommers: SupplierAndCustomer[] = [];
   backendErrors: string[] = [];
   pages: number;
+  message?: string;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -41,6 +42,9 @@ export class SuppliersAndCustomersComponent implements OnInit {
         this.showById(this.id);
       }
     });
+    this.supplierAndCustomerService.message$.subscribe( message => {
+      this.message = message
+    })
     this.mode === 'view' ? this.show({perPage:10, page:1, search:''}) : this.recentRecords();
   }
 
@@ -78,7 +82,7 @@ export class SuppliersAndCustomersComponent implements OnInit {
 
   onSubmit() {
     const form = this.form.getRawValue() as SupplierAndCustomer;
-    const handleSuccess = () => { this.mode === 'new' ? this.form.reset() : null; this.show({perPage:10, page:1, search:''}); this.backendErrors = []; };
+    const handleSuccess = () => { this.mode === 'new' ? this.form.reset() : null; this.show({perPage:10, page:1, search:''}); this.backendErrors = [];};
     const handleErrors = (error: HttpErrorResponse) => {
       this.backendErrors = Object.values(error.error.errors);
       return of(null);

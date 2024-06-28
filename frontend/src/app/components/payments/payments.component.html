@@ -1,4 +1,5 @@
 <app-layout title="Formas de pagamentos">
+    <app-message [message]="message"></app-message>
     <div *ngIf="mode == 'view'">
         <app-table 
         [itens]="payments" 
