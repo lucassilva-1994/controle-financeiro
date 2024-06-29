@@ -1,4 +1,4 @@
-<app-layout title="Categorias">
+<app-layout title="Categorias{{ total ? ' (' + total + ')' : '' }}">
     <app-message [message]="message"></app-message>
     <div *ngIf="mode == 'view'">
         <app-table [itens]="categories" [cols]="cols" path="/categories" [pages]="pages" (deleteEvent)="delete($event)"

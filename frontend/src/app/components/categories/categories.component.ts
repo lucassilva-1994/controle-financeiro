@@ -28,6 +28,7 @@ export class CategoriesComponent implements OnInit {
   categories: Category[] = [];
   backendErrors: string[] = [];
   pages: number;
+  total: number;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -53,6 +54,7 @@ export class CategoriesComponent implements OnInit {
       .pipe(tap(response => {
         this.categories = response.itens;
         this.pages = response.pages;
+        this.total = response.total;
       }))
       .subscribe();
   }

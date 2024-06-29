@@ -1,16 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Helpers\HelperModel;
 use App\Http\Requests\UserRequest;
-use App\Models\Access;
-use App\Models\User;
+use App\Models\{Access,User};
+use App\Traits\ModelTrait;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    use HelperModel;
+    use ModelTrait;
     public function signIn()
     {
         $loginField = filter_var(request('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
@@ -66,6 +64,10 @@ class UserController extends Controller
         if (self::updateRecord(User::class, [], ['id' => $user->id])) {
             return response()->json(['message' => 'Usuário ativado com sucesso.'], 200);
         }
+    }
+
+    public function restorePassword(UserRequest $request){
+        return self::updateRecord(User::class, $request->only('password'),['id'=> auth()->user()->id]);
     }
 
     public function signOut()

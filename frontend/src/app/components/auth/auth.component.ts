@@ -16,6 +16,7 @@ export class AuthComponent implements OnInit {
   formSignUp: FormGroup;
   formForgotPassword: FormGroup;
   authMode: string;
+  loading: boolean = false;
   messageSuccess: string;
   backendErrors: string[] = [];
   constructor(
@@ -41,6 +42,9 @@ export class AuthComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]]
     })
     this.authMode = this.router.snapshot.data['authMode'];
+    this.userService.loading$.subscribe(loading => {
+      this.loading = loading; 
+    });
   }
 
   signIn(){

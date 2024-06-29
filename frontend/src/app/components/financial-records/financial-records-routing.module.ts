@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FinancialRecordsComponent } from './financial-records.component';
+import { PaymentResolver } from 'src/app/resolvers/payment.resolver';
 
 const routes: Routes = [
   { 
@@ -8,7 +9,8 @@ const routes: Routes = [
     component: FinancialRecordsComponent,
     title: 'Registros financeiros',
     data: {
-      mode: 'view'
+      mode: 'view',
+      payments: PaymentResolver
     }
   },
   {

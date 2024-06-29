@@ -28,10 +28,10 @@ export class TableComponent implements OnInit, OnDestroy {
   options: Number[] = [5, 10, 25, 50, 100];
 
   constructor(
-    private router: ActivatedRoute, 
-    private genericPipe: GenericPipe, 
+    private router: ActivatedRoute,
+    private genericPipe: GenericPipe,
     private datePipe: DatePipe,
-    private currencyPipe:CurrencyPipe) {
+    private currencyPipe: CurrencyPipe) {
     this.id = this.router.snapshot.params['id'];
     this.mode = this.router.snapshot.data['mode'];
   }
@@ -69,7 +69,8 @@ export class TableComponent implements OnInit, OnDestroy {
   itemValue(item: any, key: string): any {
     switch (key) {
       case 'description':
-        return item[key] ?? 'Sem descrição';
+        const description = item[key] ?? '-';
+        return description.length > 20 ? description.slice(0, 20) + '...' : description;
       case 'is_calculable':
       case 'type':
         return this.genericPipe.transform(item[key]);
@@ -79,9 +80,9 @@ export class TableComponent implements OnInit, OnDestroy {
         return item[key] ? this.datePipe.transform(item[key], 'dd/MM/yyyy HH:mm:ss') : 'Sem alteração';
       case 'email':
       case 'phone':
-        return item[key] ?? 'Não informado';
+        return item[key] ?? '-';
       case 'financial_records_sum_amount':
-        return this.currencyPipe.transform(item[key] ?? 0,'BRL') 
+        return this.currencyPipe.transform(item[key] ?? 0, 'BRL')
       default:
         return item[key];
     }

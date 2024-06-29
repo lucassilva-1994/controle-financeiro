@@ -13,11 +13,11 @@ class FinancialRecordController extends CRUDController
     public function calculateIncomeExpense(){
         $totalIncome = round(FinancialRecord::whereHas('payment', function ($query) {
             $query->where('is_calculable', true);
-        })->where('type', 'income')->where('payment_status', 'PAID')->sum('amount'), 2);
+        })->where('financial_record_type', 'income')->where('paid', true)->sum('amount'), 2);
     
         $totalExpense = round(FinancialRecord::whereHas('payment', function ($query) {
             $query->where('is_calculable', true);
-        })->where('type', 'expense')->where('payment_status', 'PAID')->sum('amount'), 2);
+        })->where('financial_record_type', 'expense')->where('paid', true)->sum('amount'), 2);
     
         $balance = round($totalIncome - $totalExpense, 2);
         return response()->json([

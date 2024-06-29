@@ -2,12 +2,12 @@
 
 namespace App\Observers;
 
-use App\Helpers\HelperModel;
 use App\Models\{Category, Payment, SupplierAndCustomer, User};
+use App\Traits\ModelTrait;
 
 class UserObserver
 {
-    use HelperModel;
+    use ModelTrait;
     public function created(User $user): void
     {
         self::paymentsAndCategoriesAndSuppliers($user->id->toString());
@@ -45,7 +45,8 @@ class UserObserver
         //
     }
 
-    public static function paymentsAndCategoriesAndSuppliers($user_id){
+    public static function paymentsAndCategoriesAndSuppliers($user_id)
+    {
         $payments =  [
             ['name' => 'Dinheiro', 'type' => 'BOTH', 'description' => 'Pagamento em dinheiro físico', 'is_calculable' => true],
             ['name' => 'Cartão de Crédito', 'type' => 'BOTH', 'description' => 'Pagamento utilizando cartão de crédito', 'is_calculable' => false],
@@ -68,7 +69,7 @@ class UserObserver
             ['name' => 'Payoneer', 'type' => 'BOTH', 'description' => 'Pagamento utilizando Payoneer', 'is_calculable' => true],
             ['name' => 'Western Union', 'type' => 'BOTH', 'description' => 'Transferência de dinheiro via Western Union', 'is_calculable' => true]
         ];
-        
+
 
         $categories = [
             ['name' => 'Salário', 'type' => 'INCOME', 'description' => 'Recebimento mensal de salário'],
@@ -155,18 +156,18 @@ class UserObserver
             ['name' => 'Total', 'description' => 'Fornecedor de petróleo, gás e produtos energéticos', 'email' => 'contact@total.com', 'type' => 'BOTH'],
             ['name' => 'Schlumberger', 'description' => 'Fornecedor de serviços e tecnologia para a indústria de petróleo', 'email' => 'contact@slb.com', 'type' => 'BOTH']
         ];
-        
-        foreach($payments as $payment){
+
+        foreach ($payments as $payment) {
             $payment['user_id'] = $user_id;
             self::createRecord(Payment::class, $payment);
         }
 
-        foreach($categories as $category){
+        foreach ($categories as $category) {
             $category['user_id'] = $user_id;
             self::createRecord(Category::class, $category);
         }
 
-        foreach($suppliers as $supplier) {
+        foreach ($suppliers as $supplier) {
             $supplier['user_id'] = $user_id;
             self::createRecord(SupplierAndCustomer::class, $supplier);
         }

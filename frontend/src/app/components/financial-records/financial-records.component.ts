@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FinancialRecordService } from 'src/app/services/financial-record.service';
-import { CurrencyPipe } from '@angular/common';
+import { Payment } from 'src/app/models/Payment';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-financial-records',
@@ -12,9 +13,13 @@ export class FinancialRecordsComponent implements OnInit{
   total_expense: number;
   balance: number;
   message: string;
-  constructor(private financialRecordService: FinancialRecordService){
+  payments: Payment[] = [];
+  constructor(private financialRecordService: FinancialRecordService, private route: ActivatedRoute){
   }
   ngOnInit(): void {
+    this.route.data.subscribe(data => {
+      console.log(data['payments'])
+    });
     this.financialRecordService.message$.subscribe( message => {
       this.message = message
     })

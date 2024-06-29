@@ -13,7 +13,7 @@ class FinancialRecord extends Model
     protected $table = 'financial_records';
     protected $fillable = [
         'id', 'sequence', 'description', 'amount', 'financial_record_date', 'financial_record_due_date',
-        'payment_status', 'type', 'deleted', 'installment_number', 'installment_total', 'created_at', 
+        'paid', 'financial_record_type', 'deleted', 'installment_number', 'installment_total', 'created_at', 
         'updated_at', 'user_id', 'payment_id', 'supplier_customer_id','details'
     ];
     protected $primarykey = 'id';

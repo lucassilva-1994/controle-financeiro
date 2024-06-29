@@ -1,16 +1,13 @@
 <?php
 
 namespace Database\Seeders;
-
-use App\Helpers\HelperModel;
 use App\Models\Category;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Traits\ModelTrait;
 use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
-
-    use HelperModel;
+    use ModelTrait;
     public function run(): void
     {
         foreach(self::categories() as $category){

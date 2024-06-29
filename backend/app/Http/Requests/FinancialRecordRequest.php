@@ -17,9 +17,11 @@ class FinancialRecordRequest extends FormRequest
         return [
             'description' => ['required','min:3','max:100'],
             'amount' => ['required','numeric'],
+            'paid' => ['numeric','between:0,1'],
             'financial_record_date' => ['required','date'],
             'financial_record_due_date' => ['nullable','date'],
-            'payment_id' => ['required']
+            'financial_record_type' => ['in:INCOME,EXPENSE'],
+            'payment_id' => ['required','exists:payments,id']
         ];
     }
 }

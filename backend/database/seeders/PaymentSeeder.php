@@ -1,14 +1,13 @@
 <?php
 
 namespace Database\Seeders;
-
-use App\Helpers\HelperModel;
 use App\Models\Payment;
+use App\Traits\ModelTrait;
 use Illuminate\Database\Seeder;
 
 class PaymentSeeder extends Seeder
 {
-    use HelperModel;
+    use ModelTrait;
     public function run(): void
     {
         foreach(self::payments() as $payment){

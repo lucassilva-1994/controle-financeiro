@@ -1,10 +1,11 @@
 <?php
-namespace App\Helpers;
+namespace App\Traits;
+
+use Illuminate\Http\JsonResponse;
 use Ramsey\Uuid\Uuid;
-trait HelperModel
+trait ModelTrait
 {
-    use HelperMessage;
-    public static function createRecord(string $model, array $data)
+    public static function createRecord(string $model, array $data):JsonResponse
     {   
         $fillable = (new $model)->getFillable();
         $data = array_intersect_key($data, array_flip($fillable));
@@ -39,7 +40,11 @@ trait HelperModel
         }
     }
 
-    public static function updateRecord(string $model, array $data, array $where){
+    public static function updateRecord(string $model, array $data, array $where):JsonResponse{
+        if(!$model::where($where)->exists()){
+            $data['id'] = $where;
+            return self::createRecord($model, $data);
+        }
         $fillable = (new $model)->getFillable();
         $data = array_intersect_key($data, array_flip($fillable));
         if (in_array('token_expires_at', $fillable)) {
@@ -50,6 +55,9 @@ trait HelperModel
         }
         if (in_array('active', $fillable)) {
             $data['active'] = 1;
+        }
+        if (in_array('password', $fillable)) {
+            $data['password'] = bcrypt($data['password']);
         }
         $data['updated_at'] = now();
         try {
@@ -65,7 +73,7 @@ trait HelperModel
         }
     }
 
-    public static function markAsDeleted(string $model, array $where) {
+    public static function markAsDeleted(string $model, array $where):JsonResponse {
         $data['deleted'] = 1;
         $data['updated_at'] = now();
         try {
@@ -81,7 +89,7 @@ trait HelperModel
     }
     
 
-    public static function setSequenceNumber(string $model) {
+    public static function setSequenceNumber(string $model) :int{
         return $model::max('sequence') + 1;
     }
 
@@ -89,7 +97,7 @@ trait HelperModel
         return Uuid::uuid7(now());
     }
 
-    private static function ensureUniqueValue($field, $value, $model)
+    private static function ensureUniqueValue($field, $value, $model): string
     {
         $originalValue = $value;
         $counter = 1;

@@ -14,7 +14,8 @@ class CategoryRequest extends FormRequest
     {
         return [
             'name' => ['required','min:3','max:40'],
-            'description' => ['nullable','min:3','max:100']
+            'description' => ['nullable','min:3','max:100'],
+            'type' => ['in:INCOME,EXPENSE,BOTH']
         ];
     }
 }

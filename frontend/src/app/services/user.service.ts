@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token.service';
@@ -10,6 +10,8 @@ const apiUrl = environment.apiUrl + '/users';
 @Injectable({ providedIn: 'root' })
 export class UserService {
     private userSubject = new BehaviorSubject<User | null>(null);
+    private loadingSubject = new BehaviorSubject<boolean>(false);
+    loading$ = this.loadingSubject.asObservable();
     constructor(private httpClient: HttpClient, private tokenService: TokenService) {
         this.tokenService.hasToken() && this.decode();
     }
@@ -44,10 +46,18 @@ export class UserService {
     }
 
     signIn(login: string, password: string): Observable<{ message: string }> {
-        return this.httpClient.post<{ message: string }>(`${apiUrl}/sign-in`, { login, password });
+        this.loadingSubject.next(true);
+        return this.httpClient.post<{ message: string }>(`${apiUrl}/sign-in`, { login, password })
+        .pipe(
+            finalize(() => this.loadingSubject.next(false))
+        );
     }
 
     signUp(user: User): Observable<{ message: string }> {
-        return this.httpClient.post<{ message: string }>(apiUrl + '/sign-up', user);
+        this.loadingSubject.next(true);
+        return this.httpClient.post<{ message: string }>(apiUrl + '/sign-up', user)
+        .pipe(
+            finalize(() => this.loadingSubject.next(false))
+        );
     }
 }

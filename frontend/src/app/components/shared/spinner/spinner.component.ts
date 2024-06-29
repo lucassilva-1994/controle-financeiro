@@ -6,5 +6,5 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./spinner.component.css']
 })
 export class SpinnerComponent {
-  @Input() loading: Boolean = true;
+  @Input() loading: Boolean = false;
 }

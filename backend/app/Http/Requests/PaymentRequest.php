@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
 
 class PaymentRequest extends FormRequest
@@ -14,7 +13,9 @@ class PaymentRequest extends FormRequest
     {
         return [
             'name' => ['required','min:3','max:40'],
-            'description' => ['nullable','min:3','max:100']
+            'description' => ['nullable','min:3','max:100'],
+            'is_calculable' => ['numeric','between:0,1'],
+            'type' => ['in:INCOME,EXPENSE,BOTH']
         ];
     }
 }

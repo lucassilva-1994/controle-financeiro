@@ -106,12 +106,12 @@ export class SuppliersAndCustomersComponent implements OnInit {
     if (value.length > 0) {
       formattedValue += '(' + value.substring(0, 2);
     }
-    if (value.length >= 3) {
-      formattedValue += ') ' + value.substring(2, 7);
+    if (value.length > 2) {
+      formattedValue += ') ' + value.substring(2, value.length >= 7 ? 7 : value.length);
     }
-    if (value.length >= 8) {
+    if (value.length > 7) {
       formattedValue += '-' + value.substring(7, 11);
     }
-    input.value = formattedValue;
+    input.value = formattedValue.substring(0, 15);
   }
 }

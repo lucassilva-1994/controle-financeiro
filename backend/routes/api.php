@@ -10,6 +10,10 @@ Route::controller(UserController::class)->prefix('users')->group(function(){
 });
 
 Route::middleware('auth:api')->group(function(){
+    Route::controller(UserController::class)->prefix('users')->group(function(){
+        Route::post('restore-password','restorePassword')->name('restore.password');
+    });
+
     Route::controller(PaymentController::class)->prefix('payments')->group(function(){
         Route::get('show','show');
         Route::get('show-by-id/{id}','showById');

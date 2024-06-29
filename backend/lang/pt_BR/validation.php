@@ -63,7 +63,7 @@ return [
         'array'   => 'O campo :attribute deve conter :value itens ou mais.',
     ],
     'image'                => 'O campo :attribute deve ser uma imagem.',
-    'in'                   => 'O campo :attribute selecionado é inválido.',
+    'in'                   => 'O campo :attribute selecionado é inválido, os valores aceitos são :values',
     'in_array'             => 'O campo :attribute não existe em :other.',
     'integer'              => 'O campo :attribute deve ser um número inteiro.',
     'ip'                   => 'O campo :attribute deve ser um endereço de IP válido.',
@@ -214,7 +214,14 @@ return [
         'category' => 'categoria',
         'blood_type' => 'tipo sanguíneo',
         'birth_date' => 'data de nascimento',
-        'type' => 'tipo'
+        'type' => 'tipo',
+        'is_calculable' => 'calculável',
+        'paid' => 'pago',
+        'amount' => 'valor',
+        'financial_record_date' => 'data do registro financeiro',
+        'financial_record_due_date' => 'data de vencimento do registro financeiro',
+        'financial_record_type' => 'tipo de registro financeiro',
+        'payment_id' => 'forma de pagamento',
     ],
 
 ];

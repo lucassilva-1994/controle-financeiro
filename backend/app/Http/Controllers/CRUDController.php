@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Helpers\HelperModel;
+use App\Traits\ModelTrait;
 
 class CRUDController extends Controller
 {
-    use HelperModel;
+    use ModelTrait;
 
     private $model;
     private $request;

@@ -16,7 +16,7 @@ export class MessagesValidatorsComponent {
         return this.getErrorMessage(this.control.errors);
       }
       if (this.backendErrors && this.backendErrors.length > 0) {
-        return this.backendErrors[0];
+        return this.backendErrors.map(error => `${error}`).join('<br>');
       }
       return null;
   }
@@ -25,7 +25,6 @@ export class MessagesValidatorsComponent {
     if(errors['required']){
       return `<i class="fas fa-exclamation-circle"></i> O <strong>${this.field}</strong> é obrigatório.`;
     }
-
     if(errors['email']){
       return '<i class="fas fa-exclamation-circle"></i> Informe um e-mail válido.';
     }

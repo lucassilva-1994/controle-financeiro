@@ -16,8 +16,8 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->date('financial_record_date');
             $table->date('financial_record_due_date')->default(now()->toDateString());
-            $table->enum('payment_status', ['PENDING', 'PAID', 'OVERDUE'])->default('PENDING');
-            $table->enum('type', ['INCOME', 'EXPENSE'])->default('EXPENSE');
+            $table->boolean('paid')->default(1);
+            $table->enum('financial_record_type', ['INCOME', 'EXPENSE'])->default('EXPENSE');
             $table->boolean('deleted')->default(0);
             $table->integer('installment_number')->default(1);
             $table->integer('installment_total')->default(1);
