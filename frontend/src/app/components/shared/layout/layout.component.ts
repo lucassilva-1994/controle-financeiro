@@ -1,29 +1,22 @@
-import { DatePipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/models/User';
+import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.css'],
-  providers: [DatePipe]
+  styleUrls: ['./layout.component.css']
 })
-export class LayoutComponent implements OnInit{
-    currentDate: string | null;
+export class LayoutComponent{
     user$: Observable<User | null>;
     @Input() title: string = 'Money Manager';
-    constructor(private userService: UserService, private router: Router, private datePipe: DatePipe){
-    }
-    ngOnInit(): void {
+    constructor(private userService: UserService, private tokenService: TokenService){
       this.user$ = this.userService.getUser();
-      this.currentDate = this.datePipe.transform(new Date(),'dd/MM/yyyy');
     }
 
     logout(){
       this.userService.logout();
-      this.router.navigate(['/']);
     }
 }

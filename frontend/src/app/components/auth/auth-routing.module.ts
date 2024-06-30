@@ -26,6 +26,14 @@ const routes: Routes = [
     data: {
       authMode: 'forgotPassword'
     }
+  },
+  {
+    path:'activate-account/:email/:token',
+    component: AuthComponent,
+    title:'Ativar conta',
+    data:{
+      authMode: 'activateAccount'
+    }
   }
 ];
 

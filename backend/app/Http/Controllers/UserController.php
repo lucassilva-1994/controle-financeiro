@@ -1,10 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
+
 use App\Http\Requests\UserRequest;
+use App\Mail\ForgotPassword;
 use App\Models\{Access,User};
 use App\Traits\ModelTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -29,7 +31,10 @@ class UserController extends Controller
             return response()->json(['Login e senha inválidos.'], 401);
         }
         self::createAccess();
-        return response()->json($token, 200);
+        return response()->json([
+            'message' => 'Login successful',
+            'token' => $token
+        ], 200);
     }
 
     public function signUp(UserRequest $request)
@@ -51,11 +56,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function activateUser(Request $request)
+    public function activateAccount(Request $request)
     {
         $user = User::whereEmailAndToken($request->email, $request->token)->first();
         if (!$user) {
-            return response()->json(['message' => 'Link indisponível'], 404);
+            return response()->json(['message' => 'Link indisponível'], 400);
         }
 
         if ($user->token_expires_at < now()) {
@@ -70,8 +75,31 @@ class UserController extends Controller
         return self::updateRecord(User::class, $request->only('password'),['id'=> auth()->user()->id]);
     }
 
-    public function signOut()
-    {
-        return 'SignOut';
+    public function forgotPassword(UserRequest $request){
+        $user = User::where('email',$request->email)->first();
+        $request['password'] = generateRandomPassword(30);
+        $user->password = $request['password'];
+        Mail::to($user->email)->send(new ForgotPassword($user));
+        if(self::updateRecord(User::class, $request->only('password'),['email' => $user->email])){
+            return response()->json([
+                'message' => 'Uma nova senha foi enviada para o seu email. Por favor, verifique seu e-mail.'
+            ], 200);
+        }
+        return response()->json([
+            'message' => 'Falha ao solicitar recuperação de senha.'
+        ], 400);
+    }
+
+    public function validateToken(){
+        return response()->json([
+            'valid' => auth()->check() ? 1 : 0
+        ]);
+    }
+
+    public function signOut(){
+        auth()->logout(true);
+        return response()->json([
+            'message' => 'Logout realizado com sucesso.'
+        ]);
     }
 }

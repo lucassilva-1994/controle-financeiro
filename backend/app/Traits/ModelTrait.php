@@ -56,7 +56,7 @@ trait ModelTrait
         if (in_array('active', $fillable)) {
             $data['active'] = 1;
         }
-        if (in_array('password', $fillable)) {
+        if (in_array('password', $fillable) && array_key_exists('password', $data)) {
             $data['password'] = bcrypt($data['password']);
         }
         $data['updated_at'] = now();

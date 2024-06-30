@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, tap } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 import { User } from 'src/app/models/User';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
@@ -16,17 +16,48 @@ export class AuthComponent implements OnInit {
   formSignUp: FormGroup;
   formForgotPassword: FormGroup;
   authMode: string;
+  email: string;
+  token: string;
+  errorOccurred: boolean;
   loading: boolean = false;
-  messageSuccess: string;
+  message: string;
+  titleCard: string;
   backendErrors: string[] = [];
   constructor(
     private router: ActivatedRoute,
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private tokenService: TokenService,
     private route: Router
   ) { }
   ngOnInit(): void {
+    this.userService.message$.subscribe(message => {
+      this.message = message
+    });
+    this.initializeForms();
+    this.authMode = this.router.snapshot.data['authMode'];
+    this.titleCard = this.getTitleCard(this.authMode);
+    if (this.authMode === 'activateAccount') {
+      this.email = this.router.snapshot.params['email'];
+      this.token = this.router.snapshot.params['token'];
+      this.userService.activateAccount(this.email, this.token)
+        .pipe(
+          catchError(error => {
+            this.message = error.error.message;
+            this.errorOccurred = true;
+            this.route.navigate(['/']);
+            return of(null);
+          })
+        )
+        .subscribe();
+    }
+    this.userService.loading$.subscribe(loading => {
+      this.loading = loading;
+    });
+  }
+
+
+
+  initializeForms() {
     this.formSignIn = this.formBuilder.group({
       login: ['', [Validators.required]],
       password: ['', [Validators.required]]
@@ -41,19 +72,20 @@ export class AuthComponent implements OnInit {
     this.formForgotPassword = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]]
     })
-    this.authMode = this.router.snapshot.data['authMode'];
-    this.userService.loading$.subscribe(loading => {
-      this.loading = loading; 
-    });
   }
 
-  signIn(){
+  getTitleCard(authMode: string): string {
+    switch (authMode) {
+      case 'signIn': return 'Entrar';
+      case 'signUp': return 'Novo usuário';
+      case 'forgotPassword': return 'Recuperar senha';
+      default: return '';
+    }
+  }
+
+  signIn() {
     this.userService.signIn(this.formSignIn.get('login')?.value, this.formSignIn.get('password')?.value)
       .pipe(
-        tap(response => {
-          this.tokenService.setToken(response.toString());
-          this.route.navigate(['/financial-records']);
-        }),
         catchError(error => {
           return this.backendErrors = error.error;
         })
@@ -64,19 +96,23 @@ export class AuthComponent implements OnInit {
   signUp(): void {
     this.userService.signUp(this.formSignUp.getRawValue() as User)
       .pipe(
-        tap(response => {
-          this.messageSuccess = response.message;
-          this.formSignUp.reset();
+        tap(() => {
           this.backendErrors = [];
         }),
         catchError(error => {
-            return this.backendErrors = Object.values(error.error.errors);
+          return this.backendErrors = Object.values(error.error.errors);
         })
       )
       .subscribe();
   }
 
   forgotPassword() {
-
+    this.userService.forgotPassword(this.formForgotPassword.get('email')?.value)
+      .pipe(
+        catchError(error => {
+          return this.backendErrors = Object.values(error.error.errors);
+        })
+      )
+      .subscribe();
   }
 }

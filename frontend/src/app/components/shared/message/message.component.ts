@@ -6,6 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class MessageComponent implements OnInit{
     @Input() message: string | undefined;
+    @Input() errorOccurred: boolean = false;
 
     ngOnInit(): void {}
 }

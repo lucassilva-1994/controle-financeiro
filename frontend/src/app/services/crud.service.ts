@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken, Optional } from "@angular/core";
-import { BehaviorSubject, Observable, Subject, delay, map, of, take, takeUntil, tap } from "rxjs";
+import { BehaviorSubject, Observable, Subject, delay, finalize, map, of, take, takeUntil, tap } from "rxjs";
 import { environment } from "src/environments/environment";
 export const RESOURCE_URL = new InjectionToken<string>('RESOURCE_URL');
 @Injectable({ providedIn: 'root' })
@@ -8,7 +8,9 @@ export class CrudService<Model> {
     private apiUrl: string;
     private messageSubject = new BehaviorSubject<string>('');
     message$ = this.messageSubject.asObservable();
-    private destroy$ = new Subject<void>(); 
+    private destroy$ = new Subject<void>();
+    private loadingSubject = new BehaviorSubject<boolean>(false);
+    loading$ = this.loadingSubject.asObservable();
 
     constructor(protected httpClient: HttpClient, @Inject(RESOURCE_URL) resourceUrl: string) {
         this.apiUrl = `${environment.apiUrl}/${resourceUrl}`;
@@ -16,12 +18,16 @@ export class CrudService<Model> {
 
 
     show(perPage: number = 10, page: number = 1, search: string = ''): Observable<{ pages: number, total: number, search: string, itens: Model[] }> {
+        this.loadingSubject.next(true);
         const params = new HttpParams()
             .set('perPage', perPage)
             .set('page', page)
             .set('search', this.translate(search));
         return this.httpClient.get<{ pages: number, total: number, search: string, itens: Model[] }>(`${this.apiUrl}/show`, { params })
-            .pipe(take(1));
+            .pipe(
+                finalize(() => this.loadingSubject.next(false)),
+                take(1)
+            );
     }
 
     //Todos os componentes no momento de cadastrar ou atualizar vai trazer apenas os últimos registros ao invésd de todos
@@ -47,17 +53,17 @@ export class CrudService<Model> {
 
     store(model: Model): Observable<{ message: string }> {
         return this.httpClient.post<{ message: string }>(`${this.apiUrl}/store`, model)
-          .pipe(
-            take(1),
-            tap(response => {
-              this.messageSubject.next(response.message);
-              of(null).pipe(
-                delay(5000),
-                takeUntil(this.destroy$)
-            ).subscribe(() => this.messageSubject.next(''));
-            })
-          );
-      }
+            .pipe(
+                take(1),
+                tap(response => {
+                    this.messageSubject.next(response.message);
+                    of(null).pipe(
+                        delay(5000),
+                        takeUntil(this.destroy$)
+                    ).subscribe(() => this.messageSubject.next(''));
+                })
+            );
+    }
 
     update(model: Model, id: string): Observable<{ message: string }> {
         return this.httpClient.put<{ message: string }>(`${this.apiUrl}/update/${id}`, model)
@@ -70,7 +76,7 @@ export class CrudService<Model> {
                         takeUntil(this.destroy$)
                     ).subscribe(() => this.messageSubject.next(''));
                 })
-            );;
+            );
     }
 
     delete(id: string): Observable<{ message: string }> {

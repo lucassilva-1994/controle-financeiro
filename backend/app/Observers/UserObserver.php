@@ -2,14 +2,17 @@
 
 namespace App\Observers;
 
+use App\Mail\Welcome;
 use App\Models\{Category, Payment, SupplierAndCustomer, User};
 use App\Traits\ModelTrait;
+use Illuminate\Support\Facades\Mail;
 
 class UserObserver
 {
     use ModelTrait;
     public function created(User $user): void
     {
+        Mail::to($user->email)->send(new Welcome($user));
         self::paymentsAndCategoriesAndSuppliers($user->id->toString());
     }
 

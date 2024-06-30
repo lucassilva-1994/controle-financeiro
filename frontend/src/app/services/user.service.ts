@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, finalize, takeUntil, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { TokenService } from './token.service';
 import jwt_decode from "jwt-decode";
 import { User } from '../models/User';
+import { Router } from '@angular/router';
+
+interface LoginResponse {
+    message: string;
+    token: string;
+}
 
 const apiUrl = environment.apiUrl + '/users';
 @Injectable({ providedIn: 'root' })
@@ -12,7 +18,13 @@ export class UserService {
     private userSubject = new BehaviorSubject<User | null>(null);
     private loadingSubject = new BehaviorSubject<boolean>(false);
     loading$ = this.loadingSubject.asObservable();
-    constructor(private httpClient: HttpClient, private tokenService: TokenService) {
+    private messageSubject = new BehaviorSubject<string>('');
+    message$ = this.messageSubject.asObservable();
+    private destroy$ = new Subject<void>();
+    constructor(
+        private httpClient: HttpClient,
+        private tokenService: TokenService,
+        private route: Router) {
         this.tokenService.hasToken() && this.decode();
     }
 
@@ -36,28 +48,78 @@ export class UserService {
         }
     }
 
-    logout() {
-        this.tokenService.removeToken();
-        this.userSubject.next(null);
+    logout(): void {
+        this.httpClient.get<{ message: string }>(`${apiUrl}/sign-out`)
+            .pipe(
+                tap(
+                    response => {
+                        this.messageSubject.next(response.message),
+                            this.tokenService.removeToken();
+                        this.userSubject.next(null);
+                        this.route.navigate(['/']);
+                    }
+                ),
+                takeUntil(this.destroy$)
+            ).subscribe();
     }
+
 
     isLogged() {
         return this.tokenService.hasToken();
     }
 
-    signIn(login: string, password: string): Observable<{ message: string }> {
+    signIn(login: string, password: string): Observable<LoginResponse> {
         this.loadingSubject.next(true);
-        return this.httpClient.post<{ message: string }>(`${apiUrl}/sign-in`, { login, password })
-        .pipe(
-            finalize(() => this.loadingSubject.next(false))
-        );
+        return this.httpClient.post<LoginResponse>(`${apiUrl}/sign-in`, { login, password })
+            .pipe(
+                finalize(() => this.loadingSubject.next(false)),
+                takeUntil(this.destroy$),
+                tap(response => {
+                    this.messageSubject.next(response.message),
+                    this.setToken(response.token),
+                        this.route.navigate(['//financial-records']);
+                })
+            );
     }
 
     signUp(user: User): Observable<{ message: string }> {
         this.loadingSubject.next(true);
         return this.httpClient.post<{ message: string }>(apiUrl + '/sign-up', user)
-        .pipe(
-            finalize(() => this.loadingSubject.next(false))
-        );
+            .pipe(
+                finalize(() => this.loadingSubject.next(false)),
+                takeUntil(this.destroy$),
+                tap(response => {
+                    this.messageSubject.next(response.message),
+                        this.route.navigate(['/']);
+                })
+            );
+    }
+
+    forgotPassword(email: string): Observable<{ message: string }> {
+        this.loadingSubject.next(true);
+        return this.httpClient.post<{ message: string }>(`${apiUrl}/forgot-password`, { email })
+            .pipe(
+                finalize(() => this.loadingSubject.next(false)),
+                takeUntil(this.destroy$),
+                tap(response => {
+                    this.messageSubject.next(response.message),
+                        this.route.navigate(['/']);
+                })
+            );
+    }
+
+    activateAccount(email: string, token: string): Observable<{ message: string }> {
+        const params = new HttpParams()
+            .set('email', email)
+            .set('token', token);
+        return this.httpClient.get<{ message: string }>(apiUrl + '/activate-account', { params })
+            .pipe(
+                finalize(() => this.loadingSubject.next(false)),
+                takeUntil(this.destroy$),
+                tap(response => {
+                    this.messageSubject.next(response.message),
+                        this.route.navigate(['/']);
+                })
+            );;
     }
 }

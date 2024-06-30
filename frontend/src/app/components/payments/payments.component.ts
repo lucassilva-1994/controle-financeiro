@@ -30,6 +30,7 @@ export class PaymentsComponent implements OnInit {
   payments: Payment[] = [];
   backendErrors: string[] = [];
   pages: number;
+  loading: boolean;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -44,7 +45,10 @@ export class PaymentsComponent implements OnInit {
       }
     });
     this.paymentService.message$.subscribe( message => {
-      this.message = message
+      this.message = message;
+    })
+    this.paymentService.loading$.subscribe( loading => {
+      this.loading = loading
     })
     this.mode === 'view' ? this.show({perPage:10, page:1, search: ''}) : this.recentRecords();
   }

@@ -1,12 +1,15 @@
 <app-spinner [loading]="loading"></app-spinner>
-<div class="container mt-5" *ngIf="authMode == 'signIn'">
+<div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header text-center">
-                    <h4> Entrar </h4>
+                    <h4> {{ titleCard }} </h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body" *ngIf="message">
+                    <app-message [message]="message"></app-message>
+                </div>
+                <div class="card-body" *ngIf="authMode == 'signIn'">
                     <form [formGroup]="formSignIn" (submit)="signIn()">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email/usuário:</label>
@@ -40,19 +43,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container  mt-5" *ngIf="authMode == 'forgotPassword'">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header text-center">
-                    <h4> Recuperar senha </h4>
-                </div>
-                <div class="card-body">
+                <div class="card-body" *ngIf="authMode == 'forgotPassword'">
                     <form [formGroup]="formForgotPassword" (submit)="forgotPassword()">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email:</label>
@@ -61,8 +52,7 @@
                                 <input type="email" class="form-control" placeholder="Entrar com seu email" required
                                     formControlName="email">
                             </div>
-                            <app-messages-validators [control]="formForgotPassword.controls['email']"
-                                field="email"></app-messages-validators>
+                            <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary" [disabled]="formForgotPassword.invalid">
@@ -75,23 +65,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="container  mt-5" *ngIf="authMode == 'signUp'">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header text-center">
-                    <h4> Novo usuário </h4>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-success" *ngIf="messageSuccess">
-                        {{ messageSuccess }}
-                    </div>
+                <div class="card-body" *ngIf="authMode == 'signUp'">
                     <form [formGroup]="formSignUp" (submit)="signUp()">
                         <div class="mb-3">
                             <label for="name" class="form-label">Nome:</label>
@@ -105,8 +79,8 @@
                             <label for="username" class="form-label">Usuário:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" placeholder="Informe um usuário de acesso" required
-                                    formControlName="username">
+                                <input type="text" class="form-control" placeholder="Informe um usuário de acesso"
+                                    required formControlName="username">
                             </div>
                         </div>
                         <div class="mb-3">

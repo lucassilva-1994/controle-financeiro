@@ -5,13 +5,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(UserController::class)->prefix('users')->group(function(){
     Route::post('sign-in','signIn');
-    Route::post('sign-up','signUp')->name('signup');
-    Route::get('active-user','activateUser');
+    Route::post('sign-up','signUp');
+    Route::get('activate-account','activateAccount');
+    Route::post('forgot-password','forgotPassword')->name('forgot.password');
+    Route::get('/validate-token','validateToken');
 });
 
 Route::middleware('auth:api')->group(function(){
     Route::controller(UserController::class)->prefix('users')->group(function(){
         Route::post('restore-password','restorePassword')->name('restore.password');
+        Route::get('sign-out','signOut');
     });
 
     Route::controller(PaymentController::class)->prefix('payments')->group(function(){
