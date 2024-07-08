@@ -32,7 +32,6 @@ class UserController extends Controller
         }
         self::createAccess();
         return response()->json([
-            'message' => 'Login successful',
             'token' => $token
         ], 200);
     }
@@ -72,7 +71,14 @@ class UserController extends Controller
     }
 
     public function restorePassword(UserRequest $request){
-        return self::updateRecord(User::class, $request->only('password'),['id'=> auth()->user()->id]);
+        if(self::updateRecord(User::class, $request->only('password'),['id'=> auth()->user()->id])){
+            return response()->json([
+                'message' => 'Senha atualizada com sucesso.'
+            ], 200);
+        }
+        return response()->json([
+            'message' => 'Falha ao atualizar senha'
+        ], 400);
     }
 
     public function forgotPassword(UserRequest $request){
@@ -96,10 +102,12 @@ class UserController extends Controller
         ]);
     }
 
+    public function profile()
+    {
+        return request()->user()->loadCount(['accesses', 'categories', 'payments', 'financialRecords','suppliersAndCustommers']);
+    }
+
     public function signOut(){
         auth()->logout(true);
-        return response()->json([
-            'message' => 'Logout realizado com sucesso.'
-        ]);
     }
 }

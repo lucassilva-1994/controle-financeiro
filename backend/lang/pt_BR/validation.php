@@ -222,6 +222,8 @@ return [
         'financial_record_due_date' => 'data de vencimento do registro financeiro',
         'financial_record_type' => 'tipo de registro financeiro',
         'payment_id' => 'forma de pagamento',
+        'INCOME' => 'ENTRADA',
+        'categories' => 'categorias'
     ],
 
 ];

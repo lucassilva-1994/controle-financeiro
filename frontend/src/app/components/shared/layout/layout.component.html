@@ -28,12 +28,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link   text-white" *ngIf="(user$ | async) as user">
-                        <i class="fas fa-user"></i> {{ user?.username }}
+                    <a class="nav-link text-white" *ngIf="(user$ | async) as user"  routerLink="/profile">
+                        <i class="fas fa-user"></i> {{ user.username }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link   text-white" (click)="logout()">
+                    <a class="nav-link text-white" style="cursor: pointer;" (click)="signOut()">
                         <i class="fas fa-sign-out-alt"></i> Sair
                     </a>
                 </li>
@@ -42,7 +42,7 @@
     </div>
 </nav>
 <div class="container-fluid mt-3 mb-3">
-    <h4 class="mb-4">{{ title }}</h4>
+    <h3 class="mb-4">{{ title }}</h3>
     <ng-content></ng-content>
 </div>
 

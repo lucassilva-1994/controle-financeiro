@@ -13,7 +13,7 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = ['id','sequence','name','email','username','password','photo','token','active','token_expires_at','created_at','updated_at'];
     public $incrementing = false;
     public $timestamps = false;
-    protected $hidden = ['password','sequence','id','token','token_expires_at','created_at','updated_at'];
+    protected $hidden = ['password','sequence','id','token','token_expires_at'];
     protected $casts = [
         'active' => 'boolean',
     ];
@@ -23,8 +23,39 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
+    public function getPhotoAttribute($value)
+    {
+        return $value ? url(env('APP_URL_FILES', 'photos/') . '/' . $value) : null;
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return $value ? formatBrazilianDate($value) : 'Sem alteração';
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return formatBrazilianDate($value);
+    }
+
     public function accesses():HasMany{
         return $this->hasMany(Access::class);
+    }
+
+    public function categories():HasMany{
+        return $this->hasMany(Category::class);
+    }
+
+    public function payments(): HasMany{
+        return $this->hasMany(Payment::class);
+    }
+
+    public function financialRecords(){
+        return $this->hasMany(FinancialRecord::class);
+    }
+
+    public function suppliersAndCustommers(): HasMany{
+        return $this->hasMany(SupplierAndCustomer::class);
     }
 
     public function getJWTCustomClaims()
@@ -34,10 +65,9 @@ class User extends Authenticatable implements JWTSubject
             'name' => $this->name,
             'email' => $this->email,
             'username' => $this->username,
-            'member_since' => formatBrazilianDate($this->created_at),
+            'member_since' => $this->created_at,
             'last_login_time' =>  $latestAccess ? formatBrazilianDate($latestAccess->created_at) : 'Primeiro acesso',
-            'last_login_locale' => $latestAccess->city ??  'Primeiro acesso',
-            'last_updated_at' => $this->updated_at ? formatBrazilianDate($this->updated_at) : 'Nenhuma alteração realizada',
+            'last_login_locale' => $latestAccess->city ??  'Primeiro acesso'
         ];
     }
 }

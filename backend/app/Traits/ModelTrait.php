@@ -27,10 +27,15 @@ trait ModelTrait
         if (isset($data['name']) && auth()->check()) {
             $data['name'] = self::ensureUniqueValue('name',$data['name'], $model);
         }
+        if (isset($data['amount'])) {
+            $data['amount'] = str_replace(['R$ ', ".", ','], ["", "", "."], $data['amount']);
+            $data['amount'] = number_format("" . $data['amount'], 2, ".", "");
+            $data['amount'] = $data['amount'];
+        }
         try {
             return response()->json([
                 'message' => 'Os dados foram cadastrados com sucesso.',
-                'data' => $model::updateOrCreate($data)
+                'data' => $model::updateOrCreate(['id' => $data['id']], $data)
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
@@ -58,6 +63,11 @@ trait ModelTrait
         }
         if (in_array('password', $fillable) && array_key_exists('password', $data)) {
             $data['password'] = bcrypt($data['password']);
+        }
+        if (isset($data['amount'])) {
+            $data['amount'] = str_replace(['R$ ', ".", ','], ["", "", "."], $data['amount']);
+            $data['amount'] = number_format("" . $data['amount'], 2, ".", "");
+            $data['amount'] = $data['amount'];
         }
         $data['updated_at'] = now();
         try {

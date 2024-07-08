@@ -16,4 +16,16 @@ class SupplierAndCustomerController extends CRUDController
             ['financialRecords'],
             ['financialRecords' => 'amount']);
     }
+
+    public function showWithoutPagination()
+    {
+        if (request()->has('type')) {
+            if (request()->type === 'EXPENSE') {
+                request()->merge(['additional_filter' => [['type', '=', 'SUPPLIER'], ['type', '=', 'BOTH']]]);
+            } elseif (request()->type === 'INCOME') {
+                request()->merge(['additional_filter' => [['type', '=', 'CUSTOMER'], ['type', '=', 'BOTH']]]);
+            }
+        }
+        return parent::showWithoutPagination();
+    }
 }

@@ -16,7 +16,7 @@ class UserRequest extends FormRequest
     {
         if ($this->routeIs('restore.password')) {
             return [
-                'current_password' => ['current_password'],
+                'current_password' => ['required','current_password'],
                 'password' => ['required', 'min:5', 'max:20', 'different:current_password', 'confirmed', 'regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\d\s]).*$/']
             ];
         } else if($this->routeIs('forgot.password')){

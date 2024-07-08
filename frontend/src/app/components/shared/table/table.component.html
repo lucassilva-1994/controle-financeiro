@@ -10,6 +10,9 @@
         <a *ngIf="mode === 'edit'" [routerLink]="[path,'new']" class="btn btn-success btn-sm">
             <i class="fas fa-plus"></i> Novo registro
         </a>
+        <!-- <button class="btn btn-secondary btn-sm ml-2" (click)="exportToPDF()">
+            <i class="fas fa-file-pdf"></i> Exportar PDF
+        </button> -->
     </div>
 </div>
 <div class="row align-items-center" *ngIf="mode === 'view'">

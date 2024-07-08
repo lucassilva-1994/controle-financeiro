@@ -28,7 +28,8 @@ export class SuppliersAndCustomersComponent implements OnInit {
   suppliersAndCustommers: SupplierAndCustomer[] = [];
   backendErrors: string[] = [];
   pages: number;
-  message?: string;
+  message: string;
+  loading: boolean;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -42,6 +43,9 @@ export class SuppliersAndCustomersComponent implements OnInit {
         this.showById(this.id);
       }
     });
+    this.supplierAndCustomerService.loading$.subscribe( loading => {
+      this.loading = loading
+    })
     this.supplierAndCustomerService.message$.subscribe( message => {
       this.message = message
     })

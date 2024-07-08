@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, finalize, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, delay, finalize, of, takeUntil, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { TokenService } from './token.service';
 import jwt_decode from "jwt-decode";
 import { User } from '../models/User';
 import { Router } from '@angular/router';
+import { Password } from '../models/Password';
 
 interface LoginResponse {
     message: string;
@@ -48,12 +49,11 @@ export class UserService {
         }
     }
 
-    logout(): void {
+    signOut(): void {
         this.httpClient.get<{ message: string }>(`${apiUrl}/sign-out`)
             .pipe(
                 tap(
                     response => {
-                        this.messageSubject.next(response.message),
                             this.tokenService.removeToken();
                         this.userSubject.next(null);
                         this.route.navigate(['/']);
@@ -68,6 +68,15 @@ export class UserService {
         return this.tokenService.hasToken();
     }
 
+    profile():Observable<User>{
+        this.loadingSubject.next(true);
+        return this.httpClient.get<User>(`${apiUrl}/profile`)
+        .pipe(
+            finalize(() => this.loadingSubject.next(false)),
+            takeUntil(this.destroy$)
+        );
+    }
+
     signIn(login: string, password: string): Observable<LoginResponse> {
         this.loadingSubject.next(true);
         return this.httpClient.post<LoginResponse>(`${apiUrl}/sign-in`, { login, password })
@@ -75,7 +84,6 @@ export class UserService {
                 finalize(() => this.loadingSubject.next(false)),
                 takeUntil(this.destroy$),
                 tap(response => {
-                    this.messageSubject.next(response.message),
                     this.setToken(response.token),
                         this.route.navigate(['//financial-records']);
                 })
@@ -106,6 +114,22 @@ export class UserService {
                         this.route.navigate(['/']);
                 })
             );
+    }
+
+    changePasword(passwords: Password): Observable<{message: string}>{
+        this.loadingSubject.next(true);
+        return this.httpClient.put<{message: string}>(`${apiUrl}/restore-password`, passwords)
+        .pipe(
+            finalize(() => this.loadingSubject.next(false)),
+            takeUntil(this.destroy$),
+            tap( response => {
+                this.messageSubject.next(response.message);
+                of(null).pipe(
+                    delay(5000),
+                    takeUntil(this.destroy$)
+                ).subscribe(() => this.messageSubject.next(''));
+            })
+        );
     }
 
     activateAccount(email: string, token: string): Observable<{ message: string }> {

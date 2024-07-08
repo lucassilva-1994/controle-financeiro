@@ -12,14 +12,14 @@
                 <div class="card-body" *ngIf="authMode == 'signIn'">
                     <form [formGroup]="formSignIn" (submit)="signIn()">
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email/usuário:</label>
+                            <label for="email" class="form-label">Email ou usuário:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="text" class="form-control" placeholder="Entrar com seu email" required
+                                <input type="text" class="form-control" placeholder="Entrar com seu email ou usuário" required
                                     formControlName="login">
                             </div>
                             <app-messages-validators [control]="formSignIn.controls['login']"
-                                field="email/usuário"></app-messages-validators>
+                                field="email ou usuário"></app-messages-validators>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Senha:</label>
@@ -79,7 +79,7 @@
                             <label for="username" class="form-label">Usuário:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" placeholder="Informe um usuário de acesso"
+                                <input type="text" class="form-control" placeholder="Informe um usuário"
                                     required formControlName="username">
                             </div>
                         </div>

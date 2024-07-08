@@ -13,12 +13,14 @@ Route::controller(UserController::class)->prefix('users')->group(function(){
 
 Route::middleware('auth:api')->group(function(){
     Route::controller(UserController::class)->prefix('users')->group(function(){
-        Route::post('restore-password','restorePassword')->name('restore.password');
+        Route::put('restore-password','restorePassword')->name('restore.password');
         Route::get('sign-out','signOut');
+        Route::get('profile','profile');
     });
 
     Route::controller(PaymentController::class)->prefix('payments')->group(function(){
         Route::get('show','show');
+        Route::get('show-without-pagination','showWithoutPagination');
         Route::get('show-by-id/{id}','showById');
         Route::post('store','store');
         Route::put('update/{id}','update');
@@ -26,6 +28,7 @@ Route::middleware('auth:api')->group(function(){
     });
     Route::controller(CategoryController::class)->prefix('categories')->group(function(){
         Route::get('show','show');
+        Route::get('show-without-pagination','showWithoutPagination');
         Route::get('show-by-id/{id}','showById');
         Route::post('store','store');
         Route::put('update/{id}','update');
@@ -33,6 +36,7 @@ Route::middleware('auth:api')->group(function(){
     });
     Route::controller(SupplierAndCustomerController::class)->prefix('suppliers_and_customers')->group(function(){
         Route::get('show','show');
+        Route::get('show-without-pagination','showWithoutPagination');
         Route::get('show-by-id/{id}','showById');
         Route::post('store','store');
         Route::put('update/{id}','update');

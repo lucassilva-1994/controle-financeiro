@@ -19,17 +19,18 @@ class FinancialRecord extends Model
     protected $primarykey = 'id';
     public $incrementing = false;
     public $timestamps = false;
+    protected $hidden = ['user_id','sequence','deleted'];
 
     public function payment(): BelongsTo{
-        return $this->belongsTo(Payment::class, 'payment_id');
+        return $this->belongsTo(Payment::class, 'payment_id')->select(['id','name']);
     }
 
     public function supplierAndCustomer(): BelongsTo{
-        return $this->belongsTo(SupplierAndCustomer::class, 'supplier_customer_id');
+        return $this->belongsTo(SupplierAndCustomer::class, 'supplier_customer_id')->select(['id','name']);
     }
 
     public function categories(): BelongsToMany{
-        return $this->belongsToMany(Category::class,'category_financial_record','financial_record_id','category_id');
+        return $this->belongsToMany(Category::class,'category_financial_record','financial_record_id','category_id')->select(['id','name']);
     }
 
     public function files():HasMany{

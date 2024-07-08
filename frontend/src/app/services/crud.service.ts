@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { Inject, Injectable, InjectionToken, Optional } from "@angular/core";
-import { BehaviorSubject, Observable, Subject, delay, finalize, map, of, take, takeUntil, tap } from "rxjs";
+import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { BehaviorSubject, Observable, Subject, delay, finalize, of, take, takeUntil, tap } from "rxjs";
 import { environment } from "src/environments/environment";
 export const RESOURCE_URL = new InjectionToken<string>('RESOURCE_URL');
 @Injectable({ providedIn: 'root' })
@@ -37,18 +37,22 @@ export class CrudService<Model> {
         return this.httpClient.get<{ itens: Model[] }>(`${this.apiUrl}/show`, { params });
     }
 
-    showWithoutPagination(fields: string, relationships: string = ''): Observable<Model[]> {
-        let params = new HttpParams().set('fields', fields);
-        if (relationships.length !== 0) {
-            params = params.append('relationships', relationships);
+    showWithoutPagination(fields: string[], type: string = ''): Observable<Model[]> {
+        let params = new HttpParams().set('fields', JSON.stringify(fields));
+        if (type) {
+            params = params.append('type', type);
         }
         return this.httpClient.get<Model[]>(`${this.apiUrl}/show-without-pagination`, { params })
             .pipe(take(1));
     }
 
     showById(id: string): Observable<Model> {
+        this.loadingSubject.next(true);
         return this.httpClient.get<Model>(`${this.apiUrl}/show-by-id/${id}`)
-            .pipe(take(1));;
+        .pipe(
+            finalize(() => this.loadingSubject.next(false)),
+            take(1)
+        );
     }
 
     store(model: Model): Observable<{ message: string }> {

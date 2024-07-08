@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FinancialRecordsRoutingModule } from './financial-records-routing.module';
 import { FinancialRecordsComponent } from './financial-records.component';
 import { SharedModule } from '../shared/shared.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     FinancialRecordsRoutingModule,
-    SharedModule
-  ]
+    SharedModule,
+    ReactiveFormsModule
+  ],
 })
 export class FinancialRecordsModule { }

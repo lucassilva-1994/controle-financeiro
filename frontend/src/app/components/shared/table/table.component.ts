@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CurrencyPipe, DatePipe, formatCurrency } from '@angular/common';
+import { CurrencyPipe, DatePipe} from '@angular/common';
 import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 
 @Component({
   selector: 'app-table',
@@ -71,9 +73,17 @@ export class TableComponent implements OnInit, OnDestroy {
       case 'description':
         const description = item[key] ?? '-';
         return description.length > 20 ? description.slice(0, 20) + '...' : description;
+      case 'payment':
+      case 'supplier_and_customer':
+        return item[key] ? item[key].name : 'Não informado';
       case 'is_calculable':
       case 'type':
+      case 'financial_record_type':
+      case 'paid':
         return this.genericPipe.transform(item[key]);
+        case 'financial_record_date':
+        case 'financial_record_due_date':
+          return this.datePipe.transform(item[key], 'dd/MM/yyyy');
       case 'created_at':
         return this.datePipe.transform(item[key], 'dd/MM/yyyy HH:mm:ss');
       case 'updated_at':
@@ -82,6 +92,7 @@ export class TableComponent implements OnInit, OnDestroy {
       case 'phone':
         return item[key] ?? '-';
       case 'financial_records_sum_amount':
+      case 'amount':
         return this.currencyPipe.transform(item[key] ?? 0, 'BRL')
       default:
         return item[key];
@@ -117,4 +128,25 @@ export class TableComponent implements OnInit, OnDestroy {
     }
     return pageNumbers;
   }
+
+  // exportToPDF(): void {
+  //   const doc = new jsPDF({
+  //     orientation: 'landscape',
+  //   });
+  //   const title = 'Relatório de Registros';
+  //   doc.setFontSize(18);
+  //   doc.text(title, 14, 22);
+  //   const displayedCols = this.cols.filter(col => ['description', 'amount', 'payment','supplier_and_customer','financial_record_type'].includes(col.key));
+  //   const colHeaders = displayedCols.map(col => col.label);
+  //   const rowData = this.itens.map(item => 
+  //     displayedCols.map(col => this.itemValue(item, col.key))
+  //   );
+
+  //   (doc as any).autoTable({
+  //     head: [colHeaders],
+  //     body: rowData,
+  //   });
+
+  //   doc.save('table-data.pdf');
+  // }
 }

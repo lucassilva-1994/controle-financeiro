@@ -16,4 +16,16 @@ class CategoryController extends CRUDController
             ['financialRecords'],
             ['financialRecords' => 'amount']);
     }
+
+    public function showWithoutPagination()
+    {
+        if (request()->has('type')) {
+            if (request()->type === 'EXPENSE') {
+                request()->merge(['additional_filter' => [['type', '=', 'EXPENSE'], ['type', '=', 'BOTH']]]);
+            } elseif (request()->type === 'INCOME') {
+                request()->merge(['additional_filter' => [['type', '=', 'INCOME'], ['type', '=', 'BOTH']]]);
+            }
+        }
+        return parent::showWithoutPagination();
+    }
 }

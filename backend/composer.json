@@ -28,7 +28,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/traits/HelperTrait.php"
+            "app/Traits/HelperTrait.php"
         ]
     },
     "autoload-dev": {

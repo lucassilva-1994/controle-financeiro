@@ -25,6 +25,7 @@ export class CategoriesComponent implements OnInit {
   form: FormGroup;
   id: string;
   message: string;
+  loading: boolean;
   categories: Category[] = [];
   backendErrors: string[] = [];
   pages: number;
@@ -44,6 +45,9 @@ export class CategoriesComponent implements OnInit {
     });
     this.categoryService.message$.subscribe( message => {
       this.message = message
+    })
+    this.categoryService.loading$.subscribe( loading => {
+      this.loading = loading
     })
     this.mode === 'view' ? this.show({ perPage: 10, page:1 , search:''}) : this.recentRecords();
   }

@@ -11,7 +11,8 @@ class UserScope implements Scope
     public function apply(Builder $builder, Model $model): void
     {
         if(auth()->check()){
-            $builder->where('user_id',auth()->user()->id)->orderBydesc('sequence');
+            $tableName = $model->getTable();
+            $builder->where("$tableName.user_id",auth()->user()->id)->orderBydesc('sequence');
         }
     }
 }
