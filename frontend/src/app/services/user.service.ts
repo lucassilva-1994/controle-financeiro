@@ -54,7 +54,7 @@ export class UserService {
             .pipe(
                 tap(
                     response => {
-                            this.tokenService.removeToken();
+                        this.tokenService.removeToken();
                         this.userSubject.next(null);
                         this.route.navigate(['/']);
                     }
@@ -68,13 +68,13 @@ export class UserService {
         return this.tokenService.hasToken();
     }
 
-    profile():Observable<User>{
+    profile(): Observable<User> {
         this.loadingSubject.next(true);
         return this.httpClient.get<User>(`${apiUrl}/profile`)
-        .pipe(
-            finalize(() => this.loadingSubject.next(false)),
-            takeUntil(this.destroy$)
-        );
+            .pipe(
+                finalize(() => this.loadingSubject.next(false)),
+                takeUntil(this.destroy$)
+            );
     }
 
     signIn(login: string, password: string): Observable<LoginResponse> {
@@ -98,7 +98,11 @@ export class UserService {
                 takeUntil(this.destroy$),
                 tap(response => {
                     this.messageSubject.next(response.message),
-                        this.route.navigate(['/']);
+                        of(null).pipe(
+                            delay(50000),
+                            takeUntil(this.destroy$)
+                        ).subscribe(() => this.messageSubject.next(''));
+                    this.route.navigate(['/']);
                 })
             );
     }
@@ -111,25 +115,29 @@ export class UserService {
                 takeUntil(this.destroy$),
                 tap(response => {
                     this.messageSubject.next(response.message),
-                        this.route.navigate(['/']);
+                        of(null).pipe(
+                            delay(5000),
+                            takeUntil(this.destroy$)
+                        ).subscribe(() => this.messageSubject.next(''));
+                    this.route.navigate(['/']);
                 })
             );
     }
 
-    changePasword(passwords: Password): Observable<{message: string}>{
+    changePasword(passwords: Password): Observable<{ message: string }> {
         this.loadingSubject.next(true);
-        return this.httpClient.put<{message: string}>(`${apiUrl}/restore-password`, passwords)
-        .pipe(
-            finalize(() => this.loadingSubject.next(false)),
-            takeUntil(this.destroy$),
-            tap( response => {
-                this.messageSubject.next(response.message);
-                of(null).pipe(
-                    delay(5000),
-                    takeUntil(this.destroy$)
-                ).subscribe(() => this.messageSubject.next(''));
-            })
-        );
+        return this.httpClient.put<{ message: string }>(`${apiUrl}/restore-password`, passwords)
+            .pipe(
+                finalize(() => this.loadingSubject.next(false)),
+                takeUntil(this.destroy$),
+                tap(response => {
+                    this.messageSubject.next(response.message);
+                    of(null).pipe(
+                        delay(5000),
+                        takeUntil(this.destroy$)
+                    ).subscribe(() => this.messageSubject.next(''));
+                })
+            );
     }
 
     activateAccount(email: string, token: string): Observable<{ message: string }> {
@@ -142,7 +150,11 @@ export class UserService {
                 takeUntil(this.destroy$),
                 tap(response => {
                     this.messageSubject.next(response.message),
-                        this.route.navigate(['/']);
+                        of(null).pipe(
+                            delay(5000),
+                            takeUntil(this.destroy$)
+                        ).subscribe(() => this.messageSubject.next(''));
+                    this.route.navigate(['/']);
                 })
             );;
     }

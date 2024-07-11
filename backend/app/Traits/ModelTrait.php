@@ -1,12 +1,14 @@
 <?php
+
 namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
 use Ramsey\Uuid\Uuid;
+
 trait ModelTrait
 {
-    public static function createRecord(string $model, array $data):JsonResponse
-    {   
+    public static function createRecord(string $model, array $data): JsonResponse
+    {
         $fillable = (new $model)->getFillable();
         $data = array_intersect_key($data, array_flip($fillable));
         $data['id'] = self::generateUuid();
@@ -25,7 +27,7 @@ trait ModelTrait
             $data['user_id'] = auth()->user()->id;
         }
         if (isset($data['name']) && auth()->check()) {
-            $data['name'] = self::ensureUniqueValue('name',$data['name'], $model);
+            $data['name'] = self::ensureUniqueValue('name', $data['name'], $model);
         }
         if (isset($data['amount'])) {
             $data['amount'] = str_replace(['R$ ', ".", ','], ["", "", "."], $data['amount']);
@@ -45,8 +47,9 @@ trait ModelTrait
         }
     }
 
-    public static function updateRecord(string $model, array $data, array $where):JsonResponse{
-        if(!$model::where($where)->exists()){
+    public static function updateRecord(string $model, array $data, array $where): JsonResponse
+    {
+        if (!$model::where($where)->exists()) {
             $data['id'] = $where;
             return self::createRecord($model, $data);
         }
@@ -64,10 +67,8 @@ trait ModelTrait
         if (in_array('password', $fillable) && array_key_exists('password', $data)) {
             $data['password'] = bcrypt($data['password']);
         }
-        if (isset($data['amount'])) {
-            $data['amount'] = str_replace(['R$ ', ".", ','], ["", "", "."], $data['amount']);
-            $data['amount'] = number_format("" . $data['amount'], 2, ".", "");
-            $data['amount'] = $data['amount'];
+        if (isset($data['amount']) && (strpos($data['amount'], ',') !== false || strpos($data['amount'], 'R$') !== false)) {
+            $data['amount'] = number_format(str_replace(['R$ ', '.', ','], ['', '', '.'], $data['amount']), 2, '.', '');
         }
         $data['updated_at'] = now();
         try {
@@ -83,7 +84,8 @@ trait ModelTrait
         }
     }
 
-    public static function markAsDeleted(string $model, array $where):JsonResponse {
+    public static function markAsDeleted(string $model, array $where): JsonResponse
+    {
         $data['deleted'] = 1;
         $data['updated_at'] = now();
         try {
@@ -94,16 +96,18 @@ trait ModelTrait
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Não foi possível excluir o registro. Por favor, tente novamente.'
-            ], 400); 
+            ], 400);
         }
     }
-    
 
-    public static function setSequenceNumber(string $model) :int{
+
+    public static function setSequenceNumber(string $model): int
+    {
         return $model::max('sequence') + 1;
     }
 
-    public static function generateUuid(){
+    public static function generateUuid()
+    {
         return Uuid::uuid7(now());
     }
 

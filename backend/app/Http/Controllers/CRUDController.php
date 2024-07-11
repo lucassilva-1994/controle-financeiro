@@ -60,7 +60,7 @@ class CRUDController extends Controller
         return response()->json([
             'pages' => ceil($query->paginate()->total() / request()->query('perPage', 15)),
             'total' => $query->paginate()->total(),
-            'itens' => $query->paginate(request()->query('perPage', 15))->load($this->relationships)
+            'itens' => $query->with($this->relationships)->paginate(request()->query('perPage', 15))->getCollection()
         ]);
     }
 
@@ -100,29 +100,7 @@ class CRUDController extends Controller
 
     public function update(string $id)
     {
-        $data = self::updateRecord($this->model, app($this->request)->all(), ['id' => $id]);
-        if (app($this->request)->categories) {
-            $existingCategories = DB::table('category_financial_record')
-                ->where('financial_record_id', $id)
-                ->pluck('category_id')
-                ->toArray();
-    
-            $categoriesToRemove = array_diff($existingCategories, app($this->request)->categories);
-            $categoriesToAdd = array_diff(app($this->request)->categories, $existingCategories);
-            if ($categoriesToRemove) {
-                DB::table('category_financial_record')
-                    ->where('financial_record_id', $id)
-                    ->whereIn('category_id', $categoriesToRemove)
-                    ->delete();
-            }
-            foreach ($categoriesToAdd as $category) {
-                DB::table('category_financial_record')->insert([
-                    'category_id' => $category,
-                    'financial_record_id' => $id
-                ]);
-            }
-        }
-        return $data;
+        return self::updateRecord($this->model, app($this->request)->all(), ['id' => $id]);
     }
     
 

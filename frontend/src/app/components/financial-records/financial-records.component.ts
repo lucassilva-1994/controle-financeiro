@@ -253,7 +253,6 @@ export class FinancialRecordsComponent implements OnInit {
       this.backendErrors = Object.values(error.error.errors);
       return of(null);
     };
-    console.log(form);
     (this.mode === 'new' ? this.financialRecordService.store(form) : this.financialRecordService.update(form, this.id))
       .pipe(tap(handleSuccess), catchError(handleErrors)).subscribe();
   }

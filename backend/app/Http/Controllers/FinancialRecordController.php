@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FinancialRecordRequest;
 use App\Models\FinancialRecord;
+use Illuminate\Support\Facades\DB;
 
 class FinancialRecordController extends CRUDController
 {
@@ -70,5 +71,29 @@ class FinancialRecordController extends CRUDController
             $successMessage = parent::store();
         }
         return $successMessage;
+    }
+
+    public function update(string $id)
+    {
+
+        $existingCategories = DB::table('category_financial_record')
+            ->where('financial_record_id', $id)
+            ->pluck('category_id')
+            ->toArray();
+        $categoriesToRemove = array_diff($existingCategories, request()->categories);
+        $categoriesToAdd = array_diff(request()->categories, $existingCategories);
+        if ($categoriesToRemove) {
+            DB::table('category_financial_record')
+                ->where('financial_record_id', $id)
+                ->whereIn('category_id', $categoriesToRemove)
+                ->delete();
+        }
+        foreach ($categoriesToAdd as $category) {
+            DB::table('category_financial_record')->insert([
+                'category_id' => $category,
+                'financial_record_id' => $id
+            ]);
+        }
+        return parent::update($id);
     }
 }
