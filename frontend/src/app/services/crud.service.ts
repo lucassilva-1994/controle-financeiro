@@ -6,9 +6,9 @@ export const RESOURCE_URL = new InjectionToken<string>('RESOURCE_URL');
 @Injectable({ providedIn: 'root' })
 export class CrudService<Model> {
     private apiUrl: string;
-    private messageSubject = new BehaviorSubject<string>('');
+    protected messageSubject = new BehaviorSubject<string>('');
     message$ = this.messageSubject.asObservable();
-    private destroy$ = new Subject<void>();
+    protected destroy$ = new Subject<void>();
     private loadingSubject = new BehaviorSubject<boolean>(false);
     loading$ = this.loadingSubject.asObservable();
 
@@ -55,7 +55,7 @@ export class CrudService<Model> {
         );
     }
 
-    store(model: Model): Observable<{ message: string }> {
+    store(model: Model | FormData): Observable<{ message: string }> {
         return this.httpClient.post<{ message: string }>(`${this.apiUrl}/store`, model)
             .pipe(
                 take(1),
@@ -69,7 +69,7 @@ export class CrudService<Model> {
             );
     }
 
-    update(model: Model, id: string): Observable<{ message: string }> {
+    update(model: Model | FormData, id: string): Observable<{ message: string }> {
         return this.httpClient.put<{ message: string }>(`${this.apiUrl}/update/${id}`, model)
             .pipe(
                 take(1),

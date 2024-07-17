@@ -1,5 +1,7 @@
 import { Model } from "./Model";
+import { File } from './File';
 
 export class FinancialRecord extends Model{
-    categoryIds: string[];
+    files: File[];
+    description: string;
 }

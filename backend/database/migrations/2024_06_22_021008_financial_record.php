@@ -26,6 +26,7 @@ return new class extends Migration
             $table->longText('details')->nullable();
             $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreignUuid('payment_id')->references('id')->on('payments');
+            $table->foreignUuid('category_id')->references('id')->on('categories');
             $table->foreignUuid('supplier_customer_id')->nullable()->references('id')->on('suppliers_and_customers');
         });
     }

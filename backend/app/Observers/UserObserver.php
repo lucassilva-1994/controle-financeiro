@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Mail\Welcome;
-use App\Models\{Category, Payment, SupplierAndCustomer, User};
+use App\Models\{Category, Payment, User};
 use App\Traits\ModelTrait;
 use Illuminate\Support\Facades\Mail;
 
@@ -14,38 +14,6 @@ class UserObserver
     {
         Mail::to($user->email)->send(new Welcome($user));
         self::paymentsAndCategoriesAndSuppliers($user->id->toString());
-    }
-
-    /**
-     * Handle the User "updated" event.
-     */
-    public function updated(User $user): void
-    {
-        //
-    }
-
-    /**
-     * Handle the User "deleted" event.
-     */
-    public function deleted(User $user): void
-    {
-        //
-    }
-
-    /**
-     * Handle the User "restored" event.
-     */
-    public function restored(User $user): void
-    {
-        //
-    }
-
-    /**
-     * Handle the User "force deleted" event.
-     */
-    public function forceDeleted(User $user): void
-    {
-        //
     }
 
     public static function paymentsAndCategoriesAndSuppliers($user_id)
@@ -107,59 +75,6 @@ class UserObserver
             ['name' => 'Manutenção do Carro', 'type' => 'EXPENSE', 'description' => 'Despesas com manutenção e reparos do carro']
         ];
 
-        $suppliers = [
-            ['name' => 'Amazon', 'description' => 'Fornecedor global de produtos diversos', 'email' => 'contact@amazon.com', 'type' => 'BOTH'],
-            ['name' => 'Alibaba', 'description' => 'Plataforma de comércio eletrônico B2B', 'email' => 'contact@alibaba.com', 'type' => 'BOTH'],
-            ['name' => 'Walmart', 'description' => 'Varejista e fornecedor de produtos variados', 'email' => 'contact@walmart.com', 'type' => 'BOTH'],
-            ['name' => 'Samsung', 'description' => 'Fornecedor de eletrônicos e tecnologia', 'email' => 'contact@samsung.com', 'type' => 'BOTH'],
-            ['name' => 'Sony', 'description' => 'Fornecedor de produtos eletrônicos e de entretenimento', 'email' => 'contact@sony.com', 'type' => 'BOTH'],
-            ['name' => 'LG', 'description' => 'Fornecedor de eletrônicos, eletrodomésticos e tecnologia', 'email' => 'contact@lg.com', 'type' => 'BOTH'],
-            ['name' => 'Microsoft', 'description' => 'Fornecedor de software, hardware e serviços de TI', 'email' => 'contact@microsoft.com', 'type' => 'BOTH'],
-            ['name' => 'Apple', 'description' => 'Fornecedor de produtos de tecnologia e eletrônicos', 'email' => 'contact@apple.com', 'type' => 'BOTH'],
-            ['name' => 'HP', 'description' => 'Fornecedor de computadores, impressoras e acessórios', 'email' => 'contact@hp.com', 'type' => 'BOTH'],
-            ['name' => 'Dell', 'description' => 'Fornecedor de computadores, servidores e soluções de TI', 'email' => 'contact@dell.com', 'type' => 'BOTH'],
-            ['name' => 'Intel', 'description' => 'Fornecedor de processadores e tecnologias de computação', 'email' => 'contact@intel.com', 'type' => 'BOTH'],
-            ['name' => 'Cisco', 'description' => 'Fornecedor de equipamentos de rede e telecomunicações', 'email' => 'contact@cisco.com', 'type' => 'BOTH'],
-            ['name' => 'Oracle', 'description' => 'Fornecedor de software e soluções de banco de dados', 'email' => 'contact@oracle.com', 'type' => 'BOTH'],
-            ['name' => 'IBM', 'description' => 'Fornecedor de hardware, software e serviços de TI', 'email' => 'contact@ibm.com', 'type' => 'BOTH'],
-            ['name' => 'Siemens', 'description' => 'Fornecedor de soluções de engenharia e tecnologia', 'email' => 'contact@siemens.com', 'type' => 'BOTH'],
-            ['name' => 'Procter & Gamble', 'description' => 'Fornecedor de bens de consumo', 'email' => 'contact@pg.com', 'type' => 'BOTH'],
-            ['name' => 'Unilever', 'description' => 'Fornecedor de bens de consumo', 'email' => 'contact@unilever.com', 'type' => 'BOTH'],
-            ['name' => 'Nestlé', 'description' => 'Fornecedor de alimentos e bebidas', 'email' => 'contact@nestle.com', 'type' => 'BOTH'],
-            ['name' => 'PepsiCo', 'description' => 'Fornecedor de alimentos e bebidas', 'email' => 'contact@pepsico.com', 'type' => 'BOTH'],
-            ['name' => 'Coca-Cola', 'description' => 'Fornecedor de bebidas', 'email' => 'contact@coca-cola.com', 'type' => 'BOTH'],
-            ['name' => 'Johnson & Johnson', 'description' => 'Fornecedor de produtos de saúde e higiene', 'email' => 'contact@jnj.com', 'type' => 'BOTH'],
-            ['name' => 'Pfizer', 'description' => 'Fornecedor de produtos farmacêuticos', 'email' => 'contact@pfizer.com', 'type' => 'BOTH'],
-            ['name' => 'Merck', 'description' => 'Fornecedor de produtos farmacêuticos e químicos', 'email' => 'contact@merck.com', 'type' => 'BOTH'],
-            ['name' => 'Novartis', 'description' => 'Fornecedor de produtos farmacêuticos e de saúde', 'email' => 'contact@novartis.com', 'type' => 'BOTH'],
-            ['name' => 'GlaxoSmithKline', 'description' => 'Fornecedor de produtos farmacêuticos e de saúde', 'email' => 'contact@gsk.com', 'type' => 'BOTH'],
-            ['name' => 'Toyota', 'description' => 'Fornecedor de veículos e soluções de mobilidade', 'email' => 'contact@toyota.com', 'type' => 'BOTH'],
-            ['name' => 'Volkswagen', 'description' => 'Fornecedor de veículos e soluções de mobilidade', 'email' => 'contact@volkswagen.com', 'type' => 'BOTH'],
-            ['name' => 'Ford', 'description' => 'Fornecedor de veículos e soluções de mobilidade', 'email' => 'contact@ford.com', 'type' => 'BOTH'],
-            ['name' => 'General Motors', 'description' => 'Fornecedor de veículos e soluções de mobilidade', 'email' => 'contact@gm.com', 'type' => 'BOTH'],
-            ['name' => 'Honda', 'description' => 'Fornecedor de veículos e soluções de mobilidade', 'email' => 'contact@honda.com', 'type' => 'BOTH'],
-            ['name' => 'Nissan', 'description' => 'Fornecedor de veículos e soluções de mobilidade', 'email' => 'contact@nissan.com', 'type' => 'BOTH'],
-            ['name' => 'Hyundai', 'description' => 'Fornecedor de veículos e soluções de mobilidade', 'email' => 'contact@hyundai.com', 'type' => 'BOTH'],
-            ['name' => 'Google', 'description' => 'Fornecedor de serviços de internet e publicidade', 'email' => 'contact@google.com', 'type' => 'BOTH'],
-            ['name' => 'Facebook', 'description' => 'Fornecedor de serviços de redes sociais e publicidade', 'email' => 'contact@facebook.com', 'type' => 'BOTH'],
-            ['name' => 'Twitter', 'description' => 'Fornecedor de serviços de redes sociais e microblogging', 'email' => 'contact@twitter.com', 'type' => 'BOTH'],
-            ['name' => 'LinkedIn', 'description' => 'Fornecedor de serviços de redes sociais profissionais', 'email' => 'contact@linkedin.com', 'type' => 'BOTH'],
-            ['name' => 'Adobe', 'description' => 'Fornecedor de software de design e soluções criativas', 'email' => 'contact@adobe.com', 'type' => 'BOTH'],
-            ['name' => 'Salesforce', 'description' => 'Fornecedor de soluções de CRM e serviços em nuvem', 'email' => 'contact@salesforce.com', 'type' => 'BOTH'],
-            ['name' => 'SAP', 'description' => 'Fornecedor de software empresarial e soluções de TI', 'email' => 'contact@sap.com', 'type' => 'BOTH'],
-            ['name' => '3M', 'description' => 'Fornecedor de produtos industriais, de saúde e consumo', 'email' => 'contact@3m.com', 'type' => 'BOTH'],
-            ['name' => 'Honeywell', 'description' => 'Fornecedor de produtos de automação e controle', 'email' => 'contact@honeywell.com', 'type' => 'BOTH'],
-            ['name' => 'GE', 'description' => 'Fornecedor de soluções de energia e tecnologias industriais', 'email' => 'contact@ge.com', 'type' => 'BOTH'],
-            ['name' => 'Boeing', 'description' => 'Fornecedor de aeronaves e tecnologias aeroespaciais', 'email' => 'contact@boeing.com', 'type' => 'BOTH'],
-            ['name' => 'Airbus', 'description' => 'Fornecedor de aeronaves e tecnologias aeroespaciais', 'email' => 'contact@airbus.com', 'type' => 'BOTH'],
-            ['name' => 'ExxonMobil', 'description' => 'Fornecedor de petróleo e gás', 'email' => 'contact@exxonmobil.com', 'type' => 'BOTH'],
-            ['name' => 'Shell', 'description' => 'Fornecedor de petróleo, gás e produtos energéticos', 'email' => 'contact@shell.com', 'type' => 'BOTH'],
-            ['name' => 'Chevron', 'description' => 'Fornecedor de petróleo, gás e produtos energéticos', 'email' => 'contact@chevron.com', 'type' => 'BOTH'],
-            ['name' => 'BP', 'description' => 'Fornecedor de petróleo, gás e produtos energéticos', 'email' => 'contact@bp.com', 'type' => 'BOTH'],
-            ['name' => 'Total', 'description' => 'Fornecedor de petróleo, gás e produtos energéticos', 'email' => 'contact@total.com', 'type' => 'BOTH'],
-            ['name' => 'Schlumberger', 'description' => 'Fornecedor de serviços e tecnologia para a indústria de petróleo', 'email' => 'contact@slb.com', 'type' => 'BOTH']
-        ];
-
         foreach ($payments as $payment) {
             $payment['user_id'] = $user_id;
             self::createRecord(Payment::class, $payment);
@@ -168,11 +83,6 @@ class UserObserver
         foreach ($categories as $category) {
             $category['user_id'] = $user_id;
             self::createRecord(Category::class, $category);
-        }
-
-        foreach ($suppliers as $supplier) {
-            $supplier['user_id'] = $user_id;
-            self::createRecord(SupplierAndCustomer::class, $supplier);
         }
     }
 }

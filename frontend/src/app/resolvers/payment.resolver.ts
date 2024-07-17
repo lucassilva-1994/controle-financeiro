@@ -5,10 +5,10 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class PaymentResolver implements Resolve<{ pages: number, total: number, search: string, itens: Payment[] }> {
+export class PaymentResolver implements Resolve<Payment[]> {
   constructor(private paymentService: PaymentService) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<{ pages: number, total: number, search: string, itens: Payment[] }> {
-    return this.paymentService.show();
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Payment[]> {
+      return this.paymentService.showWithoutPagination(['id', 'name']);
   }
 }

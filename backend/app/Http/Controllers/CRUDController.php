@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Traits\ModelTrait;
-use Illuminate\Support\Facades\DB;
 
 class CRUDController extends Controller
 {
@@ -86,16 +85,7 @@ class CRUDController extends Controller
 
     public function store()
     {
-        $data = self::createRecord($this->model, app($this->request)->all());
-        if (app($this->request)->categories) {
-            foreach (app($this->request)->categories as $category) {
-                DB::table('category_financial_record')->insert([
-                    'category_id' => $category,
-                    'financial_record_id' => $data->getData()->data->id
-                ]);
-            }
-        }
-        return $data;
+        return self::createRecord($this->model, app($this->request)->all());
     }
 
     public function update(string $id)

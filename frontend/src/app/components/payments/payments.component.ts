@@ -30,6 +30,7 @@ export class PaymentsComponent implements OnInit {
   payments: Payment[] = [];
   backendErrors: string[] = [];
   pages: number;
+  total: number;
   loading: boolean;
   constructor(
     private route: ActivatedRoute,
@@ -58,6 +59,7 @@ export class PaymentsComponent implements OnInit {
       .pipe(tap(response => {
         this.payments = response.itens;
         this.pages = response.pages;
+        this.total = response.total;
       }))
       .subscribe();
   }

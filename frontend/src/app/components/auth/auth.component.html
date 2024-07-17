@@ -15,21 +15,21 @@
                             <label for="email" class="form-label">Email ou usuário:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="text" class="form-control" placeholder="Entrar com seu email ou usuário" required
-                                    formControlName="login">
+                                <input type="text" class="form-control" placeholder="Entrar com seu email ou usuário"
+                                    required formControlName="login">
                             </div>
-                            <app-messages-validators [control]="formSignIn.controls['login']"
-                                field="email ou usuário"></app-messages-validators>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Senha:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" placeholder="Entrar com sua senha" required
-                                    formControlName="password">
+                                <input [type]="showPassword ? 'text' : 'password'" class="form-control"
+                                    placeholder="Entrar com sua senha" required formControlName="password">
                             </div>
-                            <app-messages-validators [control]="formSignIn.controls['password']"
-                                field="campo senha"></app-messages-validators>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" (change)="toggleShowPassword()">
+                            <label class="form-check-label" for="showPassword">Mostrar senha</label>
                         </div>
                         <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
                         <div class="d-grid">
@@ -79,8 +79,8 @@
                             <label for="username" class="form-label">Usuário:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" placeholder="Informe um usuário"
-                                    required formControlName="username">
+                                <input type="text" class="form-control" placeholder="Informe um usuário" required
+                                    formControlName="username">
                             </div>
                         </div>
                         <div class="mb-3">
@@ -95,7 +95,7 @@
                             <label for="password" class="form-label">Senha:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" placeholder="Digite sua senha" required
+                                <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Digite sua senha" required
                                     formControlName="password">
                             </div>
                         </div>
@@ -103,9 +103,13 @@
                             <label for="password_confirmation" class="form-label">Confirmação de Senha:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" placeholder="Confirme sua senha" required
+                                <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Confirme sua senha" required
                                     formControlName="password_confirmation">
                             </div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" (change)="toggleShowPassword()">
+                            <label class="form-check-label">Conferir senhas</label>
                         </div>
                         <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
 

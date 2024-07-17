@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FinancialRecordService } from 'src/app/services/financial-record.service';
 import { Payment } from 'src/app/models/Payment';
 import { ActivatedRoute } from '@angular/router';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { FinancialRecord } from 'src/app/models/FinancialRecord';
 import { Observable, catchError, of, tap } from 'rxjs';
 import { CategoryService } from 'src/app/services/category.service';
@@ -23,35 +23,42 @@ export class FinancialRecordsComponent implements OnInit {
   cols: { key: string, label: string, icon?: string }[] = [
     { key: 'description', label: 'Descrição', icon: 'fas fa-info-circle' },
     { key: 'amount', label: 'Valor', icon: 'fas fa-money-bill-wave' },
-    { key: 'categories_count', label: 'Categorias', icon: 'fas fa-layer-group' },
+    { key: 'category', label: 'Categoria', icon: 'fas fa-layer-group' },
     { key: 'financial_record_type', label: 'Tipo', icon: 'fas fa-list-alt' },
     { key: 'payment', label: 'Forma de pagamento', icon: 'fas fa-credit-card' },
     { key: 'paid', label: 'Pago', icon: 'fas fa-credit-card' },
+    { key: 'files_count', label: 'Arquivos', icon: 'fas fa-file' },
     { key: 'supplier_and_customer', label: 'Fornecedor/Cliente', icon: 'fas fa-briefcase' },
     { key: 'financial_record_date', label: 'Data', icon: 'fas fa-calendar-plus' },
-    { key: 'financial_record_due_date', label: 'Vencimento', icon: 'fas fa-calendar-check' },
+    { key: 'financial_record_due_date', label: 'Vencimento', icon: 'fas fa-calendar-check' }
   ];
   mode: string;
   form: FormGroup;
   formPayment: FormGroup;
+  formCategory: FormGroup;
   errorsPayments: string[] = [];
+  errorsCategories: string[] = [];
   errorsSuppliersAndCustomers: string[] = [];
   formSupplierAndCustomer: FormGroup;
   id: string;
   total_income: number;
   total_expense: number;
   balance: number;
+  total: number;
   message: string;
   financialRecords: FinancialRecord[] = [];
   payments: Payment[] = [];
   categories: Category[] = [];
   suppliersAndCustomers: SupplierAndCustomer[] = [];
+  financialRecord: FinancialRecord;
   pages: number;
   loading: boolean;
   backendErrors: string[] = [];
   isRecurring: boolean = false;
   modalPayment: any;
+  modalCategory: any;
   modalSupplierAndCustomer: any;
+  selectedFiles: File[] = [];
 
   constructor(
     private financialRecordService: FinancialRecordService,
@@ -64,12 +71,13 @@ export class FinancialRecordsComponent implements OnInit {
   ngOnInit(): void {
     this.mode = this.route.snapshot.data['mode'];
     this.modalPayment = this.initializeModal('paymentModal');
+    this.modalCategory = this.initializeModal('categoryModal');
     this.modalSupplierAndCustomer = this.initializeModal('supplierAndCustomerModal');
-    this.financialRecordService.loading$.subscribe( loading => {
+    this.financialRecordService.loading$.subscribe(loading => {
       this.loading = loading
     })
-    this.subscribeToMessage(this.financialRecordService.message$); 
-    this.subscribeToMessage(this.paymentService.message$); 
+    this.subscribeToMessage(this.financialRecordService.message$);
+    this.subscribeToMessage(this.paymentService.message$);
     this.subscribeToMessage(this.suppliersAndCustomersService.message$);
     this.route.params.subscribe(params => {
       this.id = params['id'];
@@ -81,16 +89,17 @@ export class FinancialRecordsComponent implements OnInit {
     this.initializeData();
     this.mode === 'view' ? this.show({ perPage: 10, page: 1, search: '' }) : this.recentRecords();
   }
-  
+
   subscribeToMessage(message$: Observable<string>) {
     message$.subscribe((message: string) => {
       this.message = message;
     });
   }
 
-  initializeForms(){
+  initializeForms() {
     this.initializeForm();
     this.initializeFormPayment();
+    this.initializeFormCategory();
     this.initializeFormSupplierAndCustomer();
   }
 
@@ -111,6 +120,7 @@ export class FinancialRecordsComponent implements OnInit {
         tap(response => {
           this.financialRecords = response.itens;
           this.pages = response.pages;
+          this.total = response.total;
         })
       ).subscribe();
   }
@@ -119,22 +129,12 @@ export class FinancialRecordsComponent implements OnInit {
     this.financialRecordService.showById(id)
       .pipe(
         tap((response: FinancialRecord) => {
-          this.form.patchValue(response); // preenche o formulário com os dados do registro financeiro
-
-          // Pre-seleciona as categorias no formulário
-          const selectedCategoryIds = response.categoryIds;
-          const categoriesFormArray = this.form.get('categories') as FormArray;
-
-          this.categories.forEach(category => {
-            if (selectedCategoryIds.includes(category.id)) {
-              categoriesFormArray.push(this.formBuilder.control(category.id));
-            }
-          });
+          this.form.patchValue(response);
+          this.financialRecord = response
         })
       )
       .subscribe();
   }
-
 
   calculateIncomeExpense() {
     this.financialRecordService.calculateIncomeExpense().subscribe(response => {
@@ -172,7 +172,7 @@ export class FinancialRecordsComponent implements OnInit {
     this.form = this.formBuilder.group({
       description: [''],
       amount: [''],
-      categories: this.formBuilder.array([]),
+      category_id: [''],
       payment_id: [''],
       supplier_customer_id: [''],
       financial_record_date: [this.currentDate()],
@@ -183,10 +183,9 @@ export class FinancialRecordsComponent implements OnInit {
       installment_total: [1],
       increment_interval: [1]
     });
-    const initialType = this.form.get('financial_record_type')?.value; 
-    this.loadingPayments(initialType);
-    this.loadingSuppliersAndCustomers(initialType);
-    this.loadingCategories(initialType);
+    this.loadingPayments();
+    this.loadingSuppliersAndCustomers();
+    this.loadingCategories();
     this.form.get('financial_record_type')?.valueChanges.subscribe(value => {
       this.loadingPayments(value);
       this.loadingSuppliersAndCustomers(value);
@@ -194,34 +193,31 @@ export class FinancialRecordsComponent implements OnInit {
     });
   }
 
-  initializeFormSupplierAndCustomer(){
-      this.formSupplierAndCustomer = this.formBuilder.group({
-        name:[''],
-        description:[''],
-        type:['CUSTOMER'],
-        email:[''],
-        phone:['']
-      });
+  initializeFormSupplierAndCustomer() {
+    this.formSupplierAndCustomer = this.formBuilder.group({
+      name: [''],
+      description: [''],
+      type: ['CUSTOMER'],
+      email: [''],
+      phone: ['']
+    });
   }
 
-  initializeFormPayment(){
-      this.formPayment = this.formBuilder.group({
-        name:[''],
-        type:['INCOME'],
-        description:[''],
-        is_calculable:[1]
-      });
+  initializeFormPayment() {
+    this.formPayment = this.formBuilder.group({
+      name: [''],
+      type: ['INCOME'],
+      description: [''],
+      is_calculable: [1]
+    });
   }
 
-  onCheckboxChange(e: Event) {
-    const target = e.target as HTMLInputElement;
-    const categories: FormArray = this.form.get('categories') as FormArray;
-    if (target.checked) {
-      categories.push(this.formBuilder.control(target.value));
-    } else {
-      const index = categories.controls.findIndex(x => x.value === target.value);
-      categories.removeAt(index);
-    }
+  initializeFormCategory() {
+    this.formCategory = this.formBuilder.group({
+      name: [''],
+      type: ['INCOME'],
+      description: ['']
+    });
   }
 
   onRecurringChange(event: any): void {
@@ -247,14 +243,51 @@ export class FinancialRecordsComponent implements OnInit {
   }
 
   onSubmit() {
-    const form = this.form.getRawValue();
-    const handleSuccess = () => { this.mode === 'new' ? this.initializeForm() : null; this.isRecurring = false; this.show({ perPage: 10, page: 1, search: '' }); this.backendErrors = []; };
+    const formData = new FormData();
+    formData.append('description', this.form.get('description')?.value);
+    formData.append('amount', this.form.get('amount')?.value);
+    formData.append('category_id', this.form.get('category_id')?.value);
+    formData.append('payment_id', this.form.get('payment_id')?.value);
+    formData.append('supplier_customer_id', this.form.get('supplier_customer_id')?.value);
+    formData.append('financial_record_date', this.form.get('financial_record_date')?.value);
+    formData.append('financial_record_due_date', this.form.get('financial_record_due_date')?.value);
+    formData.append('paid', this.form.get('paid')?.value);
+    formData.append('financial_record_type', this.form.get('financial_record_type')?.value);
+    formData.append('details', this.form.get('details')?.value);
+    formData.append('installment_total', this.form.get('installment_total')?.value);
+    formData.append('increment_interval', this.form.get('increment_interval')?.value);
+    if (this.selectedFiles.length > 0) {
+      for (let i = 0; i < this.selectedFiles.length; i++) {
+        formData.append('files[]', this.selectedFiles[i]);
+      }
+    }
+    const handleSuccess = () => {
+      if (this.mode === 'new') {
+        this.initializeForm();
+      }
+      this.isRecurring = false;
+      this.show({ perPage: 10, page: 1, search: '' });
+      this.backendErrors = [];
+    };
+
     const handleErrors = (error: HttpErrorResponse) => {
       this.backendErrors = Object.values(error.error.errors);
       return of(null);
     };
-    (this.mode === 'new' ? this.financialRecordService.store(form) : this.financialRecordService.update(form, this.id))
-      .pipe(tap(handleSuccess), catchError(handleErrors)).subscribe();
+    (this.mode === 'new' 
+      ? this.financialRecordService.store(formData) 
+      : this.financialRecordService.update(this.form.getRawValue(), this.id)
+    )
+    .pipe(
+      tap(handleSuccess), 
+      catchError(handleErrors) 
+    )
+    .subscribe();
+  }
+  
+
+  onFileSelected(event: any) {
+    this.selectedFiles = event.target.files;
   }
 
   currencyMask(event: Event): void {
@@ -276,12 +309,12 @@ export class FinancialRecordsComponent implements OnInit {
     return new Date().toISOString().split('T')[0];
   }
 
-  storePayment(){
+  storePayment() {
     const form = this.formPayment.getRawValue() as Payment;
-    const handleSuccess = () => { 
-      this.initializeFormPayment(); 
+    const handleSuccess = () => {
+      this.initializeFormPayment();
       this.loadingPayments();
-      this.errorsPayments = []; 
+      this.errorsPayments = [];
       this.modalPayment.hide();
     };
     const handleErrors = (error: HttpErrorResponse) => {
@@ -292,12 +325,29 @@ export class FinancialRecordsComponent implements OnInit {
       .pipe(tap(handleSuccess), catchError(handleErrors)).subscribe();
   }
 
-  storeSupplierAndCustomer(){
+
+  storeCategory() {
+    const form = this.formCategory.getRawValue() as Category;
+    const handleSuccess = () => {
+      this.initializeFormCategory();
+      this.loadingCategories();
+      this.errorsCategories = [];
+      this.modalCategory.hide();
+    };
+    const handleErrors = (error: HttpErrorResponse) => {
+      this.errorsCategories = Object.values(error.error.errors);
+      return of(null);
+    };
+    this.categoryService.store(form)
+      .pipe(tap(handleSuccess), catchError(handleErrors)).subscribe();
+  }
+
+  storeSupplierAndCustomer() {
     const form = this.formSupplierAndCustomer.getRawValue() as SupplierAndCustomer;
-    const handleSuccess = () => { 
-      this.initializeFormSupplierAndCustomer(); 
+    const handleSuccess = () => {
+      this.initializeFormSupplierAndCustomer();
       this.loadingSuppliersAndCustomers();
-      this.errorsSuppliersAndCustomers = []; 
+      this.errorsSuppliersAndCustomers = [];
       this.modalSupplierAndCustomer.hide();
     };
     const handleErrors = (error: HttpErrorResponse) => {
@@ -328,12 +378,16 @@ export class FinancialRecordsComponent implements OnInit {
   }
 
   //Modais
-  openModalPayment(){
+  openModalPayment() {
     this.initializeFormPayment();
     this.modalPayment.show();
   }
 
-  openModalSupplierAndCustomer(){
+  openModalCategory() {
+    this.modalCategory.show();
+  }
+
+  openModalSupplierAndCustomer() {
     this.modalSupplierAndCustomer.show();
   }
 }

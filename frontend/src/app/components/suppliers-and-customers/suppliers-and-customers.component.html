@@ -1,4 +1,4 @@
-<app-layout title="Fornecedores/Clientes">
+<app-layout title="Fornecedores/Clientes {{ total ? ' (' + total + ')' : '' }}">
     <app-spinner [loading]="loading"></app-spinner>
     <app-message [message]="message"></app-message>
     <div *ngIf="mode == 'view'">

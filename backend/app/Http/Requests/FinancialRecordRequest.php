@@ -22,7 +22,7 @@ class FinancialRecordRequest extends FormRequest
             'financial_record_due_date' => ['nullable', 'date','after_or_equal:financial_record_date'],
             'financial_record_type' => ['required','in:INCOME,EXPENSE'],
             'payment_id' => ['required', 'exists:payments,id'],
-            'categories' => ['required']
+            'category_id' => ['required']
         ];
     }
 
@@ -30,8 +30,7 @@ class FinancialRecordRequest extends FormRequest
     {
         return [
             'financial_record_type.in' => 'O campo tipo de registro financeiro selecionado é inválido, os valores aceitos são Entrada ou Saída',
-            'paid.between' => 'O campo PAGO é obrigatório.',
-            'categories.required' => 'Selecione pelo menos uma categoria da lista.'
+            'paid.between' => 'O campo PAGO é obrigatório.'
         ];
     }
 }

@@ -12,7 +12,12 @@ class File extends Model
     public $incrementing = false;
     public $timestamps = false;
 
+    public function getPathAttribute(){
+        return env('APP_URL_FILES').$this->attributes['path'];
+    }
+
     public function financialRecord(): BelongsTo{
         return $this->belongsTo(FinancialRecord::class);
     }
+    
 }

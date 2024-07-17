@@ -3,24 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FinancialRecordRequest;
+use App\Models\File;
 use App\Models\FinancialRecord;
-use Illuminate\Support\Facades\DB;
+use App\Traits\ModelTrait;
 
 class FinancialRecordController extends CRUDController
 {
+    use ModelTrait;
     public function __construct()
     {
         parent::__construct(
             FinancialRecord::class,
             FinancialRecordRequest::class,
-            ['payment', 'supplierAndCustomer', 'categories', 'files'],
+            ['payment', 'supplierAndCustomer', 'files','category'],
             [
                 'description', 'amount', 'details',
                 'payment' => ['payments.name'],
                 'supplier_and_customer' => ['suppliers_and_customers.name'],
-                'categories' => ['categories.name']
+                'category' => ['categories.name']
             ],
-            ['categories']
+            ['files']
         );
     }
 
@@ -44,13 +46,15 @@ class FinancialRecordController extends CRUDController
 
     public function store()
     {
-        //Validando se é um lançamento recorrente, se for pegar o valor que foi informado como total de papel de parcelas e ir incrementando até chegar ao número informado
+        // Validando se é um lançamento recorrente
         $installmentTotal = request()->installment_total;
         $successMessage = '';
-        //Logo abaixo vai ser a quantidade de dias que vai ter entre uma parcela ou outra, isso será definido pelo usuario
+        // Quantidade de dias entre uma parcela e outra
         $interval = request()->has('increment_interval') ? intval(request()->increment_interval) : 1;
         $financialRecordDate = now()->parse(request()->financial_record_date);
         $financialRecordDueDate = now()->parse(request()->financial_record_due_date);
+        $files = request()->file('files', []);
+    
         if ($installmentTotal > 1) {
             for ($i = 1; $i <= $installmentTotal; $i++) {
                 request()->merge([
@@ -59,6 +63,16 @@ class FinancialRecordController extends CRUDController
                     'financial_record_due_date' => $financialRecordDueDate->format('Y-m-d')
                 ]);
                 $successMessage = parent::store();
+                $financialRecordId = $successMessage->getData()->data->id;
+                foreach ($files as $file) {
+                    self::createRecord(File::class, [
+                        'financial_record_id' => $financialRecordId,
+                        'path' => $file->store('financial_records/' . auth()->user()->id . '/' . $financialRecordId, 'public'),
+                        'name' => $file->getClientOriginalName()
+                    ]);
+                }
+    
+                // Incrementar as datas para a próxima parcela
                 $financialRecordDate->addDays($interval);
                 $financialRecordDueDate->addDays($interval);
             }
@@ -69,31 +83,17 @@ class FinancialRecordController extends CRUDController
                 'financial_record_due_date' => $financialRecordDueDate->format('Y-m-d')
             ]);
             $successMessage = parent::store();
+            $financialRecordId = $successMessage->getData()->data->id;
+    
+            // Processar e armazenar os arquivos para o registro único
+            foreach ($files as $file) {
+                self::createRecord(File::class, [
+                    'financial_record_id' => $financialRecordId,
+                    'path' => $file->store('financial_records/' . auth()->user()->id . '/' . $financialRecordId, 'public'),
+                    'name' => $file->getClientOriginalName()
+                ]);
+            }
         }
         return $successMessage;
-    }
-
-    public function update(string $id)
-    {
-
-        $existingCategories = DB::table('category_financial_record')
-            ->where('financial_record_id', $id)
-            ->pluck('category_id')
-            ->toArray();
-        $categoriesToRemove = array_diff($existingCategories, request()->categories);
-        $categoriesToAdd = array_diff(request()->categories, $existingCategories);
-        if ($categoriesToRemove) {
-            DB::table('category_financial_record')
-                ->where('financial_record_id', $id)
-                ->whereIn('category_id', $categoriesToRemove)
-                ->delete();
-        }
-        foreach ($categoriesToAdd as $category) {
-            DB::table('category_financial_record')->insert([
-                'category_id' => $category,
-                'financial_record_id' => $id
-            ]);
-        }
-        return parent::update($id);
     }
 }

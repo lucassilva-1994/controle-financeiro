@@ -28,6 +28,7 @@ export class SuppliersAndCustomersComponent implements OnInit {
   suppliersAndCustommers: SupplierAndCustomer[] = [];
   backendErrors: string[] = [];
   pages: number;
+  total: number;
   message: string;
   loading: boolean;
   constructor(
@@ -57,7 +58,8 @@ export class SuppliersAndCustomersComponent implements OnInit {
     this.supplierAndCustomerService.show(event.perPage, event.page, event.search)
       .pipe(tap(response => {
         this.suppliersAndCustommers = response.itens;
-        this.pages = response.pages
+        this.pages = response.pages;
+        this.total = response.total;
       }))
       .subscribe();
   }

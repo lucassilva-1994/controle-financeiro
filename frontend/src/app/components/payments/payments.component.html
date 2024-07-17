@@ -1,4 +1,4 @@
-<app-layout title="Formas de pagamentos">
+<app-layout title="Formas de pagamento {{ total ? ' (' + total + ')' : '' }}">
     <app-spinner [loading]="loading"></app-spinner>
     <app-message [message]="message"></app-message>
     <div *ngIf="mode == 'view'">

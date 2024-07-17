@@ -75,6 +75,7 @@ export class TableComponent implements OnInit, OnDestroy {
         return description.length > 20 ? description.slice(0, 20) + '...' : description;
       case 'payment':
       case 'supplier_and_customer':
+      case 'category':
         return item[key] ? item[key].name : 'Não informado';
       case 'is_calculable':
       case 'type':

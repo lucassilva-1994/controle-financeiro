@@ -21,6 +21,7 @@ export class ProfileComponent implements OnInit{
   formChangePassword: FormGroup;
   backendErrors: string[] = [];
   modal: any;
+  showPassword = false;
   constructor(private userService: UserService, private formBuilder: FormBuilder){ }
   ngOnInit(): void {
     this.userService.loading$.subscribe(loading => {
@@ -34,6 +35,10 @@ export class ProfileComponent implements OnInit{
     this.modal = new window.bootstrap.Modal(
       document.getElementById("changePassword")
     );
+  }
+
+  toggleShowPassword() {
+    this.showPassword = !this.showPassword;
   }
 
   showProfile(){

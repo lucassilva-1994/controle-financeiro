@@ -23,6 +23,7 @@ export class AuthComponent implements OnInit {
   message: string;
   titleCard: string;
   backendErrors: string[] = [];
+  showPassword = false;
   constructor(
     private router: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -55,6 +56,9 @@ export class AuthComponent implements OnInit {
     });
   }
 
+  toggleShowPassword() {
+    this.showPassword = !this.showPassword;
+  }
 
 
   initializeForms() {
