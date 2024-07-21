@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 import { User } from 'src/app/models/User';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
+import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
+import { MessageComponent } from '../shared/message/message.component';
+import { NgIf } from '@angular/common';
+import { SpinnerComponent } from '../shared/spinner/spinner.component';
 
 @Component({
-  selector: 'app-auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css']
+    selector: 'app-auth',
+    templateUrl: './auth.component.html',
+    styleUrls: ['./auth.component.css'],
+    standalone: true,
+    imports: [SpinnerComponent, NgIf, MessageComponent, ReactiveFormsModule, MessagesValidatorsComponent, RouterLink]
 })
 export class AuthComponent implements OnInit {
   formSignIn: FormGroup;

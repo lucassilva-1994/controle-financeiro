@@ -1,15 +1,25 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 import { SupplierAndCustomer } from 'src/app/models/SupplierAndCustomer';
 import { SupplierAndCustomerService } from 'src/app/services/supplier-and-customer.service';
+import { ButtonSubmitComponent } from '../shared/button-submit/button-submit.component';
+import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
+import { CardFormComponent } from '../shared/card-form/card-form.component';
+import { TableComponent } from '../shared/table/table.component';
+import { NgIf } from '@angular/common';
+import { MessageComponent } from '../shared/message/message.component';
+import { SpinnerComponent } from '../shared/spinner/spinner.component';
+import { LayoutComponent } from '../shared/layout/layout.component';
 
 @Component({
-  selector: 'app-suppliers-and-customers',
-  templateUrl: './suppliers-and-customers.component.html',
-  styleUrls: ['./suppliers-and-customers.component.css']
+    selector: 'app-suppliers-and-customers',
+    templateUrl: './suppliers-and-customers.component.html',
+    styleUrls: ['./suppliers-and-customers.component.css'],
+    standalone: true,
+    imports: [LayoutComponent, SpinnerComponent, MessageComponent, NgIf, TableComponent, CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, ButtonSubmitComponent]
 })
 export class SuppliersAndCustomersComponent implements OnInit {
   cols: { key: string, label: string, icon?: string }[] = [

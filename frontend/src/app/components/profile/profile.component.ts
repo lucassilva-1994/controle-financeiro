@@ -1,17 +1,24 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component,  OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable, catchError, of, tap } from 'rxjs';
 import { Password } from 'src/app/models/Password';
 import { User } from 'src/app/models/User';
 import { UserService } from 'src/app/services/user.service';
+import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { MessageComponent } from '../shared/message/message.component';
+import { SpinnerComponent } from '../shared/spinner/spinner.component';
+import { LayoutComponent } from '../shared/layout/layout.component';
 
 declare var window: any;
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+    selector: 'app-profile',
+    templateUrl: './profile.component.html',
+    styleUrls: ['./profile.component.css'],
+    standalone: true,
+    imports: [LayoutComponent, SpinnerComponent, MessageComponent, NgIf, ReactiveFormsModule, MessagesValidatorsComponent, AsyncPipe]
 })
 export class ProfileComponent implements OnInit{
   profile: User;

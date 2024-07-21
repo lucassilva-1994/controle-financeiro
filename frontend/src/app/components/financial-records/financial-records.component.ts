@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FinancialRecordService } from 'src/app/services/financial-record.service';
 import { Payment } from 'src/app/models/Payment';
 import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FinancialRecord } from 'src/app/models/FinancialRecord';
 import { Observable, catchError, of, tap } from 'rxjs';
 import { CategoryService } from 'src/app/services/category.service';
@@ -11,13 +11,23 @@ import { PaymentService } from 'src/app/services/payment.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SupplierAndCustomer } from 'src/app/models/SupplierAndCustomer';
 import { SupplierAndCustomerService } from 'src/app/services/supplier-and-customer.service';
+import { ButtonSubmitComponent } from '../shared/button-submit/button-submit.component';
+import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
+import { CardFormComponent } from '../shared/card-form/card-form.component';
+import { TableComponent } from '../shared/table/table.component';
+import { NgIf, NgFor, CurrencyPipe } from '@angular/common';
+import { MessageComponent } from '../shared/message/message.component';
+import { SpinnerComponent } from '../shared/spinner/spinner.component';
+import { LayoutComponent } from '../shared/layout/layout.component';
 
 declare var window: any;
 
 @Component({
-  selector: 'app-financial-records',
-  templateUrl: './financial-records.component.html',
-  styleUrls: ['./financial-records.component.css']
+    selector: 'app-financial-records',
+    templateUrl: './financial-records.component.html',
+    styleUrls: ['./financial-records.component.css'],
+    standalone: true,
+    imports: [LayoutComponent, SpinnerComponent, MessageComponent, NgIf, TableComponent, CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, NgFor, ButtonSubmitComponent, CurrencyPipe]
 })
 export class FinancialRecordsComponent implements OnInit {
   cols: { key: string, label: string, icon?: string }[] = [

@@ -1,16 +1,19 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { CurrencyPipe, DatePipe} from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CurrencyPipe, DatePipe, NgIf, NgFor, NgClass } from '@angular/common';
 import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { jsPDF } from 'jspdf';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import 'jspdf-autotable';
 
 @Component({
-  selector: 'app-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.css'],
-  providers: [GenericPipe, DatePipe, CurrencyPipe]
+    selector: 'app-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.css'],
+    providers: [GenericPipe, DatePipe, CurrencyPipe],
+    standalone: true,
+    imports: [NgIf, RouterLink, ReactiveFormsModule, FormsModule, NgFor, NgClass]
 })
 export class TableComponent implements OnInit, OnDestroy {
   @Input() cols: { key: string, label: string, icon?: string }[] = [];

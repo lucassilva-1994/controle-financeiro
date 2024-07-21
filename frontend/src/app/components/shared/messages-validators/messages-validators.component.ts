@@ -1,10 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-messages-validators',
-  templateUrl: './messages-validators.component.html',
-  styleUrls: ['./messages-validators.component.css']
+    selector: 'app-messages-validators',
+    templateUrl: './messages-validators.component.html',
+    styleUrls: ['./messages-validators.component.css'],
+    standalone: true,
+    imports: [NgIf]
 })
 export class MessagesValidatorsComponent {
   @Input() control: AbstractControl;
