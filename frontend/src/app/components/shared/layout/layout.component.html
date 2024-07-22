@@ -28,7 +28,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" *ngIf="(user$ | async) as user"  routerLink="/profile">
+                    <a class="nav-link text-white" *ngIf="user"  routerLink="/profile">
                         <i class="fas fa-user"></i> {{ user.username }}
                     </a>
                 </li>

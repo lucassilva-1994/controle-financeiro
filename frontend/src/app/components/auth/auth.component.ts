@@ -3,11 +3,10 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 import { User } from 'src/app/models/User';
-import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
 import { MessageComponent } from '../shared/message/message.component';
-import { NgIf } from '@angular/common';
+import {  NgIf } from '@angular/common';
 import { SpinnerComponent } from '../shared/spinner/spinner.component';
 
 @Component({
@@ -25,21 +24,28 @@ export class AuthComponent implements OnInit {
   email: string;
   token: string;
   errorOccurred: boolean;
-  loading: boolean = false;
-  message: string;
   titleCard: string;
   backendErrors: string[] = [];
   showPassword = false;
+  get loading(): boolean {
+    return this.userService.getLoading()();
+  }
+
+  get message():string{
+    return this.userService.getMessage()();
+  }
+
+  set message(value: string) {
+    this.userService.setMessage(value);
+  }
+  
   constructor(
     private router: ActivatedRoute,
     private formBuilder: FormBuilder,
     private userService: UserService,
     private route: Router
-  ) { }
+  ) {}
   ngOnInit(): void {
-    this.userService.message$.subscribe(message => {
-      this.message = message
-    });
     this.initializeForms();
     this.authMode = this.router.snapshot.data['authMode'];
     this.titleCard = this.getTitleCard(this.authMode);
@@ -57,15 +63,11 @@ export class AuthComponent implements OnInit {
         )
         .subscribe();
     }
-    this.userService.loading$.subscribe(loading => {
-      this.loading = loading;
-    });
   }
 
   toggleShowPassword() {
     this.showPassword = !this.showPassword;
   }
-
 
   initializeForms() {
     this.formSignIn = this.formBuilder.group({

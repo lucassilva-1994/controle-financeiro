@@ -79,6 +79,7 @@ export class FinancialRecordsComponent implements OnInit {
     private suppliersAndCustomersService: SupplierAndCustomerService) {
   }
   ngOnInit(): void {
+    this.payments = this.route.snapshot.data['payments'];
     this.mode = this.route.snapshot.data['mode'];
     this.modalPayment = this.initializeModal('paymentModal');
     this.modalCategory = this.initializeModal('categoryModal');

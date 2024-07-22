@@ -1,8 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { Observable } from 'rxjs';
 import { User } from 'src/app/models/User';
 import { UserService } from 'src/app/services/user.service';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { NgIf} from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -10,15 +9,15 @@ import { RouterLink } from '@angular/router';
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.css'],
     standalone: true,
-    imports: [RouterLink, NgIf, AsyncPipe]
+    imports: [RouterLink, NgIf]
 })
 export class LayoutComponent{
-    user$: Observable<User | null>;
+    user: User| null = null;
     @Input() title: string = 'Registros financeiro';
     constructor(private userService: UserService){
-      this.user$ = this.userService.getUser();
+      this.user = this.userService.getUser()();
     }
-
+    
     signOut(){
       this.userService.signOut();
     }

@@ -1,6 +1,6 @@
 import { Routes } from "@angular/router";
 import { FinancialRecordsComponent } from "./financial-records.component";
-import { PaymentResolver } from "src/app/resolvers/payment.resolver";
+import { PaymentResolver } from "../../resolvers/payment.resolver";
 
 export const FINANCIAL_RECORDS_ROUTES: Routes = [
     {
@@ -8,8 +8,7 @@ export const FINANCIAL_RECORDS_ROUTES: Routes = [
         component: FinancialRecordsComponent,
         title: 'Registros financeiros',
         data: {
-            mode: 'view',
-            payments: PaymentResolver
+            mode: 'view'
         }
     },
     {
@@ -18,6 +17,9 @@ export const FINANCIAL_RECORDS_ROUTES: Routes = [
         title: 'Novo registro financeiro',
         data: {
             mode: 'new'
+        },
+        resolve: {
+            payments: PaymentResolver
         }
     },
     {
@@ -26,6 +28,9 @@ export const FINANCIAL_RECORDS_ROUTES: Routes = [
         title: 'Editar registro financeiro',
         data: {
             mode: 'edit'
+        },
+        resolve: {
+            payments: PaymentResolver
         }
     }
 ];

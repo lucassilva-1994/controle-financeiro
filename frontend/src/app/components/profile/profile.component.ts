@@ -12,7 +12,6 @@ import { SpinnerComponent } from '../shared/spinner/spinner.component';
 import { LayoutComponent } from '../shared/layout/layout.component';
 
 declare var window: any;
-
 @Component({
     selector: 'app-profile',
     templateUrl: './profile.component.html',
@@ -22,21 +21,20 @@ declare var window: any;
 })
 export class ProfileComponent implements OnInit{
   profile: User;
-  user$: Observable<User | null>;
-  loading: boolean;
-  message: string;
+  user: User| null = null;
   formChangePassword: FormGroup;
   backendErrors: string[] = [];
   modal: any;
   showPassword = false;
+  get loading(): boolean {
+    return this.userService.getLoading()();
+  }
+
+  get message(): string{
+    return this.userService.getMessage()();
+  }
   constructor(private userService: UserService, private formBuilder: FormBuilder){ }
   ngOnInit(): void {
-    this.userService.loading$.subscribe(loading => {
-      this.loading = loading;
-    });
-    this.userService.message$.subscribe(message => {
-      this.message = message;
-    });
     this.showProfile();
     this.initializeFormChangePassword();
     this.modal = new window.bootstrap.Modal(
@@ -52,7 +50,7 @@ export class ProfileComponent implements OnInit{
     this.userService.profile()
     .pipe( tap((response: User) => { this.profile = response; }))
     .subscribe();
-    this.user$ = this.userService.getUser();
+    this.user = this.userService.getUser()();
   }
 
   initializeFormChangePassword(){

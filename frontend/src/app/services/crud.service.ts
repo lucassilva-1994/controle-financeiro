@@ -38,12 +38,16 @@ export class CrudService<Model> {
     }
 
     showWithoutPagination(fields: string[], type: string = ''): Observable<Model[]> {
+        this.loadingSubject.next(true);
         let params = new HttpParams().set('fields', JSON.stringify(fields));
         if (type) {
             params = params.append('type', type);
         }
         return this.httpClient.get<Model[]>(`${this.apiUrl}/show-without-pagination`, { params })
-            .pipe(take(1));
+        .pipe(
+            finalize(() => this.loadingSubject.next(false)),
+            take(1)
+        );
     }
 
     showById(id: string): Observable<Model> {
