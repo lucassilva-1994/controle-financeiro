@@ -1,151 +1,153 @@
 <app-layout title="Perfil">
-    <app-spinner [loading]="loading"></app-spinner>
-    <app-message [message]="message"></app-message>
-    <div class="row" *ngIf="profile">
-        <div class="col-lg-4">
-            <div class="card mb-4" style="height: 360px;">
-                <div class="card-body text-center">
-                    <h1 style="font-size: 160px;"><i class="fas fa-user"></i></h1>
-                    <h4 class="my-3">{{ profile.username }}</h4>
-                    <div style="margin-top: 20px;">
-                        <a class="btn btn-link" style="text-decoration: none;"  (click)="openModalChangePassword()">
-                            <i class="fas fa-key fa-lg" style="margin-right: 10px;"></i> Alterar Senha
-                        </a>
-                    </div>
-                </div>
+  <app-spinner [loading]="loading"></app-spinner>
+  <app-message [message]="message"></app-message>
+  @if (profile) {
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4" style="height: 360px;">
+          <div class="card-body text-center">
+            <h1 style="font-size: 160px;"><i class="fas fa-user"></i></h1>
+            <h4 class="my-3">{{ profile.username }}</h4>
+            <div style="margin-top: 20px;">
+              <a class="btn btn-link" style="text-decoration: none;"  (click)="openModalChangePassword()">
+                <i class="fas fa-key fa-lg" style="margin-right: 10px;"></i> Alterar Senha
+              </a>
             </div>
+          </div>
         </div>
-        <div class="col-lg-8">
-            <div class="card mb-4">
-                <div class="card-body" style="height: 360px;">
+      </div>
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-body" style="height: 360px;">
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0"><i class="fas fa-address-card"></i> Nome completo:</h6>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0">{{ profile.name }}</p>
+              </div>
+            </div>
+            <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <h6 class="mb-0"><i class="fas fa-envelope"></i> Email:</h6>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{ profile.email }}</p>
+                </div>
+              </div>
+              <hr>
+                @if (user) {
+                  <div>
                     <div class="row">
-                        <div class="col-sm-3">
-                            <h6 class="mb-0"><i class="fas fa-address-card"></i> Nome completo:</h6>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{ profile.name }}</p>
-                        </div>
+                      <div class="col-sm-3">
+                        <h6 class="mb-0"><i class="fas fa-calendar-alt"></i> Usuário desde:</h6>
+                      </div>
+                      <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{ profile.created_at }}</p>
+                      </div>
                     </div>
                     <hr>
-                    <div class="row">
+                      <div class="row">
                         <div class="col-sm-3">
-                            <h6 class="mb-0"><i class="fas fa-envelope"></i> Email:</h6>
+                          <h6 class="mb-0"><i class="fas fa-sync-alt"></i> Atualizado em:</h6>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{ profile.email }}</p>
+                          <p class="text-muted mb-0">{{ profile.updated_at }}</p>
                         </div>
+                      </div>
+                      <hr>
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <h6 class="mb-0"><i class="fas fa-map-marker-alt"></i> Localização:</h6>
+                          </div>
+                          <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{ user.last_login_locale }}</p>
+                          </div>
+                        </div>
+                        <hr>
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <h6 class="mb-0"><i class="fas fa-history"></i> Último acesso:</h6>
+                            </div>
+                            <div class="col-sm-9">
+                              <p class="text-muted mb-0">{{ user.last_login_time }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      }
                     </div>
-                    <hr>
-                    <div *ngIf="user">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <h6 class="mb-0"><i class="fas fa-calendar-alt"></i> Usuário desde:</h6>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0">{{ profile.created_at }}</p>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <h6 class="mb-0"><i class="fas fa-sync-alt"></i> Atualizado em:</h6>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0">{{ profile.updated_at }}</p>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <h6 class="mb-0"><i class="fas fa-map-marker-alt"></i> Localização:</h6>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0">{{ user.last_login_locale }}</p>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <h6 class="mb-0"><i class="fas fa-history"></i> Último acesso:</h6>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0">{{ user.last_login_time }}</p>
-                            </div>
-                        </div>
-                    </div>
+                  </div>
                 </div>
-            </div>
-        </div>
-    </div>
+              </div>
+            }
 
-    <div class="card" *ngIf="profile">
-        <h4 class="card-header">
-            Estatísticas
-        </h4>
-        <div class="card-body">
-            <h5 class="card-title mt-4">Acessos <i class="fas fa-user-check"></i></h5>
-            <p class="card-text">Total: {{ profile.accesses_count }}</p>
+            @if (profile) {
+              <div class="card">
+                <h4 class="card-header">
+                  Estatísticas
+                </h4>
+                <div class="card-body">
+                  <h5 class="card-title mt-4">Acessos <i class="fas fa-user-check"></i></h5>
+                  <p class="card-text">Total: {{ profile.accesses_count }}</p>
+                  <h5 class="card-title mt-4">Registros financeiros <i class="fas fa-file-invoice-dollar"></i></h5>
+                  <p class="card-text">Total: {{ profile.financial_records_count }}</p>
+                  <h5 class="card-title mt-4">Categorias <i class="fas fa-tags"></i></h5>
+                  <p class="card-text">Total: {{ profile.categories_count }}</p>
+                  <h5 class="card-title mt-4">Formas de Pagamento <i class="fas fa-credit-card"></i></h5>
+                  <p class="card-text">Total: {{ profile.payments_count }}</p>
+                  <h5 class="card-title mt-4">Fornecedores/Clientes <i class="fas fa-users"></i></h5>
+                  <p class="card-text">Total: {{ profile.suppliers_and_custommers_count }}</p>
+                </div>
+              </div>
+            }
+          </app-layout>
 
-            <h5 class="card-title mt-4">Registros financeiros <i class="fas fa-file-invoice-dollar"></i></h5>
-            <p class="card-text">Total: {{ profile.financial_records_count }}</p>
-
-            <h5 class="card-title mt-4">Categorias <i class="fas fa-tags"></i></h5>
-            <p class="card-text">Total: {{ profile.categories_count }}</p>
-
-            <h5 class="card-title mt-4">Formas de Pagamento <i class="fas fa-credit-card"></i></h5>
-            <p class="card-text">Total: {{ profile.payments_count }}</p>
-
-            <h5 class="card-title mt-4">Fornecedores/Clientes <i class="fas fa-users"></i></h5>
-            <p class="card-text">Total: {{ profile.suppliers_and_custommers_count }}</p>
-        </div>
-    </div>
-</app-layout>
-
-<div class="modal" id="changePassword">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">Alterar senha</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form [formGroup]="formChangePassword" (submit)="changePassword()">
+          <div class="modal" id="changePassword">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5">Alterar senha</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form [formGroup]="formChangePassword" (submit)="changePassword()">
                     <div class="mb-3">
-                        <label for="current_password" class="form-label">Senha atual:</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input [type]="showPassword ? 'text' : 'password'" id="current_password" class="form-control"
-                                placeholder="Digite sua senha atual" required formControlName="current_password">
-                        </div>
+                      <label for="current_password" class="form-label">Senha atual:</label>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input [type]="showPassword ? 'text' : 'password'" id="current_password" class="form-control"
+                          placeholder="Digite sua senha atual" required formControlName="current_password">
+                      </div>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Nova senha:</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-key"></i></span>
-                            <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control" placeholder="Digite a nova senha"
-                                required formControlName="password">
-                        </div>
+                      <label for="password" class="form-label">Nova senha:</label>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control" placeholder="Digite a nova senha"
+                          required formControlName="password">
+                      </div>
                     </div>
                     <div class="mb-3">
-                        <label for="password_confirmation" class="form-label">Confirmar nova senha:</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-lock-open"></i></span>
-                            <input [type]="showPassword ? 'text' : 'password'" id="password_confirmation" class="form-control"
-                                placeholder="Digite a nova senha" required formControlName="password_confirmation">
-                        </div>
+                      <label for="password_confirmation" class="form-label">Confirmar nova senha:</label>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock-open"></i></span>
+                        <input [type]="showPassword ? 'text' : 'password'" id="password_confirmation" class="form-control"
+                          placeholder="Digite a nova senha" required formControlName="password_confirmation">
+                      </div>
                     </div>
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" (change)="toggleShowPassword()">
-                        <label class="form-check-label">Mostrar senhas</label>
+                      <input type="checkbox" class="form-check-input" (change)="toggleShowPassword()">
+                      <label class="form-check-label">Mostrar senhas</label>
                     </div>
                     <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-sign-in-alt"></i> Alterar senha
-                        </button>
+                      <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Alterar senha
+                      </button>
                     </div>
-                </form>
+                  </form>
+                </div>
+              </div>
             </div>
-        </div>
-    </div>
-</div>
+          </div>

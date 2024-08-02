@@ -6,7 +6,7 @@ import { Password } from 'src/app/models/Password';
 import { User } from 'src/app/models/User';
 import { UserService } from 'src/app/services/user.service';
 import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MessageComponent } from '../shared/message/message.component';
 import { SpinnerComponent } from '../shared/spinner/spinner.component';
 import { LayoutComponent } from '../shared/layout/layout.component';
@@ -17,7 +17,7 @@ declare var window: any;
     templateUrl: './profile.component.html',
     styleUrls: ['./profile.component.css'],
     standalone: true,
-    imports: [LayoutComponent, SpinnerComponent, MessageComponent, NgIf, ReactiveFormsModule, MessagesValidatorsComponent, AsyncPipe]
+    imports: [LayoutComponent, SpinnerComponent, MessageComponent, ReactiveFormsModule, MessagesValidatorsComponent, AsyncPipe]
 })
 export class ProfileComponent implements OnInit{
   profile: User;

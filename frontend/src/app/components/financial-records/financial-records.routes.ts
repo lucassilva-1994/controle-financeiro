@@ -1,6 +1,8 @@
-import { Routes } from "@angular/router";
-import { FinancialRecordsComponent } from "./financial-records.component";
-import { PaymentResolver } from "../../resolvers/payment.resolver";
+import { Routes } from '@angular/router';
+import { FinancialRecordsComponent } from './financial-records.component';
+import { PaymentResolver } from '../../resolvers/payment.resolver';
+import { CategoryResolver } from 'src/app/resolvers/category.resolver';
+import { SupplierAndCustomerResolver } from 'src/app/resolvers/supplier_and_customer.resolver';
 
 export const FINANCIAL_RECORDS_ROUTES: Routes = [
     {
@@ -19,7 +21,9 @@ export const FINANCIAL_RECORDS_ROUTES: Routes = [
             mode: 'new'
         },
         resolve: {
-            payments: PaymentResolver
+            payments: PaymentResolver,
+            categories: CategoryResolver,
+            suppliersAndCustomers: SupplierAndCustomerResolver
         }
     },
     {
@@ -30,7 +34,9 @@ export const FINANCIAL_RECORDS_ROUTES: Routes = [
             mode: 'edit'
         },
         resolve: {
-            payments: PaymentResolver
+            payments: PaymentResolver,
+            categories: CategoryResolver,
+            suppliersAndCustomers: SupplierAndCustomerResolver
         }
     }
 ];

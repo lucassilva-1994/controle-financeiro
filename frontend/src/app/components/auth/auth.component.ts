@@ -6,7 +6,7 @@ import { User } from 'src/app/models/User';
 import { UserService } from 'src/app/services/user.service';
 import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
 import { MessageComponent } from '../shared/message/message.component';
-import {  NgIf } from '@angular/common';
+
 import { SpinnerComponent } from '../shared/spinner/spinner.component';
 
 @Component({
@@ -14,7 +14,7 @@ import { SpinnerComponent } from '../shared/spinner/spinner.component';
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.css'],
     standalone: true,
-    imports: [SpinnerComponent, NgIf, MessageComponent, ReactiveFormsModule, MessagesValidatorsComponent, RouterLink]
+    imports: [SpinnerComponent, MessageComponent, ReactiveFormsModule, MessagesValidatorsComponent, RouterLink]
 })
 export class AuthComponent implements OnInit {
   formSignIn: FormGroup;

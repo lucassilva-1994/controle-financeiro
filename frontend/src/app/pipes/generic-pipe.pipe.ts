@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
     standalone: true
 })
 export class GenericPipe implements PipeTransform {
-  transform(value: string | number): string {
+  transform(value: string | number | undefined): string {
     switch (value) {
       case 'EXPENSE':
         return 'SAÍDA';

@@ -1,407 +1,558 @@
 <app-layout title="Registros financeiro{{ total ? ' (' + total + ')' : '' }}">
-    <app-spinner [loading]="loading"></app-spinner>
-    <app-message [message]="message"></app-message>
-    <div *ngIf="mode === 'view'">
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col">
-                <div class="card h-100 shadow">
-                    <div class="card-header bg-primary text-white text-center"
-                        style="background-image: linear-gradient(to bottom, rgb(49, 47, 126), rgb(30, 19, 82)); color: white;">
-                        <i class="fas fa-arrow-alt-circle-up me-2"></i> <span class="h5">Entradas</span>
-                    </div>
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <p class="fs-4 text-primary fw-bold">{{ total_income | currency:'BRL':'symbol':'1.2-2' }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card h-100  shadow">
-                    <div class="card-header bg-danger text-white text-center"
-                        style="background-image: linear-gradient(to bottom, rgb(68, 3, 39), rgb(80, 33, 33)); color: white;">
-                        <i class="fas fa-arrow-alt-circle-down me-2"></i> <span class="h5">Saídas</span>
-                    </div>
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <p class="fs-4 text-danger fw-bold">{{ total_expense | currency:'BRL':'symbol':'1.2-2' }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card h-100 shadow">
-                    <div class="card-header bg-success text-white text-center"
-                        style="background-image: linear-gradient(to bottom, rgb(22, 51, 22), rgb(32, 78, 32)); color: white;">
-                        <i class="fas fa-balance-scale me-2"></i> <span class="h5">Saldo</span>
-                    </div>
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <p class="fs-4 text-success fw-bold">{{ balance | currency:'BRL':'symbol':'1.2-2' }}</p>
-                    </div>
-                </div>
-            </div>
+  <app-spinner [loading]="loading"></app-spinner>
+  <app-message [message]="message"></app-message>
+  @if (mode === 'view') {
+  <div>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <div class="col">
+        <div class="card h-100 shadow">
+          <div class="card-header bg-primary text-white text-center"
+            style="background-image: linear-gradient(to bottom, rgb(49, 47, 126), rgb(30, 19, 82)); color: white;">
+            <i class="fas fa-arrow-alt-circle-up me-2"></i> <span class="h5">Entradas</span>
+          </div>
+          <div class="card-body d-flex justify-content-center align-items-center">
+            <p class="fs-4 text-primary fw-bold">{{ total_income | currency:'BRL':'symbol':'1.2-2' }}</p>
+          </div>
         </div>
-        <app-table [itens]="financialRecords" [cols]="cols" path="/financial-records" [pages]="pages"
-            (deleteEvent)="delete($event)" (showEvent)="show($event)"></app-table>
+      </div>
+      <div class="col">
+        <div class="card h-100  shadow">
+          <div class="card-header bg-danger text-white text-center"
+            style="background-image: linear-gradient(to bottom, rgb(68, 3, 39), rgb(80, 33, 33)); color: white;">
+            <i class="fas fa-arrow-alt-circle-down me-2"></i> <span class="h5">Saídas</span>
+          </div>
+          <div class="card-body d-flex justify-content-center align-items-center">
+            <p class="fs-4 text-danger fw-bold">{{ total_expense | currency:'BRL':'symbol':'1.2-2' }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card h-100 shadow">
+          <div class="card-header bg-success text-white text-center"
+            style="background-image: linear-gradient(to bottom, rgb(22, 51, 22), rgb(32, 78, 32)); color: white;">
+            <i class="fas fa-balance-scale me-2"></i> <span class="h5">Saldo</span>
+          </div>
+          <div class="card-body d-flex justify-content-center align-items-center">
+            <p class="fs-4 text-success fw-bold">{{ balance | currency:'BRL':'symbol':'1.2-2' }}</p>
+          </div>
+        </div>
+      </div>
     </div>
+    <app-table [itens]="financialRecords" [cols]="cols" path="/financial-records" [pages]="pages"
+      (deleteEvent)="delete($event)" (showEvent)="show($event)" [actions]="actions"></app-table>
+  </div>
+  }
 
 
-    <div *ngIf="mode === 'new' || mode === 'edit'">
-        <app-card-form>
-            <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
-            <form [formGroup]="form" (submit)="onSubmit()">
-                <div class="row align-items-end">
-                    <div class="col-md-10 mb-3">
-                        <div class="form-group">
-                            <label for="description">
-                                <i class="fas fa-info-circle"></i> Descrição
-                            </label>
-                            <input id="description" formControlName="description" type="text" class="form-control"
-                                maxlength="100" placeholder="Descrição (Máximo 100 caracteres)">
-                        </div>
-                    </div>
-                    <div class="col-md-2 mb-3">
-                        <div class="form-group">
-                            <label for="amount">
-                                <i class="fas fa-money-bill"></i> Valor
-                            </label>
-                            <input id="amount" formControlName="amount" type="text" class="form-control"
-                                (input)="currencyMask($event)" placeholder="R$ 0,00" />
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 mb-3">
-                        <div class="form-group">
-                            <label for="financial_record_date">
-                                <i class="fas fa-calendar-day"></i> Data:
-                            </label>
-                            <input id="financial_record_date" formControlName="financial_record_date" type="date"
-                                class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="form-group">
-                            <label for="financial_record_due_date">
-                                <i class="fas fa-calendar-times"></i> Vencimento:
-                            </label>
-                            <input id="financial_record_due_date" formControlName="financial_record_due_date"
-                                type="date" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="form-group">
-                            <label for="paid">
-                                <i class="fas fa-check-circle"></i> Pago:
-                            </label>
-                            <select formControlName="paid" class="form-select">
-                                <option value="1">Sim</option>
-                                <option value="0">Não</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="form-group">
-                            <label for="financial_record_type">
-                                <i class="fas fa-hand-holding-usd"></i> Tipo:
-                            </label>
-                            <select formControlName="financial_record_type" class="form-select">
-                                <option value="">Selecione</option>
-                                <option value="INCOME">Entrada</option>
-                                <option value="EXPENSE">Saída</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="form-group">
-                            <label for="category_id">
-                                <i class="fas fa-credit-card"></i> Categoria:
-                            </label>
-                            <div class="input-group">
-                                <select formControlName="category_id" class="form-select">
-                                    <option value="">Selecione uma opção</option>
-                                    <option *ngFor="let category of categories" [value]="category.id">{{ category.name
-                                        }}
-                                    </option>
-                                </select>
-                                <button type="button" class="btn btn-success" (click)="openModalCategory()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="form-group">
-                            <label for="payment_id">
-                                <i class="fas fa-credit-card"></i> Forma de pagamento:
-                            </label>
-                            <div class="input-group">
-                                <select formControlName="payment_id" class="form-select">
-                                    <option value="">Selecione uma opção</option>
-                                    <option *ngFor="let payment of payments" [value]="payment.id">{{ payment.name }}
-                                    </option>
-                                </select>
-                                <button type="button" class="btn btn-success" (click)="openModalPayment()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="form-group">
-                            <label for="supplier_customer_id">
-                                <i class="fas fa-briefcase"></i> Fornecedor/Cliente (Opcional):
-                            </label>
-                            <div class="input-group">
-                                <select formControlName="supplier_customer_id" class="form-select">
-                                    <option value="">Selecione uma opção</option>
-                                    <option *ngFor="let supplierAndCustomer of suppliersAndCustomers"
-                                        [value]="supplierAndCustomer.id">{{ supplierAndCustomer.name }}
-                                    </option>
-                                </select>
-                                <button type="button" class="btn btn-success" (click)="openModalSupplierAndCustomer()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="files">
-                            <i class="fas fa-file"></i> Arquivos (Opcional):
-                        </label>
-                        <input type="file" class="form-control-file d-none w-100" id="files" name="files"
-                            (change)="onFileSelected($event)" multiple [disabled]="mode === 'edit'">
-                        <label class="btn btn-primary mb-0 w-100" for="files">
-                            <span *ngIf="selectedFiles.length === 0">Selecionar Arquivos</span>
-                            <span *ngIf="selectedFiles.length > 0">{{ selectedFiles.length }} arquivo(s)
-                                selecionado(s)</span>
-                        </label>
-                    </div>
-                    <div class="col-md-12 mb-3" *ngIf="mode == 'new'">
-                        <div class="form-group form-check d-flex align-items-center">
-                            <input class="form-check-input" type="checkbox" id="recurring"
-                                (change)="onRecurringChange($event)">
-                            <label class="form-check-label" for="recurring">
-                                &nbsp; <i class="fas fa-sync-alt"></i> É recorrente?
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-2 mb-3" *ngIf="isRecurring">
-                        <div class="form-group d-flex flex-column">
-                            <label for="installments" class="mb-0">
-                                <i class="fas fa-list-ol"></i> Parcelas:
-                            </label>
-                            <input formControlName="installment_total" type="number" class="form-control">
-                        </div>
-                        <div class="form-group d-flex flex-column">
-                            <label for="interval" class="mb-0">
-                                <i class="fas fa-clock"></i> Intervalo (Em dias):
-                            </label>
-                            <input formControlName="increment_interval" type="number" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <div class="form-group">
-                            <label for="details">
-                                <i class="fas fa-align-left"></i> Detalhes (Opcional):
-                            </label>
-                            <textarea id="details" class="form-control" formControlName="details"></textarea>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <app-button-submit></app-button-submit>
-                    </div>
-                </div>
-            </form>
-            <div *ngIf="mode === 'edit'">
-                <section *ngIf="financialRecord.files.length > 0">
-                    <h5>Arquivos ({{ financialRecord.files.length }})</h5>
-                    <div class="file-list">
-                        <div *ngFor="let file of financialRecord.files" class="file-item">
-                            <div class="file-details d-flex align-items-center">
-                                <div class="file-icon me-2">
-                                    <i class="fas fa-file-alt fa-lg"></i> 
-                                </div>
-                                <div class="file-name">{{ file.name }}</div>
-                            </div>
-                            <div class="file-actions d-flex align-items-center">
-                                <a class="btn btn-primary btn-sm me-2" target="_blank" [href]="file.path" download>
-                                    <i class="fas fa-download me-1"></i> Baixar
-                                </a>
-                                <a class="btn btn-secondary btn-sm me-2" target="_blank" [href]="file.path">
-                                    <i class="fas fa-external-link-alt me-1"></i> Abrir
-                                </a>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash-alt me-1"></i> Excluir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+  @if (mode === 'new' || mode === 'edit') {
+  <div>
+    <app-card-form>
+      <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
+      <form [formGroup]="form" (submit)="onSubmit()">
+        <div class="row align-items-end">
+          <div class="col-md-10 mb-3">
+            <div class="form-group">
+              <label for="description">
+                <i class="fas fa-info-circle"></i> Descrição
+              </label>
+              <input id="description" formControlName="description" type="text" class="form-control" maxlength="100"
+                placeholder="Descrição (Máximo 100 caracteres)">
             </div>
-        </app-card-form>
-    </div>
+          </div>
+          <div class="col-md-2 mb-3">
+            <div class="form-group">
+              <label for="amount">
+                <i class="fas fa-money-bill"></i> Valor
+              </label>
+              <input id="amount" formControlName="amount" type="text" class="form-control"
+                (input)="currencyMask($event)" placeholder="R$ 0,00" />
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="form-group">
+              <label for="financial_record_date">
+                <i class="fas fa-calendar-day"></i> Data:
+              </label>
+              <input id="financial_record_date" formControlName="financial_record_date" type="date"
+                class="form-control">
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="form-group">
+              <label for="financial_record_due_date">
+                <i class="fas fa-calendar-times"></i> Vencimento:
+              </label>
+              <input id="financial_record_due_date" formControlName="financial_record_due_date" type="date"
+                class="form-control">
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="form-group">
+              <label for="paid">
+                <i class="fas fa-check-circle"></i> Pago:
+              </label>
+              <select formControlName="paid" class="form-select">
+                <option value="1">Sim</option>
+                <option value="0">Não</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="form-group">
+              <label for="financial_record_type">
+                <i class="fas fa-hand-holding-usd"></i> Tipo:
+              </label>
+              <select formControlName="financial_record_type" class="form-select">
+                <option value="">Selecione</option>
+                <option value="INCOME">Entrada</option>
+                <option value="EXPENSE">Saída</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="form-group">
+              <label for="category_id">
+                <i class="fas fa-credit-card"></i> Categoria:
+              </label>
+              <div class="input-group">
+                <select formControlName="category_id" class="form-select">
+                  <option value="">Selecione uma opção</option>
+                  @for (category of categories; track category) {
+                  <option [value]="category.id">{{ category.name
+                    }}
+                  </option>
+                  }
+                </select>
+                <button type="button" class="btn btn-success" (click)="openModalCategory()">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="form-group">
+              <label for="payment_id">
+                <i class="fas fa-credit-card"></i> Forma de pagamento:
+              </label>
+              <div class="input-group">
+                <select formControlName="payment_id" class="form-select">
+                  <option value="">Selecione uma opção</option>
+                  @for (payment of payments; track payment) {
+                  <option [value]="payment.id">{{ payment.name }}
+                  </option>
+                  }
+                </select>
+                <button type="button" class="btn btn-success" (click)="openModalPayment()">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="form-group">
+              <label for="supplier_customer_id">
+                <i class="fas fa-briefcase"></i> Fornecedor/Cliente (Opcional):
+              </label>
+              <div class="input-group">
+                <select formControlName="supplier_customer_id" class="form-select">
+                  <option value="">Selecione uma opção</option>
+                  @for (supplierAndCustomer of suppliersAndCustomers; track supplierAndCustomer) {
+                  <option [value]="supplierAndCustomer.id">{{ supplierAndCustomer.name }}
+                  </option>
+                  }
+                </select>
+                <button type="button" class="btn btn-success" (click)="openModalSupplierAndCustomer()">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="files">
+              <i class="fas fa-file"></i> Arquivos (Opcional):
+            </label>
+            <input type="file" class="form-control-file d-none w-100" id="files" name="files"
+              (change)="onFileSelected($event)" multiple [disabled]="mode === 'edit'">
+            <label class="btn btn-primary mb-0 w-100" for="files">
+              @if (selectedFiles.length === 0) {
+              <span>Selecionar Arquivos</span>
+              }
+              @if (selectedFiles.length > 0) {
+              <span>{{ selectedFiles.length }} arquivo(s)
+                selecionado(s)</span>
+              }
+            </label>
+          </div>
+          @if (mode == 'new') {
+          <div class="col-md-12 mb-3">
+            <div class="form-group form-check d-flex align-items-center">
+              <input class="form-check-input" type="checkbox" id="recurring" (change)="onRecurringChange($event)">
+              <label class="form-check-label" for="recurring">
+                &nbsp; <i class="fas fa-sync-alt"></i> É recorrente?
+              </label>
+            </div>
+          </div>
+          }
+          @if (isRecurring) {
+          <div class="col-md-2 mb-3">
+            <div class="form-group d-flex flex-column">
+              <label for="installments" class="mb-0">
+                <i class="fas fa-list-ol"></i> Parcelas:
+              </label>
+              <input formControlName="installment_total" type="number" class="form-control">
+            </div>
+            <div class="form-group d-flex flex-column">
+              <label for="interval" class="mb-0">
+                <i class="fas fa-clock"></i> Intervalo (Em dias):
+              </label>
+              <input formControlName="increment_interval" type="number" class="form-control">
+            </div>
+          </div>
+          }
+          <div class="col-md-12 mb-3">
+            <div class="form-group">
+              <label for="details">
+                <i class="fas fa-align-left"></i> Detalhes (Opcional):
+              </label>
+              <textarea id="details" class="form-control" formControlName="details"></textarea>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <app-button-submit></app-button-submit>
+          </div>
+        </div>
+      </form>
+      @if (mode === 'edit') {
+      <div>
+        @if (financialRecord.files.length > 0) {
+        <section>
+          <h5>Arquivos ({{ financialRecord.files.length }})</h5>
+          <div class="file-list">
+            @for (file of financialRecord.files; track file) {
+            <div class="file-item">
+              <div class="file-details d-flex align-items-center">
+                <div class="file-icon me-2">
+                  <i class="fas fa-file-alt fa-lg"></i>
+                </div>
+                <div class="file-name">{{ file.name }}</div>
+              </div>
+              <div class="file-actions d-flex align-items-center">
+                <a class="btn btn-primary btn-sm me-2" target="_blank" [href]="file.path" download>
+                  <i class="fas fa-download me-1"></i> Baixar
+                </a>
+                <a class="btn btn-secondary btn-sm me-2" target="_blank" [href]="file.path">
+                  <i class="fas fa-external-link-alt me-1"></i> Abrir
+                </a>
+                <button class="btn btn-danger btn-sm">
+                  <i class="fas fa-trash-alt me-1"></i> Excluir
+                </button>
+              </div>
+            </div>
+            }
+          </div>
+        </section>
+        }
+      </div>
+      }
+    </app-card-form>
+  </div>
+  }
 </app-layout>
 
 <div class="modal" id="paymentModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">Nova forma de pagamento</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Nova forma de pagamento</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formPayment" (submit)="storePayment()">
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="name">
+                <i class="fas fa-credit-card"></i> Nome
+              </label>
+              <input id="name" formControlName="name" type="text" class="form-control" required placeholder="Nome">
             </div>
-            <div class="modal-body">
-                <form [formGroup]="formPayment" (submit)="storePayment()">
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="name">
-                                <i class="fas fa-credit-card"></i> Nome
-                            </label>
-                            <input id="name" formControlName="name" type="text" class="form-control" required
-                                placeholder="Nome">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="type">
-                                <i class="fas fa-list-alt"></i> Tipo
-                            </label>
-                            <select id="type" formControlName="type" class="form-control">
-                                <option value="INCOME">Entrada</option>
-                                <option value="EXPENSE">Saída</option>
-                                <option value="BOTH">Ambos</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="is_calculable">
-                                <i class="fas fa-calculator"></i> Calculável?
-                            </label>
-                            <select id="is_calculable" formControlName="is_calculable" class="form-control">
-                                <option value="1">Sim</option>
-                                <option value="0">Não</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="description">
-                                <i class="fas fa-info-circle"></i> Descrição (Opcional)
-                            </label>
-                            <input id="description" formControlName="description" type="text" class="form-control"
-                                maxlength="40" placeholder="Descrição (Máximo 40 caracteres).">
-                        </div>
-                    </div>
-                    <app-messages-validators [backendErrors]="errorsPayments"></app-messages-validators>
-                    <app-button-submit></app-button-submit>
-                </form>
+          </div>
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="type">
+                <i class="fas fa-list-alt"></i> Tipo
+              </label>
+              <select id="type" formControlName="type" class="form-control">
+                <option value="INCOME">Entrada</option>
+                <option value="EXPENSE">Saída</option>
+                <option value="BOTH">Ambos</option>
+              </select>
             </div>
-        </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="is_calculable">
+                <i class="fas fa-calculator"></i> Calculável?
+              </label>
+              <select id="is_calculable" formControlName="is_calculable" class="form-control">
+                <option value="1">Sim</option>
+                <option value="0">Não</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="description">
+                <i class="fas fa-info-circle"></i> Descrição (Opcional)
+              </label>
+              <input id="description" formControlName="description" type="text" class="form-control" maxlength="40"
+                placeholder="Descrição (Máximo 40 caracteres).">
+            </div>
+          </div>
+          <app-messages-validators [backendErrors]="errorsPayments"></app-messages-validators>
+          <app-button-submit></app-button-submit>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 <div class="modal" id="categoryModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">Nova categoria</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Nova categoria</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formCategory" (submit)="storeCategory()">
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="name">
+                <i class="fas fa-tag"></i> Nome
+              </label>
+              <input id="name" formControlName="name" type="text" class="form-control" required placeholder="Nome">
             </div>
-            <div class="modal-body">
-                <form [formGroup]="formCategory" (submit)="storeCategory()">
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="name">
-                                <i class="fas fa-tag"></i> Nome
-                            </label>
-                            <input id="name" formControlName="name" type="text" class="form-control" required
-                                placeholder="Nome">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="type">
-                                <i class="fas fa-list-alt"></i> Tipo
-                            </label>
-                            <select id="type" formControlName="type" class="form-control">
-                                <option value="INCOME">Entrada</option>
-                                <option value="EXPENSE">Saída</option>
-                                <option value="BOTH">Ambos</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="description">
-                                <i class="fas fa-info-circle"></i> Descrição (Opcional)
-                            </label>
-                            <input id="description" formControlName="description" type="text" class="form-control"
-                                maxlength="40" placeholder="Descrição (Máximo 40 caracteres).">
-                        </div>
-                    </div>
-                    <app-messages-validators [backendErrors]="errorsCategories"></app-messages-validators>
-                    <app-button-submit></app-button-submit>
-                </form>
+          </div>
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="type">
+                <i class="fas fa-list-alt"></i> Tipo
+              </label>
+              <select id="type" formControlName="type" class="form-control">
+                <option value="INCOME">Entrada</option>
+                <option value="EXPENSE">Saída</option>
+                <option value="BOTH">Ambos</option>
+              </select>
             </div>
-        </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="description">
+                <i class="fas fa-info-circle"></i> Descrição (Opcional)
+              </label>
+              <input id="description" formControlName="description" type="text" class="form-control" maxlength="40"
+                placeholder="Descrição (Máximo 40 caracteres).">
+            </div>
+          </div>
+          <app-messages-validators [backendErrors]="errorsCategories"></app-messages-validators>
+          <app-button-submit></app-button-submit>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 <div class="modal" id="supplierAndCustomerModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">Novo Fornecedor/Cliente</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Novo Fornecedor/Cliente</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formSupplierAndCustomer" (submit)="storeSupplierAndCustomer()">
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="name">
+                <i class="fas fa-briefcase"></i> Nome
+              </label>
+              <input id="name" formControlName="name" type="text" class="form-control" required placeholder="Nome">
             </div>
-            <div class="modal-body">
-                <form [formGroup]="formSupplierAndCustomer" (submit)="storeSupplierAndCustomer()">
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="name">
-                                <i class="fas fa-briefcase"></i> Nome
-                            </label>
-                            <input id="name" formControlName="name" type="text" class="form-control" required
-                                placeholder="Nome">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="type">
-                                <i class="fas fa-list-alt"></i> Tipo
-                            </label>
-                            <select id="type" formControlName="type" class="form-control">
-                                <option value="SUPPLIER">Fornecedor</option>
-                                <option value="CUSTOMER">Cliente</option>
-                                <option value="BOTH">Ambos</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="email">
-                                <i class="fas fa-envelope"></i> Email (Opcional)
-                            </label>
-                            <input id="email" formControlName="email" type="email" class="form-control"
-                                placeholder="Email">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="phone">
-                                <i class="fas fa-phone"></i> Telefone (Opcional)
-                            </label>
-                            <input id="phone" formControlName="phone" type="tel" class="form-control"
-                                placeholder="Telefone" (input)="phoneMask($event)">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-group">
-                            <label for="description">
-                                <i class="fas fa-info-circle"></i> Descrição (Opcional)
-                            </label>
-                            <input id="description" formControlName="description" type="text" class="form-control"
-                                maxlength="100" placeholder="Descrição (Máximo 100 caracteres).">
-                        </div>
-                    </div>
-                    <app-messages-validators [backendErrors]="errorsSuppliersAndCustomers"></app-messages-validators>
-                    <app-button-submit></app-button-submit>
-                </form>
+          </div>
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="type">
+                <i class="fas fa-list-alt"></i> Tipo
+              </label>
+              <select id="type" formControlName="type" class="form-control">
+                <option value="SUPPLIER">Fornecedor</option>
+                <option value="CUSTOMER">Cliente</option>
+                <option value="BOTH">Ambos</option>
+              </select>
             </div>
-        </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="email">
+                <i class="fas fa-envelope"></i> Email (Opcional)
+              </label>
+              <input id="email" formControlName="email" type="email" class="form-control" placeholder="Email">
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="phone">
+                <i class="fas fa-phone"></i> Telefone (Opcional)
+              </label>
+              <input id="phone" formControlName="phone" type="tel" class="form-control" placeholder="Telefone"
+                (input)="phoneMask($event)">
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="description">
+                <i class="fas fa-info-circle"></i> Descrição (Opcional)
+              </label>
+              <input id="description" formControlName="description" type="text" class="form-control" maxlength="100"
+                placeholder="Descrição (Máximo 100 caracteres).">
+            </div>
+          </div>
+          <app-messages-validators [backendErrors]="errorsSuppliersAndCustomers"></app-messages-validators>
+          <app-button-submit></app-button-submit>
+        </form>
+      </div>
     </div>
+  </div>
+</div>
+<div class="modal" id="financialRecordDetailsModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Detalhes do registro financeiro</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row">
+          <div class="mb-3 col-md-12">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-file-alt"></i> Descrição
+              </label>
+              <input type="text" class="form-control" value="{{ financialRecord?.description }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-dollar-sign"></i> Valor
+              </label>
+              <input type="text" class="form-control" value="{{ financialRecord?.amount | currency:'BRL' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-tags"></i> Categoria
+              </label>
+              <input type="text" class="form-control" value="{{ financialRecord?.category?.name }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-cogs"></i> Tipo
+              </label>
+              <input type="text" class="form-control" value="{{ financialRecord?.financial_record_type | genericPipe }}"
+                disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-credit-card"></i> Forma de pagamento
+              </label>
+              <input type="text" class="form-control" value="{{ financialRecord?.payment?.name ?? 'Não informado' }}"
+                disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-check-circle"></i> Pago
+              </label>
+              <input type="text" class="form-control" value="{{ financialRecord?.paid | genericPipe }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-user"></i> Fornecedor/Cliente
+              </label>
+              <input type="text" class="form-control"
+                value="{{ financialRecord?.supplier_and_customer?.name ?? 'Não informado' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-day"></i> Data
+              </label>
+              <input type="text" class="form-control"
+                value="{{ financialRecord?.financial_record_date | date:'dd/MM/yyyy' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-check"></i> Vencimento
+              </label>
+              <input type="text" class="form-control"
+                value="{{ financialRecord?.financial_record_due_date | date:'dd/MM/yyyy' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-plus"></i> Criado em
+              </label>
+              <input type="text" class="form-control"
+                value="{{ financialRecord?.created_at | date:'dd/MM/yyyy HH:mm:ss' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-edit"></i> Atualizado em
+              </label>
+              <input type="text" class="form-control"
+                value="{{ financialRecord?.updated_at ? (financialRecord.updated_at | date:'dd/MM/yyyy HH:mm:ss') : 'Sem alteração' }}"
+                disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-edit"></i> Parcela atual
+              </label>
+              <input type="text" class="form-control" value="{{ financialRecord?.installment_number }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-edit"></i> Total de parcelas
+              </label>
+              <input type="text" class="form-control" value="{{ financialRecord?.installment_total }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-12">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-info-circle"></i> Detalhes
+              </label>
+              <textarea class="form-control" rows="3" disabled>{{ financialRecord?.details || 'Não há detalhes disponíveis' }}</textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>

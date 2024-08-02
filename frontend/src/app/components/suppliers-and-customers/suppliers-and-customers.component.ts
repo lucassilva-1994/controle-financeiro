@@ -9,7 +9,7 @@ import { ButtonSubmitComponent } from '../shared/button-submit/button-submit.com
 import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
 import { CardFormComponent } from '../shared/card-form/card-form.component';
 import { TableComponent } from '../shared/table/table.component';
-import { NgIf } from '@angular/common';
+
 import { MessageComponent } from '../shared/message/message.component';
 import { SpinnerComponent } from '../shared/spinner/spinner.component';
 import { LayoutComponent } from '../shared/layout/layout.component';
@@ -19,7 +19,7 @@ import { LayoutComponent } from '../shared/layout/layout.component';
     templateUrl: './suppliers-and-customers.component.html',
     styleUrls: ['./suppliers-and-customers.component.css'],
     standalone: true,
-    imports: [LayoutComponent, SpinnerComponent, MessageComponent, NgIf, TableComponent, CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, ButtonSubmitComponent]
+    imports: [LayoutComponent, SpinnerComponent, MessageComponent, TableComponent, CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, ButtonSubmitComponent]
 })
 export class SuppliersAndCustomersComponent implements OnInit {
   cols: { key: string, label: string, icon?: string }[] = [

@@ -1,129 +1,136 @@
 <app-spinner [loading]="loading"></app-spinner>
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header text-center">
-                    <h4> {{ titleCard }} </h4>
-                </div>
-                <div class="card-body" *ngIf="message">
-                    <app-message [message]="message"></app-message>
-                </div>
-                <div class="card-body" *ngIf="authMode == 'signIn'">
-                    <form [formGroup]="formSignIn" (submit)="signIn()">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email ou usuário:</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="text" class="form-control" placeholder="Entrar com seu email ou usuário"
-                                    required formControlName="login">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Senha:</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input [type]="showPassword ? 'text' : 'password'" class="form-control"
-                                    placeholder="Entrar com sua senha" required formControlName="password">
-                            </div>
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" (change)="toggleShowPassword()">
-                            <label class="form-check-label" for="showPassword">Mostrar senha</label>
-                        </div>
-                        <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary" [disabled]="formSignIn.invalid">
-                                <i class="fas fa-sign-in-alt"></i> Entrar
-                            </button>
-                        </div>
-                        <div class="text-center">
-                            <a routerLink="/sign-up" class="btn btn-link link-primary">Cadastre-se</a> |
-                            <a routerLink="/forgot-password" class="btn btn-link link-primary">Recuperar senha</a>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-body" *ngIf="authMode == 'forgotPassword'">
-                    <form [formGroup]="formForgotPassword" (submit)="forgotPassword()">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email:</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" placeholder="Entrar com seu email" required
-                                    formControlName="email">
-                            </div>
-                            <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary" [disabled]="formForgotPassword.invalid">
-                                <i class="fas fa-key"></i> Recuperar Senha
-                            </button>
-                        </div>
-                        <div class="text-center">
-                            <a routerLink="/" class="btn btn-link link-primary">Entrar</a> |
-                            <a routerLink="/sign-up" class="btn btn-link link-primary">Cadastre-se</a>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-body" *ngIf="authMode == 'signUp'">
-                    <form [formGroup]="formSignUp" (submit)="signUp()">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nome:</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" placeholder="Informe seu nome" required
-                                    formControlName="name">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Usuário:</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" placeholder="Informe um usuário" required
-                                    formControlName="username">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email:</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" placeholder="Informe seu email" required
-                                    formControlName="email">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Senha:</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Digite sua senha" required
-                                    formControlName="password">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password_confirmation" class="form-label">Confirmação de Senha:</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Confirme sua senha" required
-                                    formControlName="password_confirmation">
-                            </div>
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" (change)="toggleShowPassword()">
-                            <label class="form-check-label">Conferir senhas</label>
-                        </div>
-                        <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-user-plus"></i> Enviar
-                            </button>
-                        </div>
-                        <div class="text-center">
-                            <a routerLink="/" class="btn btn-link link-primary">Entrar</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header text-center">
+          <h4> {{ titleCard }} </h4>
         </div>
+        @if (message) {
+          <div class="card-body">
+            <app-message [message]="message"></app-message>
+          </div>
+        }
+        @if (authMode == 'signIn') {
+          <div class="card-body">
+            <form [formGroup]="formSignIn" (submit)="signIn()">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email ou usuário:</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                  <input type="text" class="form-control" placeholder="Entrar com seu email ou usuário"
+                    required formControlName="login">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Senha:</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                  <input [type]="showPassword ? 'text' : 'password'" class="form-control"
+                    placeholder="Entrar com sua senha" required formControlName="password">
+                </div>
+              </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" (change)="toggleShowPassword()">
+                <label class="form-check-label" for="showPassword">Mostrar senha</label>
+              </div>
+              <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary" [disabled]="formSignIn.invalid">
+                  <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+              </div>
+              <div class="text-center">
+                <a routerLink="/sign-up" class="btn btn-link link-primary">Cadastre-se</a> |
+                <a routerLink="/forgot-password" class="btn btn-link link-primary">Recuperar senha</a>
+              </div>
+            </form>
+          </div>
+        }
+        @if (authMode == 'forgotPassword') {
+          <div class="card-body">
+            <form [formGroup]="formForgotPassword" (submit)="forgotPassword()">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                  <input type="email" class="form-control" placeholder="Entrar com seu email" required
+                    formControlName="email">
+                </div>
+                <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary" [disabled]="formForgotPassword.invalid">
+                  <i class="fas fa-key"></i> Recuperar Senha
+                </button>
+              </div>
+              <div class="text-center">
+                <a routerLink="/" class="btn btn-link link-primary">Entrar</a> |
+                <a routerLink="/sign-up" class="btn btn-link link-primary">Cadastre-se</a>
+              </div>
+            </form>
+          </div>
+        }
+        @if (authMode == 'signUp') {
+          <div class="card-body">
+            <form [formGroup]="formSignUp" (submit)="signUp()">
+              <div class="mb-3">
+                <label for="name" class="form-label">Nome:</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  <input type="text" class="form-control" placeholder="Informe seu nome" required
+                    formControlName="name">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="username" class="form-label">Usuário:</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  <input type="text" class="form-control" placeholder="Informe um usuário" required
+                    formControlName="username">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                  <input type="email" class="form-control" placeholder="Informe seu email" required
+                    formControlName="email">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Senha:</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                  <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Digite sua senha" required
+                    formControlName="password">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="password_confirmation" class="form-label">Confirmação de Senha:</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                  <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Confirme sua senha" required
+                    formControlName="password_confirmation">
+                </div>
+              </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" (change)="toggleShowPassword()">
+                <label class="form-check-label">Conferir senhas</label>
+              </div>
+              <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-user-plus"></i> Enviar
+                </button>
+              </div>
+              <div class="text-center">
+                <a routerLink="/" class="btn btn-link link-primary">Entrar</a>
+              </div>
+            </form>
+          </div>
+        }
+      </div>
     </div>
+  </div>
 </div>

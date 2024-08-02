@@ -1,51 +1,55 @@
 <app-layout title="Categorias{{ total ? ' (' + total + ')' : '' }}">
-    <app-spinner [loading]="loading"></app-spinner>
-    <app-message [message]="message"></app-message>
-    <div *ngIf="mode == 'view'">
-        <app-table [itens]="categories" [cols]="cols" path="/categories" [pages]="pages" (deleteEvent)="delete($event)"
-            (showEvent)="show($event)"></app-table>
+  <app-spinner [loading]="loading"></app-spinner>
+  <app-message [message]="message"></app-message>
+  @if (mode == 'view') {
+    <div>
+      <app-table [itens]="categories" [cols]="cols" path="/categories" [pages]="pages" (deleteEvent)="delete($event)"
+      (showEvent)="show($event)"></app-table>
     </div>
-    <div *ngIf="mode === 'new' || mode === 'edit'">
-        <app-card-form>
-            <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
-            <form [formGroup]="form" (submit)="onSubmit()">
-                <div class="row align-items-end">
-                    <div class="col-md-3 mb-3">
-                        <div class="form-group">
-                            <label for="name">
-                                <i class="fas fa-tag"></i> Nome
-                            </label>
-                            <input id="name" formControlName="name" type="text" class="form-control" required
-                                placeholder="Nome">
-                        </div>
-                    </div>
-                    <div class="col-md-2  mb-3">
-                        <div class="form-group">
-                            <label for="type">
-                                <i class="fas fa-list-alt"></i> Tipo
-                            </label>
-                            <select id="type" formControlName="type" class="form-control">
-                                <option value="INCOME">Entrada</option>
-                                <option value="EXPENSE">Saída</option>
-                                <option value="BOTH">Ambos</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-5  mb-3">
-                        <div class="form-group">
-                            <label for="description">
-                                <i class="fas fa-info-circle"></i> Descrição (Opcional)
-                            </label>
-                            <input id="description" formControlName="description" type="text" class="form-control"
-                                maxlength="40" placeholder="Descrição (Máximo 40 caracteres).">
-                        </div>
-                    </div>
-                    <div class="col-md-2  mb-3">
-                        <app-button-submit></app-button-submit>
-                    </div>
-                </div>
-            </form>
-        </app-card-form>
-        <app-table [itens]="categories" [cols]="cols" path="/categories" (deleteEvent)="delete($event)"></app-table>
+  }
+  @if (mode === 'new' || mode === 'edit') {
+    <div>
+      <app-card-form>
+        <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
+        <form [formGroup]="form" (submit)="onSubmit()">
+          <div class="row align-items-end">
+            <div class="col-md-3 mb-3">
+              <div class="form-group">
+                <label for="name">
+                  <i class="fas fa-tag"></i> Nome
+                </label>
+                <input id="name" formControlName="name" type="text" class="form-control" required
+                  placeholder="Nome">
+              </div>
+            </div>
+            <div class="col-md-2  mb-3">
+              <div class="form-group">
+                <label for="type">
+                  <i class="fas fa-list-alt"></i> Tipo
+                </label>
+                <select id="type" formControlName="type" class="form-control">
+                  <option value="INCOME">Entrada</option>
+                  <option value="EXPENSE">Saída</option>
+                  <option value="BOTH">Ambos</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-5  mb-3">
+              <div class="form-group">
+                <label for="description">
+                  <i class="fas fa-info-circle"></i> Descrição (Opcional)
+                </label>
+                <input id="description" formControlName="description" type="text" class="form-control"
+                  maxlength="40" placeholder="Descrição (Máximo 40 caracteres).">
+              </div>
+            </div>
+            <div class="col-md-2  mb-3">
+              <app-button-submit></app-button-submit>
+            </div>
+          </div>
+        </form>
+      </app-card-form>
+      <app-table [itens]="categories" [cols]="cols" path="/categories" (deleteEvent)="delete($event)"></app-table>
     </div>
+  }
 </app-layout>

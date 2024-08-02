@@ -15,10 +15,11 @@ import { ButtonSubmitComponent } from '../shared/button-submit/button-submit.com
 import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
 import { CardFormComponent } from '../shared/card-form/card-form.component';
 import { TableComponent } from '../shared/table/table.component';
-import { NgIf, NgFor, CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { MessageComponent } from '../shared/message/message.component';
 import { SpinnerComponent } from '../shared/spinner/spinner.component';
 import { LayoutComponent } from '../shared/layout/layout.component';
+import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
 
 declare var window: any;
 
@@ -27,7 +28,10 @@ declare var window: any;
     templateUrl: './financial-records.component.html',
     styleUrls: ['./financial-records.component.css'],
     standalone: true,
-    imports: [LayoutComponent, SpinnerComponent, MessageComponent, NgIf, TableComponent, CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, NgFor, ButtonSubmitComponent, CurrencyPipe]
+    imports: [
+      LayoutComponent, SpinnerComponent, MessageComponent, TableComponent, 
+      CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, 
+      ButtonSubmitComponent, CurrencyPipe, GenericPipe, DatePipe]
 })
 export class FinancialRecordsComponent implements OnInit {
   cols: { key: string, label: string, icon?: string }[] = [
@@ -42,6 +46,15 @@ export class FinancialRecordsComponent implements OnInit {
     { key: 'financial_record_date', label: 'Data', icon: 'fas fa-calendar-plus' },
     { key: 'financial_record_due_date', label: 'Vencimento', icon: 'fas fa-calendar-check' }
   ];
+  actions = [
+    {
+      icon: 'fa fa-eye',
+      class: 'btn btn-outline-info',
+      title: 'Ver detalhes',
+      callback: (item: FinancialRecord) => this.openModalFinancialRecordDetails(item)
+    }
+  ];
+  
   mode: string;
   form: FormGroup;
   formPayment: FormGroup;
@@ -68,6 +81,7 @@ export class FinancialRecordsComponent implements OnInit {
   modalPayment: any;
   modalCategory: any;
   modalSupplierAndCustomer: any;
+  modalFinancialDetails: any;
   selectedFiles: File[] = [];
 
   constructor(
@@ -80,9 +94,12 @@ export class FinancialRecordsComponent implements OnInit {
   }
   ngOnInit(): void {
     this.payments = this.route.snapshot.data['payments'];
+    this.categories = this.route.snapshot.data['categories'];
+    this.suppliersAndCustomers = this.route.snapshot.data['suppliersAndCustomers'];
     this.mode = this.route.snapshot.data['mode'];
     this.modalPayment = this.initializeModal('paymentModal');
     this.modalCategory = this.initializeModal('categoryModal');
+    this.modalFinancialDetails = this.initializeModal('financialRecordDetailsModal');
     this.modalSupplierAndCustomer = this.initializeModal('supplierAndCustomerModal');
     this.financialRecordService.loading$.subscribe(loading => {
       this.loading = loading
@@ -400,5 +417,10 @@ export class FinancialRecordsComponent implements OnInit {
 
   openModalSupplierAndCustomer() {
     this.modalSupplierAndCustomer.show();
+  }
+
+  openModalFinancialRecordDetails(financialRecord: FinancialRecord){
+    this.financialRecord = financialRecord;
+    this.modalFinancialDetails.show();
   }
 }

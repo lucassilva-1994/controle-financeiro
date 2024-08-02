@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { User } from 'src/app/models/User';
 import { UserService } from 'src/app/services/user.service';
-import { NgIf} from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.css'],
     standalone: true,
-    imports: [RouterLink, NgIf]
+    imports: [RouterLink]
 })
 export class LayoutComponent{
     user: User| null = null;

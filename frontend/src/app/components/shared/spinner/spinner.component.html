@@ -1,6 +1,8 @@
-<div class="spinner-overlay" *ngIf="loading">
+@if (loading) {
+  <div class="spinner-overlay">
     <div class="text-center">
-        <span class="spinner-border"></span>
-        <h3>Sua requisição está sendo processada...</h3>
+      <span class="spinner-border"></span>
+      <h3>Sua requisição está sendo processada...</h3>
     </div>
-</div>
+  </div>
+}

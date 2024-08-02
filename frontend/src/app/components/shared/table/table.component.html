@@ -1,93 +1,125 @@
 <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
-    <h3 *ngIf="mode === 'new' || mode === 'edit'" class="mb-0">
-        <i class="fas fa-list"></i> Últimos registros
-    </h3>
-    <div class="d-flex">
-        <a *ngIf="mode !== 'view'" [routerLink]="[path]" class="btn btn-primary btn-sm ml-auto">
-            <i class="fas fa-table"></i> Listar registros
-        </a>
-        <span class="mx-2"></span>
-        <a *ngIf="mode === 'edit'" [routerLink]="[path,'new']" class="btn btn-success btn-sm">
-            <i class="fas fa-plus"></i> Novo registro
-        </a>
-        <!-- <button class="btn btn-secondary btn-sm ml-2" (click)="exportToPDF()">
-            <i class="fas fa-file-pdf"></i> Exportar PDF
-        </button> -->
-    </div>
+  @if (mode === 'new' || mode === 'edit') {
+  <h3 class="mb-0">
+    <i class="fas fa-list"></i> Últimos registros
+  </h3>
+  }
+  <div class="d-flex">
+    @if (mode !== 'view') {
+    <a [routerLink]="[path]" class="btn btn-primary btn-sm ml-auto">
+      <i class="fas fa-table"></i> Listar registros
+    </a>
+    }
+    <span class="mx-2"></span>
+    @if (mode === 'edit') {
+    <a [routerLink]="[path,'new']" class="btn btn-success btn-sm">
+      <i class="fas fa-plus"></i> Novo registro
+    </a>
+    }
+    <!-- <button class="btn btn-secondary btn-sm ml-2" (click)="exportToPDF()">
+    <i class="fas fa-file-pdf"></i> Exportar PDF
+  </button> -->
+  </div>
 </div>
-<div class="row align-items-center" *ngIf="mode === 'view'">
-    <div class="col-md-8 d-flex justify-content-end mb-3">
-        <div class="input-group">
-            <input type="search" class="form-control" [(ngModel)]="search" (keyup)="filter()" placeholder="Digite sua busca aqui">
-            <span class="input-group-text"><i class="fas fa-search"></i></span>
-        </div>
+@if (mode === 'view') {
+<div class="row align-items-center">
+  <div class="col-md-8 d-flex justify-content-end mb-3">
+    <div class="input-group">
+      <input type="search" class="form-control" [(ngModel)]="search" (keyup)="filter()"
+        placeholder="Digite sua busca aqui">
+      <span class="input-group-text"><i class="fas fa-search"></i></span>
     </div>
-    <div class="col-md-2 mb-3">
-        <div class="input-group">
-            <select [(ngModel)]="perPage" (change)="onChangePerPage($event)" class="form-select">
-                <option *ngFor="let option of options" [value]="option">{{ option }}</option>
-            </select>
-            <span class="input-group-text"><i class="fas fa-list"></i></span>
-        </div>
+  </div>
+  <div class="col-md-2 mb-3">
+    <div class="input-group">
+      <select [(ngModel)]="perPage" (change)="onChangePerPage($event)" class="form-select">
+        @for (option of options; track option) {
+        <option [value]="option">{{ option }}</option>
+        }
+      </select>
+      <span class="input-group-text"><i class="fas fa-list"></i></span>
     </div>
-    <div class="col-md-2 mb-3">
-        <a [routerLink]="[path,'new']" class="btn w-100" style="background-image: linear-gradient(to bottom, rgb(22, 51, 22), rgb(32, 78, 32)); color: white;">
-            <i class="fas fa-plus"></i> Novo registro
-        </a>
-    </div>
+  </div>
+  <div class="col-md-2 mb-3">
+    <a [routerLink]="[path,'new']" class="btn w-100"
+      style="background-image: linear-gradient(to bottom, rgb(22, 51, 22), rgb(32, 78, 32)); color: white;">
+      <i class="fas fa-plus"></i> Novo registro
+    </a>
+  </div>
 </div>
+}
 
 <div class="table-responsive mt-1 mb-3" style="max-height: 400px; overflow-y: auto;">
-    <table class="table table-striped">
-        <thead class="table-dark text-nowrap">
-            <tr>
-                <th *ngFor="let col of cols"> <i [ngClass]="col.icon" *ngIf="col.icon"></i> {{ col.label }}</th>
-                <th><i class="fas fa-cogs"></i> Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of itens">
-                <td *ngFor="let col of cols">
-                    {{ itemValue(item, col.key) }}
-                </td>
-                <td>
-                    <span class="btn-group btn-group-sm">
-                        <a [routerLink]="[path, 'edit',item.id]" class="btn btn-primary" title="Editar registro">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <button class="btn btn-danger" (click)="delete(item.id)" title="Excluir registro">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </span>
-                </td>
-            </tr>
-            <tr *ngIf="itens.length == 0">
-                <td [attr.colspan]="cols.length + 1" class="text-center">
-                    Nenhum registro encontrado
-                </td>
-            </tr>
-        </tbody>
-    </table>
+  <table class="table table-striped">
+    <thead class="table-dark text-nowrap">
+      <tr>
+        @for (col of cols; track col) {
+        <th> @if (col.icon) {
+          <i [ngClass]="col.icon"></i>
+          } {{ col.label }}
+        </th>
+        }
+        <th><i class="fas fa-cogs"></i> Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of itens; track item) {
+      <tr>
+        @for (col of cols; track col) {
+        <td>
+          {{ itemValue(item, col.key) }}
+        </td>
+        }
+        <td>
+          <span class="btn-group btn-group-sm">
+            @for (action of actions; track action) {
+              <button (click)="onAction(action, item)" [class]="action.class" title="{{ action.title }}">
+                <i [class]="action.icon"></i> 
+              </button>
+              }
+            <a [routerLink]="[path, 'edit',item.id]" class="btn btn-primary" title="Editar registro">
+              <i class="fas fa-edit"></i>
+            </a>
+            <button class="btn btn-danger" (click)="delete(item.id)" title="Excluir registro">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </span>
+        </td>
+      </tr>
+      }
+      @if (itens.length == 0) {
+      <tr>
+        <td [attr.colspan]="cols.length + 1" class="text-center">
+          Nenhum registro encontrado
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
 </div>
-<div class="d-flex justify-content-between align-items-center mb-3" *ngIf="pages != 0 && mode == 'view'">
-    <div class="dataTables_info">
-        Página {{ page }} de {{ pages }}
-    </div>
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-end">
-            <li class="page-item" [class.disabled]="page === 1">
-                <a class="page-link" (click)="changePage(page - 1)" style="cursor: pointer;">
-                    <span>&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item" *ngFor="let p of pageNumbers()" [class.active]="p === page">
-                <a class="page-link" (click)="changePage(p)" style="cursor: pointer;">{{ p }}</a>
-            </li>
-            <li class="page-item" [class.disabled]="page === pages">
-                <a class="page-link" (click)="changePage(page + 1)" style="cursor: pointer;">
-                    <span>&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+@if (pages != 0 && mode == 'view') {
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="dataTables_info">
+    Página {{ page }} de {{ pages }}
+  </div>
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-end">
+      <li class="page-item" [class.disabled]="page === 1">
+        <a class="page-link" (click)="changePage(page - 1)" style="cursor: pointer;">
+          <span>&laquo;</span>
+        </a>
+      </li>
+      @for (p of pageNumbers(); track p) {
+      <li class="page-item" [class.active]="p === page">
+        <a class="page-link" (click)="changePage(p)" style="cursor: pointer;">{{ p }}</a>
+      </li>
+      }
+      <li class="page-item" [class.disabled]="page === pages">
+        <a class="page-link" (click)="changePage(page + 1)" style="cursor: pointer;">
+          <span>&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 </div>
+}

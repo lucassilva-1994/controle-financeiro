@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CurrencyPipe, DatePipe, NgIf, NgFor, NgClass } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { jsPDF } from 'jspdf';
@@ -8,17 +8,18 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import 'jspdf-autotable';
 
 @Component({
-    selector: 'app-table',
-    templateUrl: './table.component.html',
-    styleUrls: ['./table.component.css'],
-    providers: [GenericPipe, DatePipe, CurrencyPipe],
-    standalone: true,
-    imports: [NgIf, RouterLink, ReactiveFormsModule, FormsModule, NgFor, NgClass]
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.css'],
+  providers: [GenericPipe, DatePipe, CurrencyPipe],
+  standalone: true,
+  imports: [RouterLink, ReactiveFormsModule, FormsModule, NgClass]
 })
-export class TableComponent implements OnInit, OnDestroy {
+export class TableComponent<Model> implements OnInit, OnDestroy {
   @Input() cols: { key: string, label: string, icon?: string }[] = [];
   @Input() itens: any[] = [];
   @Input() path: string = '';
+  @Input() actions: { icon: string, class: string, title?: string, callback: (item: Model) => void }[] = [];
   id: string = '';
   mode: string;
   @Output() deleteEvent = new EventEmitter<{ id: string }>();
@@ -71,6 +72,10 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   }
 
+  onAction(action: { icon: string, class: string, title?: string, callback: (item: Model) => void }, item: Model) {
+    action.callback(item);
+  }
+
   itemValue(item: any, key: string): any {
     switch (key) {
       case 'description':
@@ -85,9 +90,9 @@ export class TableComponent implements OnInit, OnDestroy {
       case 'financial_record_type':
       case 'paid':
         return this.genericPipe.transform(item[key]);
-        case 'financial_record_date':
-        case 'financial_record_due_date':
-          return this.datePipe.transform(item[key], 'dd/MM/yyyy');
+      case 'financial_record_date':
+      case 'financial_record_due_date':
+        return this.datePipe.transform(item[key], 'dd/MM/yyyy');
       case 'created_at':
         return this.datePipe.transform(item[key], 'dd/MM/yyyy HH:mm:ss');
       case 'updated_at':
