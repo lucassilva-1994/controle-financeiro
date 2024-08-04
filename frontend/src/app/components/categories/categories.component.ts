@@ -9,27 +9,38 @@ import { ButtonSubmitComponent } from '../shared/button-submit/button-submit.com
 import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
 import { CardFormComponent } from '../shared/card-form/card-form.component';
 import { TableComponent } from '../shared/table/table.component';
-
 import { MessageComponent } from '../shared/message/message.component';
 import { SpinnerComponent } from '../shared/spinner/spinner.component';
 import { LayoutComponent } from '../shared/layout/layout.component';
+import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 
+declare var window: any;
 @Component({
     selector: 'app-categories',
     templateUrl: './categories.component.html',
     styleUrls: ['./categories.component.css'],
     standalone: true,
-    imports: [LayoutComponent, SpinnerComponent, MessageComponent, TableComponent, CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, ButtonSubmitComponent]
+    imports: [
+      LayoutComponent, SpinnerComponent, MessageComponent, TableComponent, 
+      CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, ButtonSubmitComponent,
+      GenericPipe, CurrencyPipe, DatePipe
+    ]
 })
 export class CategoriesComponent implements OnInit {
   cols: { key: string, label: string, icon?: string }[] = [
     { key: 'name', label: 'Nome', icon: 'fas fa-tag' },
     { key: 'type', label: 'Tipo', icon: 'fas fa-list-alt' },
-    { key: 'description', label: 'Descrição', icon: 'fas fa-info-circle' },
     { key: 'financial_records_count', label: 'Registros', icon: 'fas fa-database' },
-    { key: 'financial_records_sum_amount', label: 'Movimentações', icon: 'fas fa-money-bill-wave' },
-    { key: 'created_at', label: 'Criado em', icon: 'fas fa-calendar-plus' },
-    { key: 'updated_at', label: 'Alterado em', icon: 'fas fa-calendar-check' },
+    { key: 'financial_records_sum_amount', label: 'Movimentações', icon: 'fas fa-money-bill-wave' }
+  ];
+  actions = [
+    {
+      icon: 'fa fa-eye',
+      class: 'btn btn-info',
+      title: 'Ver detalhes',
+      callback: (item: Category) => this.openModalCategoryDetails(item)
+    },
   ];
   mode: string;
   form: FormGroup;
@@ -37,15 +48,18 @@ export class CategoriesComponent implements OnInit {
   message: string;
   loading: boolean;
   categories: Category[] = [];
+  category: Category;
   backendErrors: string[] = [];
   pages: number;
   total: number;
+  modalCategory: any;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private categoryService: CategoryService) { }
   ngOnInit(): void {
     this.mode = this.route.snapshot.data['mode'];
+    this.modalCategory = this.initializeModal('categoryModal');
     this.initializeForm();
     this.route.params.subscribe(params => {
       this.id = params['id'];
@@ -62,6 +76,9 @@ export class CategoriesComponent implements OnInit {
     this.mode === 'view' ? this.show({ perPage: 10, page:1 , search:''}) : this.recentRecords();
   }
 
+  initializeModal(modalId: string): any {
+    return new window.bootstrap.Modal(document.getElementById(modalId));
+  }
 
   show(event: { perPage: number, page: number, search: string }) {
     this.categoryService.show(event.perPage, event.page, event.search)
@@ -115,5 +132,10 @@ export class CategoriesComponent implements OnInit {
           this.show({ perPage: 10, page:1, search:''});
         })
       ).subscribe();
+  }
+
+  openModalCategoryDetails(category: Category){
+    this.category = category;
+    this.modalCategory.show();
   }
 }

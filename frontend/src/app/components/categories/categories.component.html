@@ -4,7 +4,7 @@
   @if (mode == 'view') {
     <div>
       <app-table [itens]="categories" [cols]="cols" path="/categories" [pages]="pages" (deleteEvent)="delete($event)"
-      (showEvent)="show($event)"></app-table>
+      (showEvent)="show($event)"  [actions]="actions"></app-table>
     </div>
   }
   @if (mode === 'new' || mode === 'edit') {
@@ -49,7 +49,83 @@
           </div>
         </form>
       </app-card-form>
-      <app-table [itens]="categories" [cols]="cols" path="/categories" (deleteEvent)="delete($event)"></app-table>
+      <app-table [itens]="categories" [cols]="cols" path="/categories" 
+      (deleteEvent)="delete($event)"   [actions]="actions"></app-table>
     </div>
   }
 </app-layout>
+
+<div class="modal" id="categoryModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Detalhes da categoria</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row">
+          <div class="mb-3 col-md-12">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-tag"></i> Nome
+              </label>
+              <input type="text" class="form-control" value="{{ category?.name }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-12">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-cogs"></i> Tipo
+              </label>
+              <input type="text" class="form-control" value="{{ category?.type | genericPipe }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-database"></i> Registros financeiro
+              </label>
+              <input type="text" class="form-control" value="{{ category?.financial_records_count }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-exchange-alt"></i> Movimentações
+              </label>
+              <input type="text" class="form-control" value="{{ (category?.financial_records_sum_amount ?? 0) | currency:'BRL' }}" disabled>
+
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-day"></i> Criado em
+              </label>
+              <input type="text" class="form-control"
+                value="{{ category?.created_at | date:'dd/MM/yyyy HH:mm:ss' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-check"></i> Atualizado em
+              </label>
+              <input type="text" class="form-control"
+                value="{{ category?.updated_at ? (category.updated_at | date:'dd/MM/yyyy HH:mm:ss') : 'Sem alteração' }}"
+                disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-12">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-pencil-alt"></i> Descrição
+              </label>
+              <textarea class="form-control" rows="3" disabled>{{ category?.description || 'Sem descrição' }}</textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

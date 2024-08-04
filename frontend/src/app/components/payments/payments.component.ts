@@ -9,28 +9,40 @@ import { ButtonSubmitComponent } from '../shared/button-submit/button-submit.com
 import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
 import { CardFormComponent } from '../shared/card-form/card-form.component';
 import { TableComponent } from '../shared/table/table.component';
-
 import { MessageComponent } from '../shared/message/message.component';
 import { SpinnerComponent } from '../shared/spinner/spinner.component';
 import { LayoutComponent } from '../shared/layout/layout.component';
+import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+
+declare var window: any;
 
 @Component({
     selector: 'app-payments',
     templateUrl: './payments.component.html',
     styleUrls: ['./payments.component.css'],
     standalone: true,
-    imports: [LayoutComponent, SpinnerComponent, MessageComponent, TableComponent, CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, ButtonSubmitComponent]
+    imports: [
+      LayoutComponent, SpinnerComponent, MessageComponent, TableComponent, 
+      CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, ButtonSubmitComponent,
+      GenericPipe, CurrencyPipe, DatePipe
+    ]
 })
 export class PaymentsComponent implements OnInit {
   cols: { key: string, label: string, icon?: string }[] = [
     { key: 'name', label: 'Nome', icon: 'fas fa-credit-card' },
     { key: 'type', label: 'Tipo', icon: 'fas fa-list-alt' },
-    { key: 'is_calculable', label: 'Calculado?', icon: 'fas fa-calculator' },
-    { key: 'description', label: 'Descrição', icon: 'fas fa-info-circle' },
-    { key: 'financial_records_count', label: 'Registros', icon: 'fas fa-database' },
-    { key: 'financial_records_sum_amount', label: 'Movimentações', icon: 'fas fa-money-bill-wave' },
-    { key: 'created_at', label: 'Criado em', icon: 'fas fa-calendar-plus' },
-    { key: 'updated_at', label: 'Alterado em', icon: 'fas fa-calendar-check' },
+    { key: 'is_calculable', label: 'É calculável?', icon: 'fas fa-calculator' },
+    { key: 'financial_records_sum_amount', label: 'Movimentações', icon: 'fas fa-money-bill-wave' }
+  ];
+
+  actions = [
+    {
+      icon: 'fa fa-eye',
+      class: 'btn btn-info',
+      title: 'Ver detalhes',
+      callback: (item: Payment) => this.openModalPaymentDetails(item)
+    },
   ];
 
   mode: string;
@@ -38,10 +50,12 @@ export class PaymentsComponent implements OnInit {
   id: string;
   message: string;
   payments: Payment[] = [];
+  payment: Payment;
   backendErrors: string[] = [];
   pages: number;
   total: number;
   loading: boolean;
+  modalPayment: any;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -49,6 +63,7 @@ export class PaymentsComponent implements OnInit {
   ngOnInit(): void {
     this.mode = this.route.snapshot.data['mode'];
     this.initializeForm();
+    this.modalPayment = this.initializeModal('paymentModal');
     this.route.params.subscribe(params => {
       this.id = params['id'];
       if (this.mode === 'edit' && this.id) {
@@ -89,6 +104,10 @@ export class PaymentsComponent implements OnInit {
     })
   }
 
+  initializeModal(modalId: string): any {
+    return new window.bootstrap.Modal(document.getElementById(modalId));
+  }
+
   showById(id: string) {
     this.paymentService.showById(id)
       .pipe(
@@ -114,5 +133,10 @@ export class PaymentsComponent implements OnInit {
     this.paymentService.delete(event.id)
       .pipe(tap(() => {this.show({perPage:10, page:1, search: ''});}))
       .subscribe();
+  }
+
+  openModalPaymentDetails(payment: Payment){
+    this.payment = payment;
+    this.modalPayment.show();
   }
 }

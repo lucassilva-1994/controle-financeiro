@@ -9,44 +9,58 @@ import { ButtonSubmitComponent } from '../shared/button-submit/button-submit.com
 import { MessagesValidatorsComponent } from '../shared/messages-validators/messages-validators.component';
 import { CardFormComponent } from '../shared/card-form/card-form.component';
 import { TableComponent } from '../shared/table/table.component';
-
 import { MessageComponent } from '../shared/message/message.component';
 import { SpinnerComponent } from '../shared/spinner/spinner.component';
 import { LayoutComponent } from '../shared/layout/layout.component';
+import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+
+declare var window: any;
 
 @Component({
     selector: 'app-suppliers-and-customers',
     templateUrl: './suppliers-and-customers.component.html',
     styleUrls: ['./suppliers-and-customers.component.css'],
     standalone: true,
-    imports: [LayoutComponent, SpinnerComponent, MessageComponent, TableComponent, CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, ButtonSubmitComponent]
+    imports: [
+      LayoutComponent, SpinnerComponent, MessageComponent, TableComponent, 
+      CardFormComponent, MessagesValidatorsComponent, ReactiveFormsModule, ButtonSubmitComponent,
+      GenericPipe, CurrencyPipe, DatePipe
+    ]
 })
 export class SuppliersAndCustomersComponent implements OnInit {
   cols: { key: string, label: string, icon?: string }[] = [
     { key: 'name', label: 'Nome', icon: 'fas fa-briefcase' },
     { key: 'type', label: 'Tipo', icon: 'fas fa-list-alt' },
-    { key: 'description', label: 'Descrição', icon: 'fas fa-info-circle' },
     { key: 'financial_records_count', label: 'Registros', icon: 'fas fa-database' },
-    { key: 'financial_records_sum_amount', label: 'Movimentações', icon: 'fas fa-money-bill-wave' },    { key: 'email', label: 'Email', icon: 'fas fa-envelope' },
-    { key: 'phone', label: 'Telefone', icon: 'fas fa-phone' },
-    { key: 'created_at', label: 'Criado em', icon: 'fas fa-calendar-plus' },
-    { key: 'updated_at', label: 'Alterado em', icon: 'fas fa-calendar-check' },
+    { key: 'financial_records_sum_amount', label: 'Movimentações', icon: 'fas fa-money-bill-wave' }
+  ];
+  actions = [
+    {
+      icon: 'fa fa-eye',
+      class: 'btn btn-info',
+      title: 'Ver detalhes',
+      callback: (item: SupplierAndCustomer) => this.openModalSupplierAndCustomerDetails(item)
+    },
   ];
   mode: string;
   form: FormGroup;
   id: string;
   suppliersAndCustommers: SupplierAndCustomer[] = [];
+  supplierAndCustomer: SupplierAndCustomer;
   backendErrors: string[] = [];
   pages: number;
   total: number;
   message: string;
   loading: boolean;
+  modalSupplierAndCustomer: any;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private supplierAndCustomerService: SupplierAndCustomerService) { }
   ngOnInit(): void {
     this.mode = this.route.snapshot.data['mode'];
+    this.modalSupplierAndCustomer = this.initializeModal('supplierAndCustomerModal');
     this.initializeForm();
     this.route.params.subscribe(params => {
       this.id = params['id'];
@@ -63,6 +77,9 @@ export class SuppliersAndCustomersComponent implements OnInit {
     this.mode === 'view' ? this.show({perPage:10, page:1, search:''}) : this.recentRecords();
   }
 
+  initializeModal(modalId: string): any {
+    return new window.bootstrap.Modal(document.getElementById(modalId));
+  }
 
   show(event: {perPage:number, page: number, search: string}) {
     this.supplierAndCustomerService.show(event.perPage, event.page, event.search)
@@ -129,5 +146,10 @@ export class SuppliersAndCustomersComponent implements OnInit {
       formattedValue += '-' + value.substring(7, 11);
     }
     input.value = formattedValue.substring(0, 15);
+  }
+
+  openModalSupplierAndCustomerDetails(supplierAndCustomer: SupplierAndCustomer){
+    this.supplierAndCustomer = supplierAndCustomer;
+    this.modalSupplierAndCustomer.show();
   }
 }

@@ -9,6 +9,7 @@
         [pages]="pages"
         (deleteEvent)="delete($event)"
         (showEvent)="show($event)"
+        [actions]="actions"
       ></app-table>
     </div>
   }
@@ -72,7 +73,98 @@
           </div>
         </form>
       </app-card-form>
-      <app-table [itens]="suppliersAndCustommers" [cols]="cols" path="/suppliers-and-customers" (deleteEvent)="delete($event)"></app-table>
+      <app-table [itens]="suppliersAndCustommers" [cols]="cols" path="/suppliers-and-customers" (deleteEvent)="delete($event)" [actions]="actions"></app-table>
     </div>
   }
 </app-layout>
+
+<div class="modal" id="supplierAndCustomerModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Detalhes de fornecedor/cliente</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row">
+          <div class="mb-3 col-md-12">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-user"></i> Nome
+              </label>
+              <input type="text" class="form-control" value="{{ supplierAndCustomer?.name }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-id-card"></i> Tipo
+              </label>
+              <input type="text" class="form-control" value="{{ supplierAndCustomer?.type | genericPipe }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-phone"></i> Telefone
+              </label>
+              <input type="text" class="form-control" value="{{ supplierAndCustomer?.phone ?? 'Não informado' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-12">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-envelope"></i> Email
+              </label>
+              <input type="text" class="form-control" value="{{ supplierAndCustomer?.email ?? 'Não informado' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-database"></i> Registros financeiro
+              </label>
+              <input type="text" class="form-control" value="{{ supplierAndCustomer?.financial_records_count }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-exchange-alt"></i> Movimentações
+              </label>
+              <input type="text" class="form-control" value="{{ supplierAndCustomer?.financial_records_sum_amount | currency:'BRL' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-day"></i> Criado em
+              </label>
+              <input type="text" class="form-control"
+                value="{{ supplierAndCustomer?.created_at | date:'dd/MM/yyyy HH:mm:ss' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-check"></i> Atualizado em
+              </label>
+              <input type="text" class="form-control"
+                value="{{ supplierAndCustomer?.updated_at ? (supplierAndCustomer.updated_at | date:'dd/MM/yyyy HH:mm:ss') : 'Sem alteração' }}"
+                disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-12">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-align-left"></i> Descrição
+              </label>
+              <textarea class="form-control" rows="3" disabled>{{ supplierAndCustomer?.description || 'Sem descrição' }}</textarea>
+            </div>
+          </div>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+</div>

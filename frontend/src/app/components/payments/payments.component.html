@@ -2,70 +2,147 @@
   <app-spinner [loading]="loading"></app-spinner>
   <app-message [message]="message"></app-message>
   @if (mode == 'view') {
-    <div>
-      <app-table
-        [itens]="payments"
-        [cols]="cols" path="/payments"
-        [pages]="pages"
-        (deleteEvent)="delete($event)"
-        (showEvent)="show($event)"
-      ></app-table>
-    </div>
+  <div>
+    <app-table [itens]="payments" [cols]="cols" path="/payments" [pages]="pages" (deleteEvent)="delete($event)"
+      (showEvent)="show($event)" [actions]="actions"></app-table>
+  </div>
   }
   @if (mode === 'new' || mode === 'edit') {
-    <div>
-      <app-card-form>
-        <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
-        <form [formGroup]="form" (submit)="onSubmit()">
-          <div class="row align-items-end">
-            <div class="col-md-3 mb-3">
-              <div class="form-group">
-                <label for="name">
-                  <i class="fas fa-credit-card"></i> Nome
-                </label>
-                <input id="name" formControlName="name" type="text" class="form-control" required
-                  placeholder="Nome">
-              </div>
+  <div>
+    <app-card-form>
+      <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
+      <form [formGroup]="form" (submit)="onSubmit()">
+        <div class="row align-items-end">
+          <div class="col-md-3 mb-3">
+            <div class="form-group">
+              <label for="name">
+                <i class="fas fa-credit-card"></i> Nome
+              </label>
+              <input id="name" formControlName="name" type="text" class="form-control" required placeholder="Nome">
             </div>
-            <div class="col-md-1  mb-3">
-              <div class="form-group">
-                <label for="type">
-                  <i class="fas fa-list-alt"></i> Tipo
-                </label>
-                <select id="type" formControlName="type" class="form-control">
-                  <option value="INCOME">Entrada</option>
-                  <option value="EXPENSE">Saída</option>
-                  <option value="BOTH">Ambos</option>
-                </select>
-              </div>
+          </div>
+          <div class="col-md-1  mb-3">
+            <div class="form-group">
+              <label for="type">
+                <i class="fas fa-list-alt"></i> Tipo
+              </label>
+              <select id="type" formControlName="type" class="form-control">
+                <option value="INCOME">Entrada</option>
+                <option value="EXPENSE">Saída</option>
+                <option value="BOTH">Ambos</option>
+              </select>
             </div>
-            <div class="col-md-2  mb-3">
-              <div class="form-group">
-                <label for="is_calculable">
-                  <i class="fas fa-calculator"></i> Calculável?
-                </label>
-                <select id="is_calculable" formControlName="is_calculable" class="form-control">
-                  <option value="1">Sim</option>
-                  <option value="0">Não</option>
-                </select>
-              </div>
+          </div>
+          <div class="col-md-2  mb-3">
+            <div class="form-group">
+              <label for="is_calculable">
+                <i class="fas fa-calculator"></i> Calculável?
+              </label>
+              <select id="is_calculable" formControlName="is_calculable" class="form-control">
+                <option value="1">Sim</option>
+                <option value="0">Não</option>
+              </select>
             </div>
-            <div class="col-md-4  mb-3">
-              <div class="form-group">
-                <label for="description">
-                  <i class="fas fa-info-circle"></i> Descrição (Opcional)
-                </label>
-                <input id="description" formControlName="description" type="text" class="form-control"
-                  maxlength="40" placeholder="Descrição (Máximo 40 caracteres).">
-              </div>
+          </div>
+          <div class="col-md-4  mb-3">
+            <div class="form-group">
+              <label for="description">
+                <i class="fas fa-info-circle"></i> Descrição (Opcional)
+              </label>
+              <input id="description" formControlName="description" type="text" class="form-control" maxlength="40"
+                placeholder="Descrição (Máximo 40 caracteres).">
             </div>
-            <div class="col-md-2  mb-3">
-              <app-button-submit></app-button-submit>
+          </div>
+          <div class="col-md-2  mb-3">
+            <app-button-submit></app-button-submit>
+          </div>
+        </div>
+      </form>
+    </app-card-form>
+    <app-table [itens]="payments" [cols]="cols" path="/payments" (deleteEvent)="delete($event)" [actions]="actions"></app-table>
+  </div>
+  }
+</app-layout>
+
+<div class="modal" id="paymentModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Detalhes da forma de pagamento</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row">
+          <div class="mb-3 col-md-12">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-tag"></i> Nome
+              </label>
+              <input type="text" class="form-control" value="{{ payment?.name }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-cogs"></i> Tipo
+              </label>
+              <input type="text" class="form-control" value="{{ payment?.type | genericPipe }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calculator"></i> É calculável?
+              </label>
+              <input type="text" class="form-control" value="{{ payment?.is_calculable | genericPipe }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-database"></i> Registros financeiro
+              </label>
+              <input type="text" class="form-control" value="{{ payment?.financial_records_count }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-exchange-alt"></i> Movimentações
+              </label>
+              <input type="text" class="form-control" value="{{ payment?.financial_records_sum_amount | currency:'BRL' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-day"></i> Criado em
+              </label>
+              <input type="text" class="form-control"
+                value="{{ payment?.created_at | date:'dd/MM/yyyy HH:mm:ss' }}" disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-calendar-check"></i> Atualizado em
+              </label>
+              <input type="text" class="form-control"
+                value="{{ payment?.updated_at ? (payment.updated_at | date:'dd/MM/yyyy HH:mm:ss') : 'Sem alteração' }}"
+                disabled>
+            </div>
+          </div>
+          <div class="mb-3 col-md-12">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-pencil-alt"></i> Descrição
+              </label>
+              <textarea class="form-control" rows="3" disabled>{{ payment?.description || 'Sem descrição' }}</textarea>
             </div>
           </div>
         </form>
-      </app-card-form>
-      <app-table [itens]="payments" [cols]="cols" path="/payments" (deleteEvent)="delete($event)"></app-table>
+        
+      </div>
     </div>
-  }
-</app-layout>
+  </div>
+</div>

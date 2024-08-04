@@ -37,21 +37,24 @@ export class FinancialRecordsComponent implements OnInit {
   cols: { key: string, label: string, icon?: string }[] = [
     { key: 'description', label: 'Descrição', icon: 'fas fa-info-circle' },
     { key: 'amount', label: 'Valor', icon: 'fas fa-money-bill-wave' },
-    { key: 'category', label: 'Categoria', icon: 'fas fa-layer-group' },
     { key: 'financial_record_type', label: 'Tipo', icon: 'fas fa-list-alt' },
-    { key: 'payment', label: 'Forma de pagamento', icon: 'fas fa-credit-card' },
+    { key: 'payment', label: 'Pagamento', icon: 'fas fa-credit-card' },
     { key: 'paid', label: 'Pago', icon: 'fas fa-credit-card' },
-    { key: 'files_count', label: 'Arquivos', icon: 'fas fa-file' },
-    { key: 'supplier_and_customer', label: 'Fornecedor/Cliente', icon: 'fas fa-briefcase' },
     { key: 'financial_record_date', label: 'Data', icon: 'fas fa-calendar-plus' },
     { key: 'financial_record_due_date', label: 'Vencimento', icon: 'fas fa-calendar-check' }
   ];
   actions = [
     {
       icon: 'fa fa-eye',
-      class: 'btn btn-outline-info',
+      class: 'btn btn-info',
       title: 'Ver detalhes',
       callback: (item: FinancialRecord) => this.openModalFinancialRecordDetails(item)
+    },
+    {
+      icon: 'fa fa-exchange-alt',
+      class: 'btn btn-secondary',
+      title: 'Mudar status quitado',
+      callback: (item: FinancialRecord) => this.togglePaidStatus(item)
     }
   ];
   
@@ -423,4 +426,16 @@ export class FinancialRecordsComponent implements OnInit {
     this.financialRecord = financialRecord;
     this.modalFinancialDetails.show();
   }
+
+  togglePaidStatus(item: FinancialRecord): void {
+    item.paid = item.paid ? 0 : 1;
+    this.financialRecordService.update(item, item.id)
+      .pipe(tap(
+        () => {
+          this.calculateIncomeExpense()
+        }
+      ))
+      .subscribe();
+  }
+  
 }

@@ -10,7 +10,7 @@ export class FinancialRecord extends Model{
     amount: number;
     category: Category;
     payment: Payment;
-    paid: number
+    paid: number | boolean;
     financial_record_type: string | undefined;
     supplier_and_customer: SupplierAndCustomer;
     financial_record_date: Date;
