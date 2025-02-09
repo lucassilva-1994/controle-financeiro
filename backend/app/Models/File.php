@@ -11,6 +11,7 @@ class File extends Model
     protected $fillable = ['id','sequence','name','path','user_id','financial_record_id','created_at'];
     public $incrementing = false;
     public $timestamps = false;
+    protected $keyType = 'string';
 
     public function getPathAttribute(){
         return env('APP_URL_FILES').$this->attributes['path'];

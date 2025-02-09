@@ -11,7 +11,7 @@ class PaymentController extends CRUDController
         parent::__construct(
             Payment::class, 
             PaymentRequest::class,
-            ['user'],
+            ['user','logs'],
             ['name','description','type','is_calculable'],
             ['financialRecords'],
             ['financialRecords' => 'amount']

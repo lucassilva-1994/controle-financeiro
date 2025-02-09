@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
-#[ScopedBy([UserScope::class, NotDeletedScope::class])]
+#[ScopedBy([UserScope::class])]
 class Payment extends Model
 {
     protected $table = 'payments';
@@ -15,6 +15,7 @@ class Payment extends Model
     protected $primaryKey = 'id';
     public $incrementing = false;
     public $timestamps;
+    protected $keyType = 'string';
 
     public function user(): BelongsTo{
         return $this->belongsTo(User::class);
@@ -22,5 +23,9 @@ class Payment extends Model
 
     public function financialRecords(): HasMany{
         return $this->hasMany(FinancialRecord::class,'payment_id','id');
+    }
+
+    public function logs(){
+        return $this->morphMany(RecordLog::class,'entity');
     }
 }

@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\{NotDeletedScope, UserScope};
+use App\Models\Scopes\{UserScope};
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany, HasMany, HasOne};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, HasOne};
 
-#[ScopedBy([UserScope::class, NotDeletedScope::class])]
+#[ScopedBy([UserScope::class])]
 class FinancialRecord extends Model
 {
     protected $table = 'financial_records';
@@ -19,6 +19,7 @@ class FinancialRecord extends Model
     protected $primarykey = 'id';
     public $incrementing = false;
     public $timestamps = false;
+    protected $keyType = 'string';
     protected $hidden = ['user_id','sequence','deleted'];
 
     public function payment(): BelongsTo{
@@ -35,5 +36,9 @@ class FinancialRecord extends Model
 
     public function files():HasMany{
         return $this->hasMany(File::class,'financial_record_id','id');
+    }
+
+    public function logs(){
+        return $this->morphMany(RecordLog::class,'entity');
     }
 }

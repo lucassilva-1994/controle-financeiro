@@ -2,12 +2,13 @@
 
 namespace App\Traits;
 
+use App\Models\RecordLog;
 use Illuminate\Http\JsonResponse;
 use Ramsey\Uuid\Uuid;
 
 trait ModelTrait
 {
-    public static function createRecord(string $model, array $data): JsonResponse
+    public static function createRecord(string $model, array $data, $createLog = true): JsonResponse
     {
         $fillable = (new $model)->getFillable();
         $data = array_intersect_key($data, array_flip($fillable));
@@ -35,13 +36,23 @@ trait ModelTrait
             $data['amount'] = $data['amount'];
         }
         try {
+            $record = $model::updateOrCreate(['id' => $data['id']], $data);
+            //For logs
+            $log['entity_type'] = $model;
+            $log['entity_id'] = $data['id'];
+            $log['current_values'] = $record;
+            $log['action'] = 'CREATE';
+            $log['content'] = 'Registro cadastrado com sucesso.';
+            if($createLog){
+                self::createLog($log);
+            }
             return response()->json([
                 'message' => 'Os dados foram cadastrados com sucesso.',
-                'data' => $model::updateOrCreate(['id' => $data['id']], $data)
+                'data' => $record
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'Houve um problema ao cadastrar os dados. Por favor, tente novamente mais tarde.',
+                'message' => $th->getMessage(),
                 'data' => null
             ], 400);
         }
@@ -49,7 +60,8 @@ trait ModelTrait
 
     public static function updateRecord(string $model, array $data, array $where): JsonResponse
     {
-        if (!$model::where($where)->exists()) {
+        $existingRecord = $model::where($where)->first();
+        if (!$existingRecord) {
             $data['id'] = $where;
             return self::createRecord($model, $data);
         }
@@ -70,15 +82,53 @@ trait ModelTrait
         if (isset($data['amount']) && (strpos($data['amount'], ',') !== false || strpos($data['amount'], 'R$') !== false)) {
             $data['amount'] = number_format(str_replace(['R$ ', '.', ','], ['', '', '.'], $data['amount']), 2, '.', '');
         }
-        $data['updated_at'] = now();
         try {
+            $record = $model::updateOrCreate($where, $data);
+            $changedValues = $record->getChanges();
+            if (!empty($changedValues)) {
+                $record->timestamps = false;
+                $record->updated_at = now();
+                $record->save();
+                $oldValues = array_intersect_key($existingRecord->toArray(), $changedValues);
+                self::createLog([
+                    'entity_type'    => $model,
+                    'entity_id'      => $record->id,
+                    'old_values'     => $oldValues,
+                    'current_values' => $changedValues,
+                    'action'         => 'UPDATE',
+                    'content'        => 'Registro atualizado com sucesso.'
+                ]);
+            }
             return response()->json([
                 'message' => 'As alterações foram salvas com sucesso.',
-                'data' => $model::updateOrCreate($where, $data)
+                'data' => $record
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'Ocorreu um erro durante a atualização. Por favor, tente novamente.',
+                'message' => $th->getMessage(),
+                'data' => null
+            ], 400);
+        }
+    }
+
+    public static function deleteRecord(string $model, array $where): JsonResponse{
+        $existingRecord = $model::where($where)->first();
+        try {
+            self::createLog([
+                'entity_type'    => $model,
+                'entity_id'      => $existingRecord->id,
+                'old_values'     => $existingRecord,
+                'action'         => 'DELETE',
+                'content'        => 'Registro excluído com sucesso.'
+            ]);
+            $existingRecord->delete();
+            return response()->json([
+                'message' => 'Registro excluído com sucesso.',
+                'data' => null
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
                 'data' => null
             ], 400);
         }
@@ -120,5 +170,22 @@ trait ModelTrait
             $counter++;
         }
         return $value;
+    }
+
+    private static function createLog(array $data)
+    {
+        RecordLog::create([
+            'id' => self::generateUuid(),
+            'sequence' => self::setSequenceNumber(RecordLog::class),
+            'entity_type' => $data['entity_type'],
+            'entity_id' => $data['entity_id'],
+            'old_values' => $data['old_values'] ?? null,
+            'current_values' => $data['current_values'] ?? null,
+            'content' => $data['content'],
+            'ip' => request()->ip(),
+            'action' => $data['action'],
+            'executed_by' => auth()->user()->id,
+            'executed_at' => now()
+        ]);
     }
 }

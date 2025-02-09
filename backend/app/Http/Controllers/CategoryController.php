@@ -11,7 +11,7 @@ class CategoryController extends CRUDController
         parent::__construct(
             Category::class, 
             CategoryRequest::class,
-            ['user'],
+            ['user','logs'],
             ['name','type','description'],
             ['financialRecords'],
             ['financialRecords' => 'amount']);

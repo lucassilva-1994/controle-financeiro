@@ -96,6 +96,6 @@ class CRUDController extends Controller
 
     public function delete(string $id)
     {
-        return self::markAsDeleted($this->model, ['id' => $id]);
+        return self::deleteRecord($this->model, ['id' => $id]);
     }
 }

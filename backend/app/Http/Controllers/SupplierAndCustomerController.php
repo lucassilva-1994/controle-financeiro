@@ -11,7 +11,7 @@ class SupplierAndCustomerController extends CRUDController
         parent::__construct(
             SupplierAndCustomer::class, 
             SupplierAndCustomerRequest::class,
-            ['user'],
+            ['user','logs'],
             ['name','type','description','email','phone'],
             ['financialRecords'],
             ['financialRecords' => 'amount']);

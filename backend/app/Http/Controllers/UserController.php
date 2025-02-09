@@ -52,7 +52,7 @@ class UserController extends Controller
             'ip_address' => $data['ip'],
             'platform' => $agent->platform(),
             'browser' => $agent->browser() . ' - ' . $agent->version($agent->browser())
-        ]);
+        ], false);
     }
 
     public function activateAccount(Request $request)

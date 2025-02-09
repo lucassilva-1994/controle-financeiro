@@ -14,4 +14,5 @@ class Access extends Model
     protected $fillable = ['id', 'sequence', 'ip_address', 'city', 'browser', 'platform', 'created_at', 'user_id'];
     public $incrementing = false;
     public $timestamps = false;
+    protected $keyType = 'string';
 }

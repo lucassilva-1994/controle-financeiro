@@ -15,7 +15,7 @@ class FinancialRecordController extends CRUDController
         parent::__construct(
             FinancialRecord::class,
             FinancialRecordRequest::class,
-            ['payment', 'supplierAndCustomer', 'files','category'],
+            ['payment', 'supplierAndCustomer', 'files','category','logs'],
             [
                 'description', 'amount', 'details',
                 'payment' => ['payments.name'],
