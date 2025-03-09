@@ -1,0 +1,171 @@
+<app-layout title="{{ financialPlan?.name }} (Itens) - {{ financialPlan?.plan_type | genericPipe }}">
+    <div class="d-flex justify-content-end mb-3">
+        <a routerLink="/financial-plans" class="btn-custom">
+            <i class="fas fa-arrow-left"></i> Voltar para planejamentos
+        </a>
+    </div>
+    <app-spinner [loading]="loading"></app-spinner>
+    <app-message [message]="message"></app-message>
+    <app-card-form>
+        <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
+        <form *ngIf="form" [formGroup]="form" (submit)="onSubmit()">
+            <div class="row align-items-end">
+                <div class="col-md-4 mb-3">
+                    <div class="form-group">
+                        <label for="name">
+                            <i class="fas fa-file-alt"></i> Nome
+                        </label>
+                        <input id="name" formControlName="name" type="text" class="form-control" required
+                            placeholder="Nome">
+                    </div>
+                </div>
+                @if(financialPlan?.plan_type === 'BUDGET'){
+                <div class="col-md-3 mb-3">
+                    <div class="form-group">
+                        <label for="amount">
+                            <i class="fas fa-dollar-sign"></i> Valor
+                        </label>
+                        <input id="amount" formControlName="amount" type="tel" class="form-control"
+                            (input)="currencyMask($event)" placeholder="R$ 0,00" />
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="form-group">
+                        <label for="due_date">
+                            <i class="fas fa-calendar-alt"></i> Vencimento
+                        </label>
+                        <input formControlName="due_date" type="date" class="form-control" />
+                    </div>
+                </div>
+                } @else {
+                <div class="col-md-3 mb-3">
+                    <div class="form-group">
+                        <label for="qtd">
+                            <i class="fas fa-weight"></i> Quantidade
+                        </label>
+                        <input id="qtd" formControlName="qtd" type="tel" class="form-control"
+                            (input)="quantityMask($event)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="form-group">
+                        <label for="unit">
+                            <i class="fas fa-balance-scale"></i> Medida
+                        </label>
+                        <select formControlName="unit" class="form-control">
+                            <option *ngFor="let item of units" [value]="item.value">{{ item.label }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                }
+                <div class="col-md-2 mb-3">
+                    <app-button-submit></app-button-submit>
+                </div>
+            </div>
+        </form>
+    </app-card-form>
+
+    <div class="d-flex flex-wrap justify-content-between mb-2 mt-2">
+        <!-- Card para o Valor Total -->
+        <div class="card p-3 shadow-sm mb-2" style="width: 48%; min-width: 200px;">
+            <div class="d-flex justify-content-between">
+                <div class="text-muted">
+                    <i class="fas fa-dollar-sign" style="margin-right: 8px;"></i> <strong>Total:</strong>
+                </div>
+                <div class="fw-bold text-primary">{{ sum_total }}</div>
+            </div>
+        </div>
+    
+        <!-- Card para Itens Concluídos -->
+        <div class="card p-3 shadow-sm mb-2" style="width: 48%; min-width: 200px;">
+            <div class="d-flex justify-content-between">
+                <div class="text-muted">
+                    <i class="fas fa-check-circle" style="margin-right: 8px;"></i> <strong>Concluídos:</strong>
+                </div>
+                <div class="fw-bold text-success">{{ sum_checked }}</div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="table-responsive">
+        <table class="table table-striped mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col"><i class="fas fa-square-check"></i></th>
+                    <th scope="col"><i class="fas fa-tag"></i> Nome</th>
+                    @if(financialPlan?.plan_type =='SHOPPING_LIST'){
+                    <th scope="col"><i class="fas fa-sort-numeric-up"></i> Quantidade</th>
+                    <th scope="col"><i class="fas fa-weight-hanging"></i> Unidade</th>
+                    }
+                    <th scope="col"><i class="fas fa-dollar-sign"></i> Valor</th>
+                    <th scope="col"><i class="fas fa-calendar-alt"></i> Data</th>
+                    <th scope="col"><i class="fas fa-cogs"></i> Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (financialPlanItems?.length === 0){
+                <tr>
+                    <td colspan="7" class="text-center">Não há itens na lista.</td>
+                </tr>
+                }
+                @else{
+                @for (item of financialPlanItems; track item){
+                <tr>
+                    <td><input type="checkbox" [checked]="item.checked"
+                            (change)="toggleCheckFinancialPlanItem(item, $event)"></td>
+                    <td>
+                        <span *ngIf="!item.editing">{{ item.name }}</span>
+                        <input *ngIf="item.editing" type="text" class="form-control" [(ngModel)]="item.name"
+                            (keyup.enter)="saveEdit(item)">
+                    </td>
+                    @if(financialPlan?.plan_type =='SHOPPING_LIST'){
+                    <td>
+                        <span *ngIf="!item.editing">{{ item.qtd |  number:'1.0-0' }}</span>
+                        <input *ngIf="item.editing" type="text" class="form-control" [(ngModel)]="item.qtd"
+                            (keyup.enter)="saveEdit(item)" (input)="quantityMaskEdit(item, $event)">
+                    </td>
+
+                    <td>
+                        <span *ngIf="!item.editing">
+                            {{ getUnitLabel(item.unit) }}
+                          </span>
+                        <select *ngIf="item.editing" class="form-select" [(ngModel)]="item.unit"
+                            (keyup.enter)="saveEdit(item)">
+                            <option *ngFor="let unit of units" [value]="unit.value">{{ unit.label }}
+                            </option>
+                        </select>
+
+                    </td>
+                    }
+                    <td>
+                        <span *ngIf="!item.editing">{{ item.amount | currency:'BRL':'R$ ' }}</span>
+                        <input *ngIf="item.editing" type="text" class="form-control" [(ngModel)]="item.amount"
+                            (input)="currencyMaskEdit(item, $event)" (keyup.enter)="saveEdit(item)">
+                    </td>
+                    <td>
+                        <span *ngIf="!item.editing">{{ item.due_date ? (item.due_date | date: 'dd/MM/yyyy') : '-'
+                            }}</span>
+                        <input *ngIf="item.editing" type="date" class="form-control" [(ngModel)]="item.due_date"
+                            (keyup.enter)="saveEdit(item)">
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-sm" [ngClass]="item.editing ? 'btn-success' : 'btn-primary'"
+                                (click)="item.editing ? saveEdit(item) : item.editing = true">
+                                <i class="fas" [ngClass]="item.editing ? 'fa-save' : 'fa-edit'"></i>
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" (click)="delete(item.id)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+</app-layout>

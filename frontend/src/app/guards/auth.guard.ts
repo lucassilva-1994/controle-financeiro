@@ -1,40 +1,19 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { CanActivate, Router } from "@angular/router";
 import { Observable, of } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import { environment } from "src/environments/environment";
-import { TokenService } from "../services/token.service";
+import { tap, catchError, map } from "rxjs/operators";
+import { UserService } from "../services/user.service";
 
-const apiUrl = environment.apiUrl + '/users/validate-token';
-
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class AuthGuard implements CanActivate {
-    constructor(private router: Router, private httpClient: HttpClient, private tokenService: TokenService) {}
+    constructor(private userService: UserService, private router: Router) {}
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-        if (!this.tokenService.hasToken()) {
-            this.router.navigate(['/'], {
-                queryParams: {
-                    fromUrl: state.url
-                }
-            });
-            return of(false);
-        }
-
-        return this.httpClient.get<{ valid: boolean }>(apiUrl).pipe(
-            map(response => {
-                if (response.valid) {
-                    this.router.navigate(['/financial-records']);
-                    return true; 
-                } else {
-                    return true; 
-                }
-            }),
-            catchError(() => {
-                this.router.navigate(['/']);
-                return of(false);
-            })
-        );
+    canActivate(): Observable<boolean> {
+        return localStorage.getItem("token")
+        ? this.userService.profile().pipe(
+            map(() => { this.router.navigate(["/financial-records"]); return false; }),
+            catchError(() => of(true))
+        )
+        : of(true);
     }
 }

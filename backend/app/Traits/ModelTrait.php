@@ -35,6 +35,10 @@ trait ModelTrait
             $data['amount'] = number_format("" . $data['amount'], 2, ".", "");
             $data['amount'] = $data['amount'];
         }
+        if (isset($data['qtd'])) {
+            $data['qtd'] = str_replace([",", "."], ["", "."], $data['qtd']);
+            $data['qtd'] = number_format((float) $data['qtd'], 2, ".", "");
+        }
         try {
             $record = $model::updateOrCreate(['id' => $data['id']], $data);
             //For logs
@@ -81,6 +85,10 @@ trait ModelTrait
         }
         if (isset($data['amount']) && (strpos($data['amount'], ',') !== false || strpos($data['amount'], 'R$') !== false)) {
             $data['amount'] = number_format(str_replace(['R$ ', '.', ','], ['', '', '.'], $data['amount']), 2, '.', '');
+        }
+        if (isset($data['qtd'])) {
+            $data['qtd'] = str_replace([",", " "], ["", ""], $data['qtd']); 
+            $data['qtd'] = number_format((float) $data['qtd'], 2, ".", "");
         }
         try {
             $record = $model::updateOrCreate($where, $data);

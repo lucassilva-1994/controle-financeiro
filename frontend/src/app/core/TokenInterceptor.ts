@@ -23,6 +23,7 @@ export class TokenInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
+          localStorage.removeItem('token');
           this.router.navigate(['/']);
         } else if(error.status === 404){
           this.router.navigate(['/not-found']);

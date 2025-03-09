@@ -1,0 +1,112 @@
+<app-layout title="Planejamentos financeiro {{ total ? ' (' + total + ')' : '' }}">
+    <app-spinner [loading]="loading"></app-spinner>
+    <app-message [message]="message"></app-message>
+    @if (mode == 'view') {
+    <div>
+      <app-table [itens]="financialPlans" [cols]="cols" path="/financial-plans" [pages]="pages" (deleteEvent)="delete($event)"
+        (showEvent)="show($event)" [actions]="actions"></app-table>
+    </div>
+    }
+    @if (mode === 'new' || mode === 'edit') {
+    <div>
+      <app-card-form>
+        <app-messages-validators [backendErrors]="backendErrors"></app-messages-validators>
+        <form [formGroup]="form" (submit)="onSubmit()">
+          <div class="row align-items-end">
+            <div class="col-md-4 mb-3">
+              <div class="form-group">
+                <label for="name">
+                  <i class="fas fa-wallet"></i> Nome
+                </label>
+                <input id="name" formControlName="name" type="text" class="form-control" required placeholder="Nome">
+              </div>
+            </div>
+            <div class="col-md-4  mb-3">
+              <div class="form-group">
+                <label for="description">
+                  <i class="fas fa-file-alt"></i> Descrição (Opcional)
+                </label>
+                <input id="description" formControlName="description" type="text" class="form-control" maxlength="40"
+                  placeholder="Descrição (Máximo 40 caracteres).">
+              </div>
+            </div>
+            <div class="col-md-2 mb-3">
+                <div class="form-group">
+                    <label for="description">
+                        <i class="fas fa-chart-line"></i> Tipo planejamento
+                    </label>
+                </div>
+                <select formControlName="plan_type" class="form-select">
+                    <option value="SHOPPING_LIST">Lista de compras</option>
+                    <option value="BUDGET">Orçamento</option>
+                </select>
+            </div>
+            <div class="col-md-2  mb-3">
+              <app-button-submit></app-button-submit>
+            </div>
+          </div>
+        </form>
+      </app-card-form>
+      <app-table [itens]="financialPlans" [cols]="cols" path="/financial-plans" (deleteEvent)="delete($event)" [actions]="actions"></app-table>
+    </div>
+    }
+  </app-layout>
+  
+  <div class="modal" id="financialPlanModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Detalhes do planejamento financeiro</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="row">
+            <div class="mb-3 col-md-9">
+              <div class="form-group">
+                <label>
+                  <i class="fas fa-wallet"></i> Nome
+                </label>
+                <input type="text" class="form-control" value="{{ financialPlan?.name }}" disabled>
+              </div>
+            </div>
+            <div class="mb-3 col-md-3">
+              <div class="form-group">
+                <label>
+                  <i class="fas fa-chart-line"></i> Tipo
+                </label>
+                <input type="text" class="form-control" value="{{ financialPlan?.plan_type | genericPipe }}" disabled>
+              </div>
+            </div>
+
+            <div class="mb-3 col-md-6">
+              <div class="form-group">
+                <label>
+                  <i class="fas fa-calendar-day"></i> Criado em
+                </label>
+                <input type="text" class="form-control"
+                  value="{{ financialPlan?.created_at | date:'dd/MM/yyyy HH:mm:ss' }}" disabled>
+              </div>
+            </div>
+            <div class="mb-3 col-md-6">
+              <div class="form-group">
+                <label>
+                  <i class="fas fa-calendar-check"></i> Atualizado em
+                </label>
+                <input type="text" class="form-control"
+                  value="{{ financialPlan?.updated_at ? (financialPlan.updated_at | date:'dd/MM/yyyy HH:mm:ss') : 'Sem alteração' }}"
+                  disabled>
+              </div>
+            </div>
+            <div class="mb-3 col-md-12">
+              <div class="form-group">
+                <label>
+                  <i class="fas fa-file-alt"></i> Descrição
+                </label>
+                <textarea class="form-control" rows="3" disabled>{{ financialPlan?.description || 'Sem descrição' }}</textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

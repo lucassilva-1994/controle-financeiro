@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\{NotDeletedScope, UserScope};
+use App\Models\Scopes\{UserScope};
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
@@ -14,7 +14,7 @@ class Payment extends Model
     protected $fillable = ['id','sequence','name','type','description','is_calculable','deleted','created_at','updated_at','user_id'];
     protected $primaryKey = 'id';
     public $incrementing = false;
-    public $timestamps;
+    public $timestamps = false;
     protected $keyType = 'string';
 
     public function user(): BelongsTo{

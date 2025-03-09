@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{CategoryController, FinancialRecordController, PaymentController, SupplierAndCustomerController, UserController};
+use App\Http\Controllers\{CategoryController, FinancialPlanController, FinancialPlanItemController, FinancialRecordController, PaymentController, ShoppingListController, ShoppingListItemController, SupplierAndCustomerController, UserController};
 use Illuminate\Support\Facades\Route;
 
 Route::controller(UserController::class)->prefix('users')->group(function(){
@@ -49,5 +49,20 @@ Route::middleware('auth:api')->group(function(){
         Route::put('update/{id}','update');
         Route::delete('delete/{id}','delete');
         Route::get('calculate-income-expense','calculateIncomeExpense');
+    });
+    Route::controller(FinancialPlanController::class)->prefix('financial_plans')->group(function(){
+        Route::get('show','show');
+        Route::get('show-by-id/{id}','showById');
+        Route::post('store','store');
+        Route::put('update/{id}','update');
+        Route::delete('delete/{id}','delete');
+    });
+    Route::controller(FinancialPlanItemController::class)->prefix('financial_plans_items')->group(function(){
+        Route::get('show-by-financial-plan/{financial_plan_id}','showByFinancialPlan');
+        Route::get('show-by-id/{id}','showById');
+        Route::post('store','store');
+        Route::patch('toggle-check-financial-plan-item', 'toggleCheckFinancialPlanItem');
+        Route::put('update/{id}','update');
+        Route::delete('delete/{id}','delete');
     });
 });

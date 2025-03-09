@@ -1,0 +1,29 @@
+.btn-custom {
+    background: linear-gradient(145deg, #6a1b9a, #8e24aa); /* Gradiente roxo */
+    color: white;
+    border-radius: 25px;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-custom i {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+.btn-custom:hover {
+    background: linear-gradient(145deg, #8e24aa, #6a1b9a); /* Efeito hover do gradiente */
+    transform: translateY(-3px);
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-custom:active {
+    transform: translateY(0);
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}

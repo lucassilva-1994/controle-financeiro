@@ -23,6 +23,10 @@ export class GenericPipe implements PipeTransform {
       case 1:
       case '1':
         return 'SIM';
+      case 'BUDGET':
+        return 'Orçamento';
+      case 'SHOPPING_LIST':
+        return 'Lista de compras';
       default:
         return String(value); // Retorna o próprio valor como string se não corresponder aos casos acima
     }

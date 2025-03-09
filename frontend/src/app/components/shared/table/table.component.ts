@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { GenericPipe } from 'src/app/pipes/generic-pipe.pipe';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -35,6 +35,7 @@ export class TableComponent<Model> implements OnInit, OnDestroy {
 
   constructor(
     private router: ActivatedRoute,
+    private route: Router,
     private genericPipe: GenericPipe,
     private datePipe: DatePipe,
     private currencyPipe: CurrencyPipe) {
@@ -69,6 +70,7 @@ export class TableComponent<Model> implements OnInit, OnDestroy {
   delete(id: string) {
     if (confirm('Tem certeza que deseja excluir esse item?')) {
       this.deleteEvent.emit({ id });
+      this.route.navigate([this.path]);
     }
   }
 
@@ -89,6 +91,8 @@ export class TableComponent<Model> implements OnInit, OnDestroy {
       case 'type':
       case 'financial_record_type':
       case 'paid':
+        return this.genericPipe.transform(item[key]);
+      case 'plan_type':
         return this.genericPipe.transform(item[key]);
       case 'financial_record_date':
       case 'financial_record_due_date':

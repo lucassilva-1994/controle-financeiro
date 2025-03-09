@@ -224,7 +224,9 @@ return [
         'payment_id' => 'forma de pagamento',
         'category_id' => 'categoria',
         'INCOME' => 'ENTRADA',
-        'categories' => 'categorias'
+        'categories' => 'categorias',
+        'qtd' => 'quantidade',
+        'unit' => 'unidade de medida',
+        'plan_type' => 'tipo de planejamento'
     ],
-
 ];
