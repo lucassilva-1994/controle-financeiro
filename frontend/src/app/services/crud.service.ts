@@ -59,8 +59,8 @@ export class CrudService<Model> {
         );
     }
 
-    store(model: Model | FormData): Observable<{ message: string }> {
-        return this.httpClient.post<{ message: string }>(`${this.apiUrl}/store`, model)
+    store(model: Model | FormData): Observable<{ message: string, id: string }> {
+        return this.httpClient.post<{ message: string, id: string }>(`${this.apiUrl}/store`, model)
             .pipe(
                 take(1),
                 tap(response => {

@@ -256,6 +256,8 @@
       }
     </app-card-form>
   </div>
+  <app-table [itens]="financialRecords" [cols]="cols" path="/financial-records" 
+  (deleteEvent)="delete($event)"   [actions]="actions"></app-table>
   }
 </app-layout>
 

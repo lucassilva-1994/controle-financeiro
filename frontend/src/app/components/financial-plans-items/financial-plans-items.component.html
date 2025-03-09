@@ -41,7 +41,7 @@
                 <div class="col-md-3 mb-3">
                     <div class="form-group">
                         <label for="qtd">
-                            <i class="fas fa-weight"></i> Quantidade
+                            <i class="fas fa-sort-numeric-up"></i> Quantidade
                         </label>
                         <input id="qtd" formControlName="qtd" type="tel" class="form-control"
                             (input)="quantityMask($event)" />
@@ -67,7 +67,6 @@
     </app-card-form>
 
     <div class="d-flex flex-wrap justify-content-between mb-2 mt-2">
-        <!-- Card para o Valor Total -->
         <div class="card p-3 shadow-sm mb-2" style="width: 48%; min-width: 200px;">
             <div class="d-flex justify-content-between">
                 <div class="text-muted">
@@ -76,8 +75,6 @@
                 <div class="fw-bold text-primary">{{ sum_total }}</div>
             </div>
         </div>
-    
-        <!-- Card para Itens Concluídos -->
         <div class="card p-3 shadow-sm mb-2" style="width: 48%; min-width: 200px;">
             <div class="d-flex justify-content-between">
                 <div class="text-muted">
@@ -91,13 +88,13 @@
 
     <div class="table-responsive">
         <table class="table table-striped mt-3">
-            <thead class="table-dark">
+            <thead class="table-dark text-nowrap">
                 <tr>
                     <th scope="col"><i class="fas fa-square-check"></i></th>
-                    <th scope="col"><i class="fas fa-tag"></i> Nome</th>
+                    <th scope="col"><i class="fas fa-file-alt"></i> Nome</th>
                     @if(financialPlan?.plan_type =='SHOPPING_LIST'){
                     <th scope="col"><i class="fas fa-sort-numeric-up"></i> Quantidade</th>
-                    <th scope="col"><i class="fas fa-weight-hanging"></i> Unidade</th>
+                    <th scope="col"><i class="fas fa-balance-scale"></i> Unidade</th>
                     }
                     <th scope="col"><i class="fas fa-dollar-sign"></i> Valor</th>
                     <th scope="col"><i class="fas fa-calendar-alt"></i> Data</th>

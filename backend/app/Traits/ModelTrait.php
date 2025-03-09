@@ -52,6 +52,7 @@ trait ModelTrait
             }
             return response()->json([
                 'message' => 'Os dados foram cadastrados com sucesso.',
+                'id' => $data['id'],
                 'data' => $record
             ], 201);
         } catch (\Throwable $th) {

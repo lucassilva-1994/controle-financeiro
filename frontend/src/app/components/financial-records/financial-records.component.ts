@@ -342,11 +342,14 @@ export class FinancialRecordsComponent implements OnInit {
 
   storePayment() {
     const form = this.formPayment.getRawValue() as Payment;
-    const handleSuccess = () => {
+    const handleSuccess = (payment: { message: string; id: string; }) => {
       this.initializeFormPayment();
       this.loadingPayments();
       this.errorsPayments = [];
       this.modalPayment.hide();
+      this.form.patchValue({
+        payment_id: payment.id
+      });
     };
     const handleErrors = (error: HttpErrorResponse) => {
       this.errorsPayments = Object.values(error.error.errors);
@@ -359,11 +362,14 @@ export class FinancialRecordsComponent implements OnInit {
 
   storeCategory() {
     const form = this.formCategory.getRawValue() as Category;
-    const handleSuccess = () => {
+    const handleSuccess = (category: { message: string; id: string; }) => {
       this.initializeFormCategory();
       this.loadingCategories();
       this.errorsCategories = [];
       this.modalCategory.hide();
+      this.form.patchValue({
+        category_id: category.id
+      });
     };
     const handleErrors = (error: HttpErrorResponse) => {
       this.errorsCategories = Object.values(error.error.errors);
@@ -375,11 +381,14 @@ export class FinancialRecordsComponent implements OnInit {
 
   storeSupplierAndCustomer() {
     const form = this.formSupplierAndCustomer.getRawValue() as SupplierAndCustomer;
-    const handleSuccess = () => {
+    const handleSuccess = (supplierAndCustomer: { message: string; id: string; }) => {
       this.initializeFormSupplierAndCustomer();
       this.loadingSuppliersAndCustomers();
       this.errorsSuppliersAndCustomers = [];
       this.modalSupplierAndCustomer.hide();
+      this.form.patchValue({
+        supplier_customer_id: supplierAndCustomer.id
+      });
     };
     const handleErrors = (error: HttpErrorResponse) => {
       this.errorsSuppliersAndCustomers = Object.values(error.error.errors);
